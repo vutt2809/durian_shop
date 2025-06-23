@@ -1,0 +1,86 @@
+.tiki-header {
+  background: #fff;
+  border-bottom: 1.5px solid #e5e5e5;
+  .header-main {
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+    .tiki-logo {
+      font-weight: 700;
+      font-size: 1.3rem;
+      color: #222;
+      margin-right: 24px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      height: 64px;
+    }
+    .tiki-searchbar {
+      flex: 1;
+      max-width: 600px;
+      margin: 0 24px;
+      position: relative;
+      .search-input {
+        border-radius: 8px;
+        border: 1px solid #e5e5e5;
+        padding: 8px 40px 8px 16px;
+        font-size: 1rem;
+        width: 100%;
+        background: #fafafa;
+      }
+      .search-icon {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #888;
+        font-size: 1.2rem;
+      }
+    }
+    .tiki-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      .tiki-header-action {
+        display: flex;
+        align-items: center;
+        color: #222;
+        font-weight: 500;
+        font-size: 1rem;
+        margin-left: 16px;
+        text-decoration: none;
+        position: relative;
+        cursor: pointer;
+        .cart-badge {
+          position: absolute;
+          top: -8px;
+          right: -12px;
+          background: #43b02a;
+          color: #fff;
+          border-radius: 50%;
+          font-size: 0.8rem;
+          min-width: 20px;
+          height: 20px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+    }
+  }
+}
+@media (max-width: 900px) {
+  .tiki-header .header-main {
+    flex-direction: column;
+    .tiki-searchbar {
+      margin: 12px 0;
+      max-width: 100%;
+    }
+    .tiki-header-actions {
+      gap: 12px;
+      .tiki-header-action {
+        margin-left: 0;
+      }
+    }
+  }
+} 

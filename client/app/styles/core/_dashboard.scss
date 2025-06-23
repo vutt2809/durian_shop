@@ -1,0 +1,162 @@
+.panel-body {
+  // padding: 10px;
+
+  @include media-breakpoint-down(sm) {
+    margin-top: 20px;
+  }
+}
+
+.panel-sidebar {
+  .panel-title,
+  .menu-panel {
+    margin: 0;
+    padding: 10px 0px;
+    text-align: center;
+    border: $border-primary;
+    border-bottom: none;
+  }
+
+  .menu-panel {
+    &.collapse {
+      border-bottom: $border-primary;
+
+      &:hover {
+        background-color: $theme-gray;
+      }
+    }
+  }
+
+  .panel-title {
+    @include media-breakpoint-down(sm) {
+      display: none;
+    }
+  }
+
+  .navbar {
+    padding: 0px;
+  }
+
+  .menu-panel {
+    display: none;
+    width: 100%;
+    @include media-breakpoint-down(sm) {
+      display: block;
+      cursor: pointer;
+    }
+
+    &:hover {
+      background-color: transparent;
+    }
+
+    .btn-text {
+      font-size: $font-size-heading-xsmall !important;
+      font-weight: $font-weight-normal;
+    }
+  }
+
+  .panel-links {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 0;
+
+    li {
+      border-top: $border-primary;
+      border-right: $border-primary;
+      border-left: $border-primary;
+
+      &:hover {
+        a {
+          color: $font-custom-color !important;
+        }
+      }
+
+      &:last-child {
+        border-bottom: $border-primary;
+      }
+
+      a {
+        display: block;
+        padding: 10px 0px;
+        text-transform: capitalize;
+        color: $font-custom-color !important;
+        font-weight: $font-weight-normal;
+
+        &.active-link {
+          font-weight: $font-weight-medium;
+          background-color: $white;
+        }
+      }
+    }
+  }
+}
+
+// dashboard styles
+.dashboard {
+  .panel-sidebar {
+    background-color: #f9f9f9;
+    border-right: 1px solid $border-color-default;
+    padding: 20px;
+    border-radius: $border-radius-primary;
+
+    .panel-title {
+      font-size: 22px;
+      font-weight: $font-weight-semibold;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid $border-color-default;
+    }
+
+    .panel-links {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      border: 1px solid $border-color-default;
+      border-radius: $border-radius-primary;
+
+      li {
+        border-bottom: 1px solid $border-color-default;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        a {
+          display: flex;
+          align-items: center;
+          padding: 12px 15px;
+          margin-bottom: 0;
+          border-radius: 0;
+          color: $font-color;
+          font-weight: $font-weight-medium;
+          transition: all 0.3s ease;
+          text-align: left;
+
+          .fa {
+            margin-right: 10px;
+            font-size: 18px;
+          }
+
+          &:hover {
+            background-color: #e9e9e9;
+            color: $black;
+          }
+
+          &.active-link {
+            background-color: $primary-color;
+            color: $white;
+
+            &:hover {
+              background-color: darken($primary-color, 5%);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  h2 {
+    font-size: $font-size-heading-large;
+    font-weight: $font-weight-bold;
+    margin-bottom: 20px;
+  }
+}

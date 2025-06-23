@@ -1,0 +1,1 @@
+export const VI = { 'MERN Store': 'Sầu Riêng Việt', 'Search Products': 'Tìm Kiếm Sầu Riêng...' }; 

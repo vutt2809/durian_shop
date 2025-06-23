@@ -1,0 +1,32 @@
+{
+  "ADMIN": [
+    { "to": "", "name": "Account Details", "prefix": "/dashboard", "icon": "fa-user" },
+    {
+      "to": "/security",
+      "name": "Account Security",
+      "prefix": "/dashboard",
+      "provider": ["Email"]
+    },
+    { "to": "/address", "name": "Address", "prefix": "/dashboard", "icon": "fa-map-marker" },
+    { "to": "/product", "name": "Products", "prefix": "/dashboard", "icon": "fa-cubes" },
+    { "to": "/category", "name": "Categories", "prefix": "/dashboard", "icon": "fa-sitemap" },
+    { "to": "/users", "name": "Users", "prefix": "/dashboard", "icon": "fa-users" },
+    { "to": "/orders", "name": "Orders", "prefix": "/dashboard", "icon": "fa-shopping-cart" },
+    { "to": "/review", "name": "Reviews", "prefix": "/dashboard", "icon": "fa-star" },
+    { "to": "/wishlist", "name": "WishList", "prefix": "/dashboard", "icon": "fa-heart" },
+    { "to": "/support", "name": "Support", "icon": "fa-question-circle" }
+  ],
+  "CUSTOMER": [
+    { "to": "", "name": "Account Details", "prefix": "/dashboard", "icon": "fa-user" },
+    {
+      "to": "/security",
+      "name": "Account Security",
+      "prefix": "/dashboard",
+      "provider": ["Email"]
+    },
+    { "to": "/address", "name": "Address", "prefix": "/dashboard", "icon": "fa-map-marker" },
+    { "to": "/orders", "name": "Orders", "prefix": "/dashboard", "icon": "fa-shopping-cart" },
+    { "to": "/wishlist", "name": "WishList", "prefix": "/dashboard", "icon": "fa-heart" },
+    { "to": "/support", "name": "Support", "icon": "fa-question-circle" }
+  ]
+}

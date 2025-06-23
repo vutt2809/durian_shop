@@ -1,0 +1,1 @@
+export default function handleError(error, dispatch) { console.error(error); } 

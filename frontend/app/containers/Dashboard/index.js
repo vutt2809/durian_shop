@@ -33,25 +33,25 @@ class Dashboard extends React.PureComponent {
       <>
         {isLoading ? (
           <LoadingIndicator inline />
-        ) : user.role === ROLES.Admin ? (
+        ) : (user.role === ROLES.Admin || user.role === 'admin') ? (
           <Admin
             user={user}
             isMenuOpen={isMenuOpen}
-            links={dashboardLinks[ROLES.Admin]}
+            links={dashboardLinks[ROLES.Admin].filter(link => link.name !== 'Brand')}
             toggleMenu={toggleDashboardMenu}
           />
-        ) : user.role === ROLES.Merchant && user.merchant ? (
+        ) : (user.role === ROLES.Merchant || user.role === 'merchant') && user.merchant ? (
           <Merchant
             user={user}
             isMenuOpen={isMenuOpen}
-            links={dashboardLinks[ROLES.Merchant]}
+            links={dashboardLinks[ROLES.Merchant].filter(link => link.name !== 'Brand')}
             toggleMenu={toggleDashboardMenu}
           />
         ) : (
           <Customer
             user={user}
             isMenuOpen={isMenuOpen}
-            links={dashboardLinks[ROLES.Member]}
+            links={dashboardLinks[ROLES.Member].filter(link => link.name !== 'Brand')}
             toggleMenu={toggleDashboardMenu}
           />
         )}

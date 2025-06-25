@@ -176,7 +176,7 @@ export const fetchProducts = () => {
 
       dispatch({
         type: FETCH_PRODUCTS,
-        payload: response.data.products
+        payload: response.data.products && Array.isArray(response.data.products.data) ? response.data.products.data : []
       });
     } catch (error) {
       handleError(error, dispatch);

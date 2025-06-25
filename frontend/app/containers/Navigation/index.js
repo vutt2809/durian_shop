@@ -37,13 +37,7 @@ import Cart from '../Cart';
 
 class Navigation extends React.PureComponent {
   componentDidMount() {
-    this.props.fetchStoreBrands();
     this.props.fetchStoreCategories();
-  }
-
-  toggleBrand() {
-    this.props.fetchStoreBrands();
-    this.props.toggleBrand();
   }
 
   toggleMenu() {
@@ -112,12 +106,10 @@ class Navigation extends React.PureComponent {
       authenticated,
       user,
       cartItems,
-      brands,
       categories,
       signOut,
       isMenuOpen,
       isCartOpen,
-      isBrandOpen,
       toggleCart,
       toggleMenu,
       searchValue,
@@ -235,27 +227,6 @@ class Navigation extends React.PureComponent {
                   onClick={toggleCart}
                 />
                 <Nav navbar>
-                  {brands && brands.length > 0 && (
-                    <Dropdown
-                      nav
-                      inNavbar
-                      toggle={() => this.toggleBrand()}
-                      isOpen={isBrandOpen}
-                    >
-                      <DropdownToggle nav>
-                        Thương hiệu
-                        <span className='fa fa-chevron-down dropdown-caret'></span>
-                      </DropdownToggle>
-                      <DropdownMenu right className='nav-brand-dropdown'>
-                        <div className='mini-brand'>
-                          <MiniBrand
-                            brands={brands}
-                            toggleBrand={() => this.toggleBrand()}
-                          />
-                        </div>
-                      </DropdownMenu>
-                    </Dropdown>
-                  )}
                   <NavItem>
                     <NavLink
                       tag={ActiveLink}
@@ -342,9 +313,7 @@ const mapStateToProps = state => {
   return {
     isMenuOpen: state.navigation.isMenuOpen,
     isCartOpen: state.navigation.isCartOpen,
-    isBrandOpen: state.navigation.isBrandOpen,
     cartItems: state.cart.cartItems,
-    brands: state.brand.storeBrands,
     categories: state.category.storeCategories,
     authenticated: state.authentication.authenticated,
     user: state.account.user,

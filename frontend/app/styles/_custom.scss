@@ -1,1 +1,72 @@
 // Here you can add other styles
+
+// Tiki style custom
+.homepage-tiki {
+  background: #f5f5fa;
+}
+.header-tiki {
+  border-radius: 0 0 12px 12px;
+  border-bottom: 1px solid #e5e5e5;
+}
+.sidebar-tiki {
+  min-height: 400px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.sidebar-tiki .sidebar-icon {
+  font-size: 1.2rem;
+}
+.banner-tiki {
+  background: linear-gradient(90deg, #ffe259 0%, #ffa751 100%);
+  border-radius: 16px;
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.product-grid-tiki .product-card-tiki {
+  transition: box-shadow 0.2s;
+  border: 1px solid #f0f0f0;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  background: #fff;
+}
+.product-grid-tiki .product-card-tiki:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+  border-color: #ffe259;
+}
+.product-grid-tiki img {
+  border-radius: 8px;
+  background: #fafafa;
+}
+.btn-success {
+  background: linear-gradient(90deg, #ffe259 0%, #ffa751 100%);
+  color: #333;
+  border: none;
+  font-weight: bold;
+}
+.btn-success:hover {
+  background: linear-gradient(90deg, #ffa751 0%, #ffe259 100%);
+  color: #222;
+}
+.footer-tiki {
+  border-radius: 12px 12px 0 0;
+  border-top: 1px solid #e5e5e5;
+  background: #fff;
+}
+@media (max-width: 768px) {
+  .sidebar-tiki {
+    min-height: unset;
+    margin-bottom: 1rem;
+  }
+  .header-tiki {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem 0.5rem;
+  }
+  .product-grid-tiki .col-6 {
+    max-width: 50%;
+    flex: 0 0 50%;
+  }
+}

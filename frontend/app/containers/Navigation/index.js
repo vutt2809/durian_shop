@@ -1,12 +1,13 @@
 /**
  *
- * Navigation - Modern Design
+ * Navigation
  *
  */
 
 import React from 'react';
+
 import { connect } from 'react-redux';
-import { Link, NavLink as ActiveLink, withRouter, useHistory } from 'react-router-dom';
+import { Link, NavLink as ActiveLink, withRouter } from 'react-router-dom';
 import Autosuggest from 'react-autosuggest';
 import AutosuggestHighlightMatch from 'autosuggest-highlight/match';
 import AutosuggestHighlightParse from 'autosuggest-highlight/parse';
@@ -22,38 +23,26 @@ import {
   Dropdown,
   DropdownToggle,
   DropdownMenu,
-  DropdownItem,
-  Button,
-  Badge
+  DropdownItem
 } from 'reactstrap';
-import { 
-  FaSearch, 
-  FaUser, 
-  FaHeart, 
-  FaShoppingCart, 
-  FaBars, 
-  FaPhone, 
-  FaTruck, 
-  FaLeaf,
-  FaTimes
-} from 'react-icons/fa';
-import './Navigation.scss';
 
 import actions from '../../actions';
-import { VI } from '../../constants/vi';
 
+import Button from '../../components/Common/Button';
 import CartIcon from '../../components/Common/CartIcon';
 import { BarsIcon } from '../../components/Common/Icon';
 import MiniBrand from '../../components/Store//MiniBrand';
-import Menu from './NavigationMenu';
-import Cart from './Cart';
+import Menu from '../NavigationMenu';
+import Cart from '../Cart';
 
 class Navigation extends React.PureComponent {
   componentDidMount() {
+    this.props.fetchStoreBrands();
     this.props.fetchStoreCategories();
   }
 
   toggleBrand() {
+    this.props.fetchStoreBrands();
     this.props.toggleBrand();
   }
 
@@ -89,28 +78,33 @@ class Navigation extends React.PureComponent {
 
     return (
       <Link to={`/product/${suggestion.slug}`}>
-        <div className='d-flex align-items-center p-2'>
+        <div className='d-flex'>
           <img
-            className='item-image mr-3'
+            className='item-image'
             src={`${
               suggestion.imageUrl
                 ? suggestion.imageUrl
                 : '/images/placeholder-image.png'
             }`}
-            style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '8px' }}
           />
-          <div className='flex-grow-1'>
-            <div className='name'>{BoldName(suggestion, query)}</div>
-            <div className='price text-success font-weight-bold'>${suggestion.price}</div>
+          <div>
+            <Container>
+              <Row>
+                <Col>
+                  <span className='name'>{BoldName(suggestion, query)}</span>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <span className='price'>{suggestion.price} VNĐ</span>
+                </Col>
+              </Row>
+            </Container>
           </div>
         </div>
       </Link>
     );
   }
-
-  handleCartClick = () => {
-    this.props.history.push('/cart');
-  };
 
   render() {
     const {
@@ -142,19 +136,61 @@ class Navigation extends React.PureComponent {
     };
 
     return (
-      <header className='header tiki-header'>
-        <div className='header-main'>
-          <Container fluid>
-            <Row className='align-items-center'>
-              {/* Logo */}
-              <Col xs='12' md='2' className='d-flex align-items-center'>
-                <Link to='/' className='tiki-logo'>
-                  <span className='logo-text'>Sầu Riêng Việt</span>
+      <header className='header fixed-mobile-header'>
+        <div className='header-info'>
+          <Container>
+            <Row>
+              <Col md='4' className='text-center d-none d-md-block'>
+                <i className='fa fa-truck' />
+                <span>Miễn phí vận chuyển</span>
+              </Col>
+              <Col md='4' className='text-center d-none d-md-block'>
+                <i className='fa fa-credit-card' />
+                <span>Phương thức thanh toán</span>
+              </Col>
+              <Col md='4' className='text-center d-none d-md-block'>
+                <i className='fa fa-phone' />
+                <span>Gọi cho chúng tôi 0123456789</span>
+              </Col>
+              <Col xs='12' className='text-center d-block d-md-none'>
+                <i className='fa fa-phone' />
+                <span> Cần tư vấn? Gọi cho chúng tôi 0123456789</span>
+              </Col>
+            </Row>
+          </Container>
+        </div>
+        <Container>
+          <Row className='align-items-center top-header'>
+            <Col
+              xs={{ size: 12, order: 1 }}
+              sm={{ size: 12, order: 1 }}
+              md={{ size: 3, order: 1 }}
+              lg={{ size: 3, order: 1 }}
+              className='pr-0'
+            >
+              <div className='brand'>
+                {categories && categories.length > 0 && (
+                  <Button
+                    borderless
+                    variant='empty'
+                    className='d-none d-md-block'
+                    ariaLabel='open the menu'
+                    icon={<BarsIcon />}
+                    onClick={() => this.toggleMenu()}
+                  />
+                )}
+                <Link to='/'>
+                  <h1 className='logo'>Durian Shop</h1>
                 </Link>
+              </div>
             </Col>
-              {/* Search */}
-              <Col xs='12' md='7' className='my-2 my-md-0'>
-                <div className='tiki-searchbar'>
+            <Col
+              xs={{ size: 12, order: 4 }}
+              sm={{ size: 12, order: 4 }}
+              md={{ size: 12, order: 4 }}
+              lg={{ size: 5, order: 2 }}
+              className='pt-2 pt-lg-0'
+            >
               <Autosuggest
                 suggestions={suggestions}
                 onSuggestionsFetchRequested={onSuggestionsFetchRequested}
@@ -163,34 +199,139 @@ class Navigation extends React.PureComponent {
                 renderSuggestion={this.renderSuggestion}
                 inputProps={inputProps}
                 onSuggestionSelected={(_, item) => {
-                      history.push(`/product/${item.slug}`);
-                    }}
-                    theme={{
-                      container: 'search-container',
-                      input: 'form-control search-input',
-                      suggestionsContainer: 'suggestions-container',
-                      suggestionsList: 'suggestions-list',
-                      suggestion: 'suggestion-item'
-                    }}
-                  />
-                  <FaSearch className='search-icon' />
+                  history.push(`/product/${item.suggestion.slug}`);
+                }}
+              />
+            </Col>
+            <Col
+              xs={{ size: 12, order: 2 }}
+              sm={{ size: 12, order: 2 }}
+              md={{ size: 4, order: 1 }}
+              lg={{ size: 5, order: 3 }}
+              className='desktop-hidden'
+            >
+              <div className='header-links'>
+                <Button
+                  borderless
+                  variant='empty'
+                  ariaLabel='open the menu'
+                  icon={<BarsIcon />}
+                  onClick={() => this.toggleMenu()}
+                />
+                <CartIcon cartItems={cartItems} onClick={toggleCart} />
               </div>
             </Col>
-              {/* Account & Cart */}
-              <Col xs='12' md='3' className='d-flex justify-content-end align-items-center tiki-header-actions'>
-                <Link to='/account' className='tiki-header-action'>
-                  <FaUser size={22} />
-                  <span className='d-none d-md-inline ml-2'>Tài khoản</span>
-                </Link>
-                <div className='tiki-header-action tiki-cart' onClick={this.handleCartClick} style={{cursor:'pointer'}}>
-                  <FaShoppingCart size={22} />
-                  {cartItems && cartItems.length > 0 && (
-                    <span className='cart-badge'>{cartItems.length}</span>
+            <Col
+              xs={{ size: 12, order: 2 }}
+              sm={{ size: 12, order: 2 }}
+              md={{ size: 9, order: 1 }}
+              lg={{ size: 4, order: 3 }}
+              // className='px-0'
+            >
+              <Navbar color='light' light expand='md' className='mt-1 mt-md-0'>
+                <CartIcon
+                  className='d-none d-md-block'
+                  cartItems={cartItems}
+                  onClick={toggleCart}
+                />
+                <Nav navbar>
+                  {brands && brands.length > 0 && (
+                    <Dropdown
+                      nav
+                      inNavbar
+                      toggle={() => this.toggleBrand()}
+                      isOpen={isBrandOpen}
+                    >
+                      <DropdownToggle nav>
+                        Thương hiệu
+                        <span className='fa fa-chevron-down dropdown-caret'></span>
+                      </DropdownToggle>
+                      <DropdownMenu right className='nav-brand-dropdown'>
+                        <div className='mini-brand'>
+                          <MiniBrand
+                            brands={brands}
+                            toggleBrand={() => this.toggleBrand()}
+                          />
+                        </div>
+                      </DropdownMenu>
+                    </Dropdown>
                   )}
-                </div>
+                  <NavItem>
+                    <NavLink
+                      tag={ActiveLink}
+                      to='/shop'
+                      activeClassName='active'
+                    >
+                      Cửa hàng
+                    </NavLink>
+                  </NavItem>
+                  {authenticated ? (
+                    <UncontrolledDropdown nav inNavbar>
+                      <DropdownToggle nav>
+                        {user.first_name ? user.first_name : 'Chào mừng'}
+                        <span className='fa fa-chevron-down dropdown-caret'></span>
+                      </DropdownToggle>
+                      <DropdownMenu right>
+                        <DropdownItem
+                          onClick={() => history.push('/dashboard')}
+                        >
+                          Bảng điều khiển
+                        </DropdownItem>
+                        <DropdownItem onClick={signOut}>Đăng xuất</DropdownItem>
+                      </DropdownMenu>
+                    </UncontrolledDropdown>
+                  ) : (
+                    <UncontrolledDropdown nav inNavbar>
+                      <DropdownToggle nav>
+                        Chào mừng!
+                        <span className='fa fa-chevron-down dropdown-caret'></span>
+                      </DropdownToggle>
+                      <DropdownMenu right>
+                        <DropdownItem onClick={() => history.push('/login')}>
+                          Đăng nhập
+                        </DropdownItem>
+                        <DropdownItem onClick={() => history.push('/register')}>
+                          Đăng ký
+                        </DropdownItem>
+                      </DropdownMenu>
+                    </UncontrolledDropdown>
+                  )}
+                </Nav>
+              </Navbar>
             </Col>
           </Row>
         </Container>
+
+        {/* hidden cart drawer */}
+        <div
+          className={isCartOpen ? 'mini-cart-open' : 'hidden-mini-cart'}
+          aria-hidden={`${isCartOpen ? false : true}`}
+        >
+          <div className='mini-cart'>
+            <Cart />
+          </div>
+          <div
+            className={
+              isCartOpen ? 'drawer-backdrop dark-overflow' : 'drawer-backdrop'
+            }
+            onClick={toggleCart}
+          />
+        </div>
+
+        {/* hidden menu drawer */}
+        <div
+          className={isMenuOpen ? 'mini-menu-open' : 'hidden-mini-menu'}
+          aria-hidden={`${isMenuOpen ? false : true}`}
+        >
+          <div className='mini-menu'>
+            <Menu />
+          </div>
+          <div
+            className={
+              isMenuOpen ? 'drawer-backdrop dark-overflow' : 'drawer-backdrop'
+            }
+            onClick={toggleMenu}
+          />
         </div>
       </header>
     );
@@ -199,16 +340,16 @@ class Navigation extends React.PureComponent {
 
 const mapStateToProps = state => {
   return {
-    authenticated: state.authentication.authenticated,
-    user: state.account.user,
-    cartItems: state.cart.cartItems,
-    brands: state.brand.storeBrands,
-    categories: state.category.storeCategories,
     isMenuOpen: state.navigation.isMenuOpen,
     isCartOpen: state.navigation.isCartOpen,
     isBrandOpen: state.navigation.isBrandOpen,
+    cartItems: state.cart.cartItems,
+    brands: state.brand.storeBrands,
+    categories: state.category.storeCategories,
+    authenticated: state.authentication.authenticated,
+    user: state.account.user,
     searchValue: state.navigation.searchValue,
-    suggestions: state.navigation.searchSuggestions || []
+    suggestions: state.navigation.searchSuggestions
   };
 };
 

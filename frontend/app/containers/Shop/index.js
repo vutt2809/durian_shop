@@ -14,8 +14,8 @@ import actions from '../../actions';
 import { sortOptions } from '../../utils/store';
 
 import ProductsShop from '../ProductsShop';
-import BrandsShop from './BrandsShop';
-import CategoryShop from './CategoryShop';
+import BrandsShop from '../BrandsShop';
+import CategoryShop from '../CategoryShop';
 // import BrandShop from '../BrandShop';
 
 import Page404 from '../../components/Common/Page404';

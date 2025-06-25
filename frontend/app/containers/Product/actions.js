@@ -100,6 +100,7 @@ export const filterProducts = (n, v) => {
       const response = await axios.get(`${API_URL}/product`, {
         params: { ...payload, sortOrder }
       });
+      
       const { data, current_page, last_page, total } = response.data.products;
 
       dispatch({
@@ -175,7 +176,7 @@ export const fetchProducts = () => {
 
       dispatch({
         type: FETCH_PRODUCTS,
-        payload: response.data.products.data
+        payload: response.data.products
       });
     } catch (error) {
       handleError(error, dispatch);
@@ -193,13 +194,13 @@ export const fetchProduct = id => {
 
       const inventory = response.data.product.quantity;
 
-      const brand = response.data.product.brand;
-      const brandId = response.data.product.brand_id;
+      const category = response.data.product.category;
+      const categoryId = response.data.product.category_id;
 
-      if (brand && brandId) {
-        response.data.product.brand = {
-          value: brandId,
-          label: brand.name
+      if (category && categoryId) {
+        response.data.product.category = {
+          value: categoryId,
+          label: category.name
         };
       }
 
@@ -220,73 +221,48 @@ export const addProduct = () => {
   return async (dispatch, getState) => {
     try {
       const rules = {
-        sku: 'required|alpha_dash',
         name: 'required',
-        description: 'required|max:200',
+        description: 'required',
         quantity: 'required|numeric',
         price: 'required|numeric',
-        taxable: 'required',
-        image: 'required',
-        brand: 'required'
+        weight: 'required|numeric',
+        ripeness: 'required',
+        origin: 'required',
+        category_id: 'required'
       };
 
       const product = getState().product.productFormData;
-      const user = getState().account.user;
-      const brands = getState().brand.brandsSelect;
-
-      const brand = unformatSelectOptions([product.brand]);
 
       const newProduct = {
-        sku: product.sku,
         name: product.name,
         description: product.description,
-        price: product.price,
         quantity: product.quantity,
-        image: product.image,
-        isActive: product.isActive,
-        taxable: product.taxable.value,
-        brand:
-          user.role !== ROLES.Merchant
-            ? brand !== 0
-              ? brand
-              : null
-            : brands[1].value
+        price: product.price,
+        weight: product.weight,
+        ripeness: product.ripeness,
+        origin: product.origin,
+        category_id: product.category_id
       };
 
       const { isValid, errors } = allFieldsValidation(newProduct, rules, {
-        'required.sku': 'Sku is required.',
-        'alpha_dash.sku':
-          'Sku may have alpha-numeric characters, as well as dashes and underscores only.',
-        'required.name': 'Name is required.',
-        'required.description': 'Description is required.',
-        'max.description':
-          'Description may not be greater than 200 characters.',
-        'required.quantity': 'Quantity is required.',
-        'required.price': 'Price is required.',
-        'required.taxable': 'Taxable is required.',
-        'required.image': 'Please upload files with jpg, jpeg, png format.',
-        'required.brand': 'Brand is required.'
+        'required.name': 'Tên sản phẩm là bắt buộc.',
+        'required.description': 'Mô tả là bắt buộc.',
+        'required.quantity': 'Số lượng là bắt buộc.',
+        'required.price': 'Giá là bắt buộc.',
+        'required.weight': 'Trọng lượng là bắt buộc.',
+        'required.ripeness': 'Độ chín là bắt buộc.',
+        'required.origin': 'Xuất xứ là bắt buộc.',
+        'required.category_id': 'Danh mục là bắt buộc.',
+        'numeric.quantity': 'Số lượng phải là số.',
+        'numeric.price': 'Giá phải là số.',
+        'numeric.weight': 'Trọng lượng phải là số.'
       });
 
       if (!isValid) {
         return dispatch({ type: SET_PRODUCT_FORM_ERRORS, payload: errors });
       }
-      const formData = new FormData();
-      if (newProduct.image) {
-        for (const key in newProduct) {
-          if (newProduct.hasOwnProperty(key)) {
-            if (key === 'brand' && newProduct[key] === null) {
-              continue;
-            } else {
-              formData.set(key, newProduct[key]);
-            }
-          }
-        }
-      }
 
-      const response = await axios.post(`${API_URL}/product`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+      const response = await axios.post(`${API_URL}/product`, newProduct);
 
       const successfulOptions = {
         title: `${response.data.message}`,
@@ -296,14 +272,6 @@ export const addProduct = () => {
 
       if (response.data.success === true) {
         dispatch(success(successfulOptions));
-        const brand = response.data.product.brand;
-        const brandId = response.data.product.brand_id;
-        if (brand && brandId) {
-          response.data.product.brand = {
-            value: brandId,
-            label: brand.name
-          };
-        }
         dispatch({
           type: ADD_PRODUCT,
           payload: response.data.product

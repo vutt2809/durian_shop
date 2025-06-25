@@ -1,139 +1,164 @@
-# Sầu Riêng Online - Website Bán Sầu Riêng
+# Durian Shop - Website Bán Sầu Riêng Online
 
-Website bán sầu riêng online được xây dựng với Laravel (Backend) và React (Frontend).
+Dự án website bán sầu riêng online với backend Laravel và frontend React.
 
-## Tính năng chính
+## Cấu trúc dự án
 
-### Cho khách hàng:
-- Đăng ký/Đăng nhập tài khoản
-- Xem danh sách sầu riêng theo danh mục
-- Tìm kiếm sầu riêng
-- Thêm sản phẩm vào giỏ hàng
-- Quản lý địa chỉ giao hàng
-- Đặt hàng và thanh toán
-- Xem lịch sử đơn hàng
-- Đánh giá sản phẩm
-- Danh sách yêu thích
+```
+durian_shop/
+├── backend/          # Backend Laravel API
+├── frontend/         # Frontend React
+└── README.md
+```
 
-### Cho admin:
-- Quản lý danh mục sầu riêng
-- Quản lý sản phẩm sầu riêng
-- Quản lý đơn hàng
-- Quản lý người dùng
-- Quản lý đánh giá
+## Yêu cầu hệ thống
 
-## Cấu trúc Database
-
-### Các bảng chính:
-- `users` - Người dùng (admin, customer)
-- `categories` - Danh mục sầu riêng
-- `products` - Sản phẩm sầu riêng
-- `user_addresses` - Địa chỉ người dùng
-- `shopping_carts` - Giỏ hàng
-- `orders` - Đơn hàng
-- `order_details` - Chi tiết đơn hàng
-- `reviews` - Đánh giá sản phẩm
-- `wishlists` - Danh sách yêu thích
-
-### Các trường đặc biệt cho sầu riêng:
-- `weight` - Trọng lượng (kg)
-- `ripeness` - Độ chín (unripe, ripe, overripe)
-- `origin` - Xuất xứ (vietnam, thailand, malaysia, indonesia)
+- PHP >= 8.1
+- Composer
+- Node.js >= 14
+- MySQL/PostgreSQL
+- Laravel Sail (tùy chọn)
 
 ## Cài đặt và chạy dự án
 
 ### Backend (Laravel)
 
-1. Cài đặt dependencies:
+1. **Cài đặt dependencies:**
 ```bash
 cd backend
 composer install
 ```
 
-2. Cấu hình môi trường:
+2. **Cấu hình môi trường:**
 ```bash
 cp .env.example .env
-# Cập nhật thông tin database trong .env
-```
-
-3. Tạo key ứng dụng:
-```bash
 php artisan key:generate
 ```
 
-4. Chạy migration và seeder:
+3. **Cấu hình database trong file .env:**
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=durian_shop
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+4. **Chạy migrations và seeders:**
 ```bash
 php artisan migrate
 php artisan db:seed
 ```
 
-5. Chạy server:
+5. **Tạo symbolic link cho storage:**
+```bash
+php artisan storage:link
+```
+
+6. **Chạy server:**
 ```bash
 php artisan serve
 ```
 
+Backend sẽ chạy tại: http://localhost:8000
+
 ### Frontend (React)
 
-1. Cài đặt dependencies:
+1. **Cài đặt dependencies:**
 ```bash
-cd client
-yarn install
+cd frontend
+npm install
 ```
 
-2. Chạy development server:
+2. **Chạy development server:**
 ```bash
-yarn dev
+npm run dev
 ```
 
-3. Build production:
-```bash
-yarn build
-```
+Frontend sẽ chạy tại: http://localhost:3000
+
+## Tính năng chính
+
+### Backend (Laravel API)
+
+- **Authentication:** Đăng ký, đăng nhập, quên mật khẩu
+- **Products:** Quản lý sản phẩm sầu riêng với các thông tin:
+  - Tên sản phẩm
+  - Mô tả
+  - Giá
+  - Số lượng
+  - Trọng lượng
+  - Độ chín (Chín/Chưa chín)
+  - Xuất xứ (Việt Nam, Thái Lan, Malaysia, Indonesia)
+  - Danh mục
+- **Categories:** Quản lý danh mục sản phẩm
+- **Orders:** Quản lý đơn hàng
+- **Cart:** Giỏ hàng
+- **Wishlist:** Danh sách yêu thích
+- **Reviews:** Đánh giá sản phẩm
+- **User Management:** Quản lý người dùng
+
+### Frontend (React)
+
+- **Responsive Design:** Giao diện thân thiện với mobile
+- **Product Catalog:** Hiển thị danh sách sản phẩm sầu riêng
+- **Product Details:** Chi tiết sản phẩm với thông tin đầy đủ
+- **Shopping Cart:** Giỏ hàng và thanh toán
+- **User Dashboard:** Quản lý tài khoản, đơn hàng
+- **Admin Panel:** Quản lý sản phẩm, danh mục, đơn hàng
+- **Search & Filter:** Tìm kiếm và lọc sản phẩm
 
 ## Dữ liệu mẫu
 
-Dự án đã được seed với:
-- 6 danh mục sầu riêng (Ri 6, Monthong, Musang King, v.v.)
-- 8 sản phẩm sầu riêng mẫu
-- Các trạng thái đơn hàng và thanh toán
+Dự án đã được seed với dữ liệu mẫu bao gồm:
+
+### Categories (Danh mục)
+- Sầu Riêng Tươi
+- Sầu Riêng Đông Lạnh
+- Sầu Riêng Chế Biến
+- Sầu Riêng Ri 6
+- Sầu Riêng Monthong
+- Sầu Riêng Musang King
+
+### Products (Sản phẩm)
+- Sầu Riêng Ri 6 Tươi (85,000 VNĐ/kg)
+- Sầu Riêng Monthong Thái Lan (120,000 VNĐ/kg)
+- Sầu Riêng Musang King Malaysia (180,000 VNĐ/kg)
+- Sầu Riêng Ri 6 Đông Lạnh (95,000 VNĐ/kg)
+- Kem Sầu Riêng (45,000 VNĐ/hộp)
+- Bánh Sầu Riêng (35,000 VNĐ/cái)
 
 ## API Endpoints
 
-### Authentication
+### Public Routes
+- `GET /api/category` - Lấy danh sách danh mục
+- `GET /api/product` - Lấy danh sách sản phẩm
+- `GET /api/product/{slug}` - Lấy chi tiết sản phẩm
 - `POST /api/auth/login` - Đăng nhập
 - `POST /api/auth/register` - Đăng ký
-- `POST /api/auth/logout` - Đăng xuất
 
-### Products
-- `GET /api/products` - Lấy danh sách sản phẩm
-- `GET /api/products/{id}` - Lấy chi tiết sản phẩm
-- `GET /api/categories` - Lấy danh mục
-
-### Cart
-- `GET /api/cart` - Lấy giỏ hàng
+### Protected Routes
+- `GET /api/cart` - Giỏ hàng
 - `POST /api/cart` - Thêm vào giỏ hàng
-- `PUT /api/cart/{id}` - Cập nhật giỏ hàng
-- `DELETE /api/cart/{id}` - Xóa khỏi giỏ hàng
-
-### Orders
-- `GET /api/orders` - Lấy danh sách đơn hàng
-- `POST /api/orders` - Tạo đơn hàng mới
-- `GET /api/orders/{id}` - Lấy chi tiết đơn hàng
+- `GET /api/order` - Danh sách đơn hàng
+- `POST /api/order` - Tạo đơn hàng
+- `GET /api/wishlist` - Danh sách yêu thích
 
 ## Công nghệ sử dụng
 
-### Backend:
+### Backend
 - Laravel 10
-- MySQL/PostgreSQL
 - Laravel Sanctum (Authentication)
+- MySQL/PostgreSQL
 - Laravel Eloquent ORM
 
-### Frontend:
-- React 16
-- Redux
-- React Router
-- Bootstrap 4
-- Axios
+### Frontend
+- React 18
+- Redux (State Management)
+- React Router (Routing)
+- Axios (HTTP Client)
+- Bootstrap 4 (UI Framework)
 
 ## Đóng góp
 
@@ -141,11 +166,11 @@ Dự án đã được seed với:
 2. Tạo feature branch (`git checkout -b feature/AmazingFeature`)
 3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Mở Pull Request
+5. Tạo Pull Request
 
 ## License
 
-Dự án này được phân phối dưới MIT License.
+Dự án này được phát hành dưới MIT License.
 
 ## Support
 

@@ -1,42 +1,54 @@
-import React, { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+/**
+ *
+ * ProductsShop
+ *
+ */
+
+import React from 'react';
+
 import { connect } from 'react-redux';
-import { filterProducts } from '../Product/actions';
 
-const ProductsShop = ({ filterProducts, products, loading }) => {
-  const location = useLocation();
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const category = params.get('category');
-    if (category) {
-      filterProducts('category', category);
-    } else {
-      filterProducts(); // hoặc fetch all
-    }
-  }, [location.search]);
+import actions from '../../actions';
 
-  return (
-    <div className='products-shop'>
-      {loading && <div>Đang tải sản phẩm...</div>}
-      {!loading && products && products.length === 0 && <div>Không có sản phẩm nào.</div>}
-      <div className='row'>
-        {products && products.map(product => (
-          <div className='col-md-4 mb-4' key={product._id}>
-            <div className='product-card'>
-              <img src={product.imageUrl || '/images/placeholder-product.jpg'} alt={product.name} className='img-fluid mb-2' />
-              <div className='product-name'>{product.name}</div>
-              <div className='product-price text-success'>{product.price?.toLocaleString()}₫</div>
-            </div>
-          </div>
-        ))}
+import ProductList from '../../components/Store/ProductList';
+import NotFound from '../../components/Common/NotFound';
+import LoadingIndicator from '../../components/Common/LoadingIndicator';
+
+class ProductsShop extends React.PureComponent {
+  componentDidMount() {
+    const slug = this.props.match.params.slug;
+    this.props.filterProducts(slug);
+  }
+
+  render() {
+    const { products, isLoading, authenticated, updateWishlist } = this.props;
+
+    const displayProducts = products && products.length > 0;
+
+    return (
+      <div className='products-shop'>
+        {isLoading && <LoadingIndicator />}
+        {displayProducts && (
+          <ProductList
+            products={products}
+            authenticated={authenticated}
+            updateWishlist={updateWishlist}
+          />
+        )}
+        {!isLoading && !displayProducts && (
+          <NotFound message='Không tìm thấy sản phẩm.' />
+        )}
       </div>
-    </div>
-  );
+    );
+  }
+}
+
+const mapStateToProps = state => {
+  return {
+    products: state.product.storeProducts,
+    isLoading: state.product.isLoading,
+    authenticated: state.authentication.authenticated
+  };
 };
 
-const mapStateToProps = state => ({
-  products: state.product.storeProducts,
-  loading: state.product.loading
-});
-
-export default connect(mapStateToProps, { filterProducts })(ProductsShop); 
+export default connect(mapStateToProps, actions)(ProductsShop);

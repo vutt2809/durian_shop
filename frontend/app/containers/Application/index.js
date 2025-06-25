@@ -5,10 +5,10 @@
  */
 
 import React from 'react';
-import { withRouter } from 'react-router-dom';
+
 import { connect } from 'react-redux';
 import { Switch, Route } from 'react-router-dom';
-import { Container, Row, Col } from 'reactstrap';
+import { Container } from 'reactstrap';
 
 import actions from '../../actions';
 
@@ -32,12 +32,10 @@ import Contact from '../Contact';
 import OrderSuccess from '../OrderSuccess';
 import OrderPage from '../OrderPage';
 import AuthSuccess from '../AuthSuccess';
-import CartPage from '../CartPage';
 
 import Footer from '../../components/Common/Footer';
 import Page404 from '../../components/Common/Page404';
 import { CART_ITEMS } from '../../constants';
-import CategorySidebar from '../../components/Common/CategorySidebar';
 
 class Application extends React.PureComponent {
   constructor(props) {
@@ -75,54 +73,43 @@ class Application extends React.PureComponent {
   }
 
   render() {
-    const isHome = this.props.location.pathname === '/';
     return (
       <div className='application'>
         <Notification />
         <Navigation />
         <main className='main'>
-          <Container fluid>
-            <Row>
-              {isHome && (
-                <Col xs='12' md='2'>
-                  <CategorySidebar />
-                </Col>
-              )}
-              <Col xs='12' md={isHome ? '10' : '12'}>
-                <div className='wrapper'>
-                  <Switch>
-                    <Route exact path='/' component={HomePage} />
-                    <Route path='/shop' component={Shop} />
-                    <Route path='/sell' component={Sell} />
-                    <Route path='/contact' component={Contact} />
-                    <Route path='/brands' component={BrandsPage} />
-                    <Route path='/product/:slug' component={ProductPage} />
-                    <Route path='/order/success/:id' component={OrderSuccess} />
-                    <Route path='/order/:id' component={OrderPage} />
-                    <Route path='/login' component={Login} />
-                    <Route path='/register' component={Signup} />
-                    <Route
-                      path='/merchant-signup/:token'
-                      component={MerchantSignup}
-                    />
-                    <Route path='/forgot-password' component={ForgotPassword} />
-                    <Route
-                      path='/reset-password/:token'
-                      component={ResetPassword}
-                    />
-                    <Route path='/auth/success' component={AuthSuccess} />
-                    <Route path='/support' component={Authentication(Support)} />
-                    <Route
-                      path='/dashboard'
-                      component={Authentication(Dashboard)}
-                    />
-                    <Route path='/404' component={Page404} />
-                    <Route path='/cart' component={CartPage} />
-                    <Route path='*' component={Page404} />
-                  </Switch>
-                </div>
-              </Col>
-            </Row>
+          <Container>
+            <div className='wrapper'>
+              <Switch>
+                <Route exact path='/' component={HomePage} />
+                <Route path='/shop' component={Shop} />
+                <Route path='/sell' component={Sell} />
+                <Route path='/contact' component={Contact} />
+                <Route path='/brands' component={BrandsPage} />
+                <Route path='/product/:slug' component={ProductPage} />
+                <Route path='/order/success/:id' component={OrderSuccess} />
+                <Route path='/order/:id' component={OrderPage} />
+                <Route path='/login' component={Login} />
+                <Route path='/register' component={Signup} />
+                <Route
+                  path='/merchant-signup/:token'
+                  component={MerchantSignup}
+                />
+                <Route path='/forgot-password' component={ForgotPassword} />
+                <Route
+                  path='/reset-password/:token'
+                  component={ResetPassword}
+                />
+                <Route path='/auth/success' component={AuthSuccess} />
+                <Route path='/support' component={Authentication(Support)} />
+                <Route
+                  path='/dashboard'
+                  component={Authentication(Dashboard)}
+                />
+                <Route path='/404' component={Page404} />
+                <Route path='*' component={Page404} />
+              </Switch>
+            </div>
           </Container>
         </main>
         <Footer />
@@ -138,4 +125,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default withRouter(connect(mapStateToProps, actions)(Application));
+export default connect(mapStateToProps, actions)(Application);

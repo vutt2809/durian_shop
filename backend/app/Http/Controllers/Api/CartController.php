@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Cart;
+use App\Models\ShoppingCart;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -57,10 +57,11 @@ class CartController extends Controller
             ]);
             $cart = $existingCart;
         } else {
-            $cart = Cart::create([
+            $cart = ShoppingCart::create([
                 'user_id' => $request->user()->id,
                 'product_id' => $request->product_id,
-                'quantity' => $request->quantity
+                'quantity' => $request->quantity,
+                'price' => $product->price
             ]);
         }
 

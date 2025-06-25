@@ -69,7 +69,6 @@ export const handleAddToCart = product => {
     localStorage.setItem(CART_ITEMS, JSON.stringify(newCartItems));
 
     dispatch(calculateCartTotal());
-    dispatch(toggleCart());
   };
 };
 
@@ -215,4 +214,65 @@ const calculatePurchaseQuantity = inventory => {
   } else {
     return 50;
   }
+};
+
+export const fetchCartFromServer = () => {
+  return async (dispatch, getState) => {
+    try {
+      console.log('Fetching cart from server...');
+      const response = await axios.get(`${API_URL}/cart`);
+      console.log('Cart API response:', response.data);
+      const cartItems = response.data.cart || [];
+      
+      // Format cart items để phù hợp với Redux state
+      const formattedCartItems = cartItems.map(item => ({
+        id: item.product.id,
+        _id: item.product.id,
+        name: item.product.name,
+        slug: item.product.slug,
+        imageUrl: item.product.image_url,
+        price: parseFloat(item.price),
+        quantity: item.quantity,
+        totalPrice: parseFloat(item.price) * item.quantity,
+        weight: item.product.weight,
+        origin: item.product.origin,
+        ripeness: item.product.ripeness,
+        sku: item.product.sku,
+        description: item.product.description
+      }));
+
+      console.log('Formatted cart items:', formattedCartItems);
+      const cartTotal = formattedCartItems.reduce((sum, item) => sum + item.totalPrice, 0);
+      
+      dispatch({
+        type: HANDLE_CART,
+        payload: {
+          cartItems: formattedCartItems,
+          cartTotal: cartTotal,
+          cartId: null
+        }
+      });
+      console.log('Cart state updated successfully');
+    } catch (error) {
+      console.error('Error fetching cart:', error);
+      handleError(error, dispatch);
+    }
+  };
+};
+
+export const addToCartServer = (product, quantity = 1) => {
+  return async (dispatch, getState) => {
+    try {
+      console.log('Adding product to cart server:', product, quantity);
+      const response = await axios.post(`${API_URL}/cart`, {
+        product_id: product.id,
+        quantity
+      });
+      console.log('Add to cart API response:', response.data);
+      dispatch(fetchCartFromServer());
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      handleError(error, dispatch);
+    }
+  };
 };

@@ -29,7 +29,6 @@ import {
 import actions from '../../actions';
 
 import Button from '../../components/Common/Button';
-import CartIcon from '../../components/Common/CartIcon';
 import { BarsIcon } from '../../components/Common/Icon';
 import MiniBrand from '../../components/Store//MiniBrand';
 import Menu from '../NavigationMenu';
@@ -210,7 +209,6 @@ class Navigation extends React.PureComponent {
                   icon={<BarsIcon />}
                   onClick={() => this.toggleMenu()}
                 />
-                <CartIcon cartItems={cartItems} onClick={toggleCart} />
               </div>
             </Col>
             <Col
@@ -221,11 +219,6 @@ class Navigation extends React.PureComponent {
               // className='px-0'
             >
               <Navbar color='light' light expand='md' className='mt-1 mt-md-0'>
-                <CartIcon
-                  className='d-none d-md-block'
-                  cartItems={cartItems}
-                  onClick={toggleCart}
-                />
                 <Nav navbar>
                   <NavItem>
                     <NavLink

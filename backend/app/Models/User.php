@@ -60,9 +60,9 @@ class User extends Authenticatable
         return $this->hasMany(Order::class);
     }
 
-    public function shoppingCart()
+    public function cart()
     {
-        return $this->hasMany(ShoppingCart::class);
+        return $this->hasMany(\App\Models\ShoppingCart::class, 'user_id');
     }
 
     public function wishlist()

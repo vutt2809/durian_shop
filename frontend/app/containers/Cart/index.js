@@ -7,7 +7,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import actions from '../../actions';
+import { handleCart, fetchCartFromServer } from './actions';
 
 import CartList from '../../components/Store/CartList';
 import CartSummary from '../../components/Store/CartSummary';
@@ -16,6 +16,14 @@ import { BagIcon, CloseIcon } from '../../components/Common/Icon';
 import Button from '../../components/Common/Button';
 
 class Cart extends React.PureComponent {
+  componentDidMount() {
+    if (this.props.authenticated) {
+      this.props.fetchCartFromServer();
+    } else if (this.props.handleCart) {
+      this.props.handleCart();
+    }
+  }
+
   render() {
     const {
       isCartOpen,
@@ -81,4 +89,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, actions)(Cart);
+export default connect(mapStateToProps, { handleCart, fetchCartFromServer })(Cart);

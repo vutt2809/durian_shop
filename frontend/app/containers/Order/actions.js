@@ -219,16 +219,12 @@ export const addOrder = () => {
 export const placeOrder = () => {
   return (dispatch, getState) => {
     const token = localStorage.getItem('token');
-
     const cartItems = getState().cart.cartItems;
-
     if (token && cartItems.length > 0) {
       Promise.all([dispatch(getCartId())]).then(() => {
-        dispatch(addOrder());
+        dispatch(push('/checkout'));
       });
     }
-
-    dispatch(toggleCart());
   };
 };
 

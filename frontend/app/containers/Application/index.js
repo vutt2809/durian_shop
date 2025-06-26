@@ -32,10 +32,18 @@ import Contact from '../Contact';
 import OrderSuccess from '../OrderSuccess';
 import OrderPage from '../OrderPage';
 import AuthSuccess from '../AuthSuccess';
+import Cart from '../Cart';
 
 import Footer from '../../components/Common/Footer';
 import Page404 from '../../components/Common/Page404';
 import { CART_ITEMS } from '../../constants';
+
+// Thêm component CheckoutPage đơn giản
+const CheckoutPage = () => (
+  <div style={{ minHeight: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24 }}>
+    Trang nhập thông tin mua hàng (Checkout)
+  </div>
+);
 
 class Application extends React.PureComponent {
   constructor(props) {
@@ -89,6 +97,8 @@ class Application extends React.PureComponent {
                 <Route path='/product/:slug' component={ProductPage} />
                 <Route path='/order/success/:id' component={OrderSuccess} />
                 <Route path='/order/:id' component={OrderPage} />
+                <Route path='/cart' component={Cart} />
+                <Route path='/checkout' component={CheckoutPage} />
                 <Route path='/login' component={Login} />
                 <Route path='/register' component={Signup} />
                 <Route

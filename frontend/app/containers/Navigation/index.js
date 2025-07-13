@@ -266,6 +266,22 @@ class Navigation extends React.PureComponent {
           </Row>
         </Container>
 
+        {/* hidden cart drawer */}
+        <div
+          className={isCartOpen ? 'mini-cart-open' : 'hidden-mini-cart'}
+          aria-hidden={`${isCartOpen ? false : true}`}
+        >
+          <div className='mini-cart'>
+            <Cart />
+          </div>
+          <div
+            className={
+              isCartOpen ? 'drawer-backdrop dark-overflow' : 'drawer-backdrop'
+            }
+            onClick={toggleCart}
+          />
+        </div>
+
         {/* hidden menu drawer */}
         <div
           className={isMenuOpen ? 'mini-menu-open' : 'hidden-mini-menu'}

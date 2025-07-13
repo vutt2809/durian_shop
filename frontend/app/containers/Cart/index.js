@@ -7,8 +7,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { handleCart, fetchCartFromServer, handleShopping, handleCheckout } from './actions';
-import { placeOrder } from '../Order/actions';
+import { handleCart, fetchCartFromServer } from './actions';
 
 import CartList from '../../components/Store/CartList';
 import CartSummary from '../../components/Store/CartSummary';
@@ -90,4 +89,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, { handleCart, fetchCartFromServer, handleShopping, handleCheckout, placeOrder })(Cart);
+export default connect(mapStateToProps, { handleCart, fetchCartFromServer })(Cart);

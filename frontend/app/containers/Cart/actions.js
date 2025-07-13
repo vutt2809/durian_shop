@@ -143,7 +143,8 @@ export const handleCheckout = () => {
 // Continue shopping use case
 export const handleShopping = () => {
   return (dispatch, getState) => {
-    dispatch(push('/'));
+    dispatch(push('/shop'));
+    dispatch(toggleCart());
   };
 };
 
@@ -154,18 +155,11 @@ export const getCartId = () => {
       const cartId = localStorage.getItem(CART_ID);
       const cartItems = getState().cart.cartItems;
       const products = getCartItems(cartItems);
-      console.log('getCartId products:', products);
+
+      // create cart id if there is no one
       if (!cartId) {
-        let payload;
-        if (products.length === 1) {
-          payload = {
-            product_id: products[0].product_id,
-            quantity: products[0].quantity
-          };
-        } else {
-          payload = products;
-        }
-        const response = await axios.post(`${API_URL}/cart`, payload);
+        const response = await axios.post(`${API_URL}/cart`, { products });
+
         dispatch(setCartId(response.data.cartId));
       }
     } catch (error) {
@@ -197,10 +191,17 @@ export const clearCart = () => {
 };
 
 const getCartItems = cartItems => {
-  return cartItems.map(item => ({
-    product_id: item.id,
-    quantity: item.quantity
-  }));
+  const newCartItems = [];
+  cartItems.map(item => {
+    const newItem = {};
+    newItem.quantity = item.quantity;
+    newItem.price = item.price;
+    newItem.taxable = item.taxable;
+    newItem.product = item.id;
+    newCartItems.push(newItem);
+  });
+
+  return newCartItems;
 };
 
 const calculatePurchaseQuantity = inventory => {
@@ -262,7 +263,7 @@ export const fetchCartFromServer = () => {
 export const addToCartServer = (product, quantity = 1) => {
   return async (dispatch, getState) => {
     try {
-      console.log('addToCartServer product:', product, 'quantity:', quantity);
+      console.log('Adding product to cart server:', product, quantity);
       const response = await axios.post(`${API_URL}/cart`, {
         product_id: product.id,
         quantity

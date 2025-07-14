@@ -13,9 +13,40 @@
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  padding: 24px 18px;
+  max-width: 260px;
+  word-break: break-word;
+}
+.sidebar-tiki h5 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+.sidebar-tiki ul {
+  padding-left: 0;
+  margin-bottom: 0;
+}
+.sidebar-tiki .sidebar-category-item {
+  font-size: 1.15rem;
+  font-weight: 500;
+  line-height: 2.2;
+  letter-spacing: 0.2px;
+  padding: 0.15rem 0.25rem 0.15rem 0;
+  border-radius: 6px;
+  transition: background 0.2s, color 0.2s;
+  color: #222;
+  white-space: normal;
+  word-break: break-word;
+  display: flex;
+  align-items: center;
+}
+.sidebar-tiki .sidebar-category-item:hover {
+  background: #f5f5fa;
+  color: #eab308;
 }
 .sidebar-tiki .sidebar-icon {
-  font-size: 1.2rem;
+  font-size: 1.35rem;
+  margin-right: 0.5rem;
 }
 .banner-tiki {
   background: linear-gradient(90deg, #ffe259 0%, #ffa751 100%);
@@ -68,5 +99,12 @@
   .product-grid-tiki .col-6 {
     max-width: 50%;
     flex: 0 0 50%;
+  }
+}
+
+// Tăng max-width cho container trang chủ
+@media (min-width: 1200px) {
+  .container, .container-lg, .container-xl, .container-xxl {
+    max-width: 1320px;
   }
 }

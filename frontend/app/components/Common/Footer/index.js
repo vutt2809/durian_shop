@@ -12,83 +12,68 @@ import { Container } from 'reactstrap';
 import Newsletter from '../../../containers/Newsletter';
 
 const Footer = () => {
-  const infoLinks = [
-    { id: 0, name: 'Liên hệ chúng tôi', to: '/contact' },
-    { id: 1, name: 'Bán cùng chúng tôi', to: '/sell' },
-    { id: 2, name: 'Vận chuyển', to: '/shipping' }
-  ];
-
-  const footerBusinessLinks = (
-    <ul className='support-links'>
-      <li className='footer-link'>
-        <Link to='/dashboard'>Chi tiết tài khoản</Link>
-      </li>
-      <li className='footer-link'>
-        <Link to='/dashboard/orders'>Đơn hàng</Link>
-      </li>
-    </ul>
-  );
-
-  const footerLinks = infoLinks.map(item => (
-    <li key={item.id} className='footer-link'>
-      <Link key={item.id} to={item.to}>
-        {item.name}
-      </Link>
-    </li>
-  ));
-
   return (
     <footer className='footer'>
       <Container>
         <div className='footer-content'>
           <div className='footer-block'>
             <div className='block-title'>
-              <h3 className='text-uppercase'>Dịch vụ khách hàng</h3>
+              <h3 className='text-uppercase'>Hỗ trợ khách hàng</h3>
             </div>
             <div className='block-content'>
-              <ul>{footerLinks}</ul>
+              <ul>
+                <li className='footer-link'><Link to='/contact'>Liên hệ</Link></li>
+                <li className='footer-link'><Link to='/shipping'>Vận chuyển hỏa tốc</Link></li>
+                <li className='footer-link'><Link to='/return-policy'>Chính sách đổi trả</Link></li>
+              </ul>
             </div>
           </div>
           <div className='footer-block'>
             <div className='block-title'>
-              <h3 className='text-uppercase'>Liên kết</h3>
+              <h3 className='text-uppercase'>Về Durian Shop</h3>
             </div>
             <div className='block-content'>
-              <ul>{footerLinks}</ul>
+              <ul>
+                <li className='footer-link'><Link to='/about'>Giới thiệu</Link></li>
+                <li className='footer-link'><Link to='/careers'>Tuyển dụng</Link></li>
+                <li className='footer-link'><Link to='/blog'>Blog</Link></li>
+              </ul>
             </div>
           </div>
           <div className='footer-block'>
             <div className='block-title'>
-              <h3 className='text-uppercase'>Bản tin</h3>
-              <Newsletter />
+              <h3 className='text-uppercase'>Kết nối với chúng tôi</h3>
+            </div>
+            <div className='block-content'>
+              <ul className='footer-social-item'>
+                <li>
+                  <a href='https://facebook.com' rel='noreferrer noopener' target='_blank'>
+                    <span className='facebook-icon' />
+                  </a>
+                </li>
+                <li>
+                  <a href='https://instagram.com' rel='noreferrer noopener' target='_blank'>
+                    <span className='instagram-icon' />
+                  </a>
+                </li>
+                <li>
+                  <a href='https://pinterest.com' rel='noreferrer noopener' target='_blank'>
+                    <span className='pinterest-icon' />
+                  </a>
+                </li>
+                <li>
+                  <a href='https://twitter.com' rel='noreferrer noopener' target='_blank'>
+                    <span className='twitter-icon' />
+                  </a>
+                </li>
+              </ul>
+              <Newsletter placeholder='Nhập email để nhận ưu đãi và tin tức mới nhất...' />
             </div>
           </div>
         </div>
         <div className='footer-copyright'>
           <span>© {new Date().getFullYear()} Durian Shop - Chuyên cung cấp sầu riêng tươi ngon</span>
         </div>
-        <ul className='footer-social-item'>
-          <li>
-            <a href='/#facebook' rel='noreferrer noopener' target='_blank'>
-              <span className='facebook-icon' />
-            </a>
-          </li>
-          <li>
-            <a href='/#instagram' rel='noreferrer noopener' target='_blank'>
-              <span className='instagram-icon' />
-            </a>
-          </li>
-          <li>
-            <a href='/#pinterest' rel='noreferrer noopener' target='_blank'>
-              <span className='pinterest-icon' />
-            </a>
-          </li>
-          <li>
-            <a href='/#twitter' rel='noreferrer noopener' target='_blank'>
-              <span className='twitter-icon' />
-            </a>
-          </li>
-        </ul>
       </Container>
     </footer>
   );

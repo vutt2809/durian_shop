@@ -276,3 +276,24 @@ export const addToCartServer = (product, quantity = 1) => {
     }
   };
 };
+
+// Đồng bộ cart localStorage lên server khi user đăng nhập
+export const syncLocalCartToServer = () => {
+  return async (dispatch, getState) => {
+    const localCart = JSON.parse(localStorage.getItem(CART_ITEMS)) || [];
+    if (localCart.length === 0) return;
+    try {
+      for (const item of localCart) {
+        await dispatch(addToCartServer(item, item.quantity || 1));
+      }
+      // Sau khi merge, xóa localStorage cart
+      localStorage.removeItem(CART_ITEMS);
+      localStorage.removeItem(CART_TOTAL);
+      localStorage.removeItem(CART_ID);
+      // Fetch lại cart từ server để đồng bộ UI
+      await dispatch(fetchCartFromServer());
+    } catch (error) {
+      // Có thể log lỗi nếu cần
+    }
+  };
+};

@@ -1,0 +1,57 @@
+.header-durian {
+  background: linear-gradient(90deg, #fffbe7 0%, #d4ffb2 100%);
+  display: block;
+  padding: 0;
+  border-radius: 0 0 18px 18px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+}
+.header-durian-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0;
+}
+.header-durian .logo {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #eab308;
+  display: flex;
+  align-items: center;
+}
+.header-durian .slogan {
+  font-size: 1.25rem;
+  color: #388e3c;
+  font-weight: 600;
+  text-align: center;
+}
+.header-durian .hotline {
+  font-size: 1.15rem;
+  color: #d32f2f;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s, color 0.2s;
+}
+.header-durian .hotline:hover {
+  transform: scale(1.07) rotate(-2deg);
+  color: #eab308;
+}
+@media (max-width: 768px) {
+  .header-durian-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 12px 0;
+    gap: 8px;
+  }
+  .header-durian .logo {
+    font-size: 1.3rem;
+  }
+  .header-durian .slogan {
+    font-size: 1rem;
+  }
+  .header-durian .hotline {
+    font-size: 1rem;
+  }
+} 

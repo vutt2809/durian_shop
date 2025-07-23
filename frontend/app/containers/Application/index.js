@@ -35,6 +35,7 @@ import AuthSuccess from '../AuthSuccess';
 import Cart from '../Cart';
 
 import Footer from '../../components/Common/Footer';
+import Header from '../../components/Common/Header';
 import Page404 from '../../components/Common/Page404';
 import { CART_ITEMS } from '../../constants';
 
@@ -84,7 +85,7 @@ class Application extends React.PureComponent {
     return (
       <div className='application'>
         <Notification />
-        <Navigation />
+        <Header />
         <main className='main'>
           <Container>
             <div className='wrapper'>

@@ -33,6 +33,7 @@ import OrderSuccess from '../OrderSuccess';
 import OrderPage from '../OrderPage';
 import AuthSuccess from '../AuthSuccess';
 import Cart from '../Cart';
+import CheckoutContainer from '../Checkout';
 
 import Footer from '../../components/Common/Footer';
 import Header from '../../components/Common/Header';
@@ -99,7 +100,7 @@ class Application extends React.PureComponent {
                 <Route path='/order/success/:id' component={OrderSuccess} />
                 <Route path='/order/:id' component={OrderPage} />
                 <Route path='/cart' component={Cart} />
-                <Route path='/checkout' component={CheckoutPage} />
+                <Route path='/checkout' component={CheckoutContainer} />
                 <Route path='/login' component={Login} />
                 <Route path='/register' component={Signup} />
                 <Route

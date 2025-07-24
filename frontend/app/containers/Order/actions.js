@@ -198,18 +198,13 @@ export const updateOrderItemStatus = (itemId, status) => {
 export const addOrder = () => {
   return async (dispatch, getState) => {
     try {
-      const cartId = localStorage.getItem('cart_id');
-      const total = getState().cart.cartTotal;
-
-      if (cartId) {
-        const response = await axios.post(`${API_URL}/order/add`, {
-          cartId,
-          total
-        });
-
-        dispatch(push(`/order/success/${response.data.orderid}`));
-        dispatch(clearCart());
-      }
+      // Gửi đơn hàng, không cần cartId, chỉ gửi notes nếu có
+      const response = await axios.post(`${API_URL}/order`, {
+        notes: '' // Có thể lấy từ form nếu muốn
+      });
+      dispatch(success({ title: 'Đặt hàng thành công!', position: 'tr', autoDismiss: 2 }));
+      dispatch(clearCart());
+      dispatch(push(`/order/success/${response.data.order.id || response.data.order.order_number}`));
     } catch (error) {
       handleError(error, dispatch);
     }

@@ -6,9 +6,8 @@ export const SOCKET_URL =
     : window.location.host;
 
 export const ROLES = {
-  Admin: 'ROLE ADMIN',
-  Member: 'ROLE MEMBER',
-  Merchant: 'ROLE MERCHANT'
+  Admin: 'admin',
+  Customer: 'customer'
 };
 
 export const CART_ITEMS = 'cart_items';

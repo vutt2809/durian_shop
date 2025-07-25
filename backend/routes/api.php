@@ -80,6 +80,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Order routes
     Route::prefix('order')->group(function () {
         Route::get('/', [OrderController::class, 'index']);
+        Route::get('/me', [OrderController::class, 'me']);
         Route::post('/', [OrderController::class, 'store']);
         Route::get('/{id}', [OrderController::class, 'show']);
         Route::put('/{id}/cancel', [OrderController::class, 'cancel']);

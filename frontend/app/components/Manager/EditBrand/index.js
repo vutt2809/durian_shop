@@ -102,7 +102,6 @@ const EditBrand = props => {
           <Button
             variant='danger'
             text={VI['Delete']}
-            disabled={user.role === ROLES.Merchant}
             onClick={() => deleteBrand(brand.id)}
           />
         </div>

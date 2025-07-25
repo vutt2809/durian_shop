@@ -29,7 +29,7 @@ import { toggleCart } from '../Navigation/actions';
 
 // Handle Add To Cart
 export const handleAddToCart = product => {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     product.quantity = Number(getState().product.productShopData.quantity);
     product.totalPrice = product.quantity * product.price;
     product.totalPrice = parseFloat(product.totalPrice.toFixed(2));
@@ -54,37 +54,59 @@ export const handleAddToCart = product => {
       type: RESET_PRODUCT_SHOP
     });
 
-    dispatch({
-      type: ADD_TO_CART,
-      payload: product
-    });
-
-    const cartItems = JSON.parse(localStorage.getItem(CART_ITEMS));
-    let newCartItems = [];
-    if (cartItems) {
-      newCartItems = [...cartItems, product];
+    // Nếu user đã đăng nhập, thêm vào server
+    if (getState().authentication.authenticated) {
+      try {
+        await dispatch(addToCartServer(product, product.quantity));
+      } catch (error) {
+        console.error('Error adding to cart:', error);
+        handleError(error, dispatch);
+      }
     } else {
-      newCartItems.push(product);
-    }
-    localStorage.setItem(CART_ITEMS, JSON.stringify(newCartItems));
+      // Nếu chưa đăng nhập, chỉ cập nhật localStorage
+      dispatch({
+        type: ADD_TO_CART,
+        payload: product
+      });
 
-    dispatch(calculateCartTotal());
+      const cartItems = JSON.parse(localStorage.getItem(CART_ITEMS));
+      let newCartItems = [];
+      if (cartItems) {
+        newCartItems = [...cartItems, product];
+      } else {
+        newCartItems.push(product);
+      }
+      localStorage.setItem(CART_ITEMS, JSON.stringify(newCartItems));
+
+      dispatch(calculateCartTotal());
+    }
   };
 };
 
 // Handle Remove From Cart
 export const handleRemoveFromCart = product => {
-  return (dispatch, getState) => {
-    const cartItems = JSON.parse(localStorage.getItem(CART_ITEMS));
-    const newCartItems = cartItems.filter(item => item.id !== product.id);
-    localStorage.setItem(CART_ITEMS, JSON.stringify(newCartItems));
+  return async (dispatch, getState) => {
+    // Nếu user đã đăng nhập, xóa từ server
+    if (getState().authentication.authenticated) {
+      try {
+        await axios.delete(`${API_URL}/cart/${product.cart_id || product.id}`);
+        await dispatch(fetchCartFromServer());
+      } catch (error) {
+        console.error('Error removing from cart:', error);
+        handleError(error, dispatch);
+      }
+    } else {
+      // Nếu chưa đăng nhập, chỉ cập nhật localStorage
+      const cartItems = JSON.parse(localStorage.getItem(CART_ITEMS));
+      const newCartItems = cartItems.filter(item => item.id !== product.id);
+      localStorage.setItem(CART_ITEMS, JSON.stringify(newCartItems));
 
-    dispatch({
-      type: REMOVE_FROM_CART,
-      payload: product
-    });
-    dispatch(calculateCartTotal());
-    // dispatch(toggleCart());
+      dispatch({
+        type: REMOVE_FROM_CART,
+        payload: product
+      });
+      dispatch(calculateCartTotal());
+    }
   };
 };
 
@@ -272,6 +294,20 @@ export const addToCartServer = (product, quantity = 1) => {
       dispatch(fetchCartFromServer());
     } catch (error) {
       console.error('Error adding to cart:', error);
+      handleError(error, dispatch);
+    }
+  };
+};
+
+export const updateCartItemQuantity = (cartItemId, quantity) => {
+  return async (dispatch, getState) => {
+    try {
+      await axios.put(`${API_URL}/cart/${cartItemId}`, {
+        quantity
+      });
+      dispatch(fetchCartFromServer());
+    } catch (error) {
+      console.error('Error updating cart item:', error);
       handleError(error, dispatch);
     }
   };

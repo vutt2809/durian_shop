@@ -30,8 +30,8 @@ const CartList = props => {
                     <img
                       className='item-image mr-2'
                       src={`${
-                        (item.image_url || item.imageUrl)
-                          ? (item.image_url || item.imageUrl)
+                        item.image_url
+                          ? `http://localhost:3000${item.image_url}`
                           : '/images/placeholder-image.png'
                       }`}
                       alt={item.name}

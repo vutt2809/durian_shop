@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\WishlistController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\ContactController;
+use App\Http\Controllers\Api\MerchantController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,8 +34,18 @@ Route::prefix('auth')->group(function () {
 });
 
 // Public product routes
-Route::get('/product', [ProductController::class, 'index']);
-Route::get('/product/{slug}', [ProductController::class, 'show']);
+Route::prefix('product')->group(function () {
+    Route::get('/', [ProductController::class, 'index']);
+    Route::get('/{id_or_slug}', [ProductController::class, 'show']);
+    
+    // Admin only routes
+    Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+        Route::post('/', [ProductController::class, 'store']);
+        Route::put('/{id}', [ProductController::class, 'update']);
+        Route::delete('/{id}', [ProductController::class, 'destroy']);
+        Route::put('/{id}/toggle', [ProductController::class, 'toggleActive']);
+    });
+});
 
 // Public category routes
 Route::get('/category', [CategoryController::class, 'index']);
@@ -81,6 +92,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('order')->group(function () {
         Route::get('/', [OrderController::class, 'index']);
         Route::post('/', [OrderController::class, 'store']);
+        
+        // Admin only - get all orders (phải đặt trước /{id})
+        Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+            Route::get('/all', [OrderController::class, 'all']);
+        });
+        
         Route::get('/{id}', [OrderController::class, 'show']);
         Route::put('/{id}/cancel', [OrderController::class, 'cancel']);
     });
@@ -116,6 +133,28 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::put('/{id}', [CategoryController::class, 'update']);
             Route::delete('/{id}', [CategoryController::class, 'destroy']);
             Route::put('/{id}/active', [CategoryController::class, 'toggleActive']);
+        });
+
+        // User management
+        Route::prefix('users')->group(function () {
+            Route::get('/', [UserController::class, 'index']);
+            Route::get('/{id}', [UserController::class, 'show']);
+        });
+
+        // Merchant management
+        Route::prefix('merchants')->group(function () {
+            Route::get('/', [MerchantController::class, 'index']);
+            Route::post('/', [MerchantController::class, 'store']);
+            Route::put('/{id}', [MerchantController::class, 'update']);
+            Route::delete('/{id}', [MerchantController::class, 'destroy']);
+            Route::put('/{id}/active', [MerchantController::class, 'toggleActive']);
+        });
+
+        // Review management
+        Route::prefix('reviews')->group(function () {
+            Route::get('/', [ReviewController::class, 'all']);
+            Route::put('/{id}', [ReviewController::class, 'update']);
+            Route::delete('/{id}', [ReviewController::class, 'destroy']);
         });
     });
 });

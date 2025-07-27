@@ -12,7 +12,8 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $users = User::latest()->paginate(20);
+        $limit = $request->get('limit', 20); // Default to 20 if not specified
+        $users = User::latest()->paginate($limit);
 
         return response()->json([
             'success' => true,

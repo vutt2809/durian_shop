@@ -76,7 +76,9 @@ class ProductController extends Controller
             $query->orderBy('created_at', 'desc');
         }
 
-        $products = $query->paginate(12);
+        // Pagination with limit parameter
+        $limit = $request->get('limit', 10); // Default to 12 if not specified
+        $products = $query->paginate($limit);
 
         if ($request->user()) {
             $userWishlistIds = $request->user()->wishlist()->pluck('product_id')->toArray();
@@ -121,79 +123,169 @@ class ProductController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'sku' => 'nullable|string|max:255',
             'description' => 'nullable|string',
-            'quantity' => 'required|integer|min:0',
             'price' => 'required|numeric|min:0',
+            'quantity' => 'required|integer|min:0',
             'weight' => 'nullable|numeric|min:0',
-            'ripeness' => 'nullable|in:unripe,ripe,overripe',
-            'origin' => 'nullable|in:vietnam,thailand,malaysia,indonesia',
-            'category_id' => 'nullable|exists:categories,id',
+            'ripeness' => 'nullable|in:ripe,unripe',
+            'origin' => 'nullable|string|max:100',
+            'category_id' => 'required|exists:categories,id',
+            'is_active' => 'boolean',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048' // Thêm validation cho hình ảnh
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()->first()], 400);
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
         }
 
-        $data = $request->all();
-        $data['slug'] = Str::slug($request->name);
-        $data['is_active'] = true;
+        try {
+            $imageUrl = null;
+            $imageKey = null;
 
-        $product = Product::create($data);
+            // Xử lý upload hình ảnh
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $imageName = time() . '_' . Str::slug($request->name) . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('uploads/products'), $imageName);
+                $imageUrl = '/uploads/products/' . $imageName;
+                $imageKey = $imageName;
+            }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Product created successfully.',
-            'product' => $product->load('category')
-        ], 201);
+            $product = Product::create([
+                'sku' => 'DR' . strtoupper(Str::random(8)),
+                'name' => $request->name,
+                'slug' => Str::slug($request->name),
+                'image_url' => $imageUrl,
+                'image_key' => $imageKey,
+                'description' => $request->description,
+                'price' => $request->price,
+                'quantity' => $request->quantity,
+                'weight' => $request->weight,
+                'ripeness' => $request->ripeness ?? 'ripe',
+                'origin' => $request->origin ?? 'vietnam',
+                'category_id' => $request->category_id,
+                'is_active' => $request->is_active ?? true
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Product created successfully',
+                'product' => $product->load('category')
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to create product',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function update(Request $request, $id)
     {
         $product = Product::find($id);
-
         if (!$product) {
-            return response()->json(['error' => 'Product not found.'], 404);
+            return response()->json([
+                'success' => false,
+                'message' => 'Product not found'
+            ], 404);
         }
 
         $validator = Validator::make($request->all(), [
-            'name' => 'sometimes|required|string|max:255',
-            'sku' => 'nullable|string|max:255',
+            'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'quantity' => 'sometimes|required|integer|min:0',
-            'price' => 'sometimes|required|numeric|min:0',
+            'price' => 'required|numeric|min:0',
+            'quantity' => 'required|integer|min:0',
             'weight' => 'nullable|numeric|min:0',
-            'ripeness' => 'nullable|in:unripe,ripe,overripe',
-            'origin' => 'nullable|in:vietnam,thailand,malaysia,indonesia',
-            'category_id' => 'nullable|exists:categories,id',
+            'ripeness' => 'nullable|in:ripe,unripe',
+            'origin' => 'nullable|string|max:100',
+            'category_id' => 'required|exists:categories,id',
+            'is_active' => 'boolean',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048' // Thêm validation cho hình ảnh
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()->first()], 400);
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
         }
 
-        $data = $request->all();
-        if ($request->has('name')) {
-            $data['slug'] = Str::slug($request->name);
+        try {
+            $imageUrl = $product->image_url;
+            $imageKey = $product->image_key;
+
+            // Xử lý upload hình ảnh mới
+            if ($request->hasFile('image')) {
+                // Xóa hình ảnh cũ nếu có
+                if ($product->image_url && file_exists(public_path($product->image_url))) {
+                    unlink(public_path($product->image_url));
+                }
+
+                $image = $request->file('image');
+                $imageName = time() . '_' . Str::slug($request->name) . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('uploads/products'), $imageName);
+                $imageUrl = '/uploads/products/' . $imageName;
+                $imageKey = $imageName;
+            }
+
+            $product->update([
+                'name' => $request->name,
+                'slug' => Str::slug($request->name),
+                'image_url' => $imageUrl,
+                'image_key' => $imageKey,
+                'description' => $request->description,
+                'price' => $request->price,
+                'quantity' => $request->quantity,
+                'weight' => $request->weight,
+                'ripeness' => $request->ripeness ?? 'ripe',
+                'origin' => $request->origin ?? 'vietnam',
+                'category_id' => $request->category_id,
+                'is_active' => $request->is_active ?? true
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Product updated successfully',
+                'product' => $product->load('category')
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update product',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        $product->update($data);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Product updated successfully.',
-            'product' => $product->load('category')
-        ]);
     }
 
     public function destroy($id)
     {
         $product = Product::find($id);
         if (!$product) {
-            return response()->json(['error' => 'Product not found.'], 404);
+            return response()->json([
+                'success' => false,
+                'message' => 'Product not found'
+            ], 404);
         }
-        $product->delete();
-        return response()->json(['success' => true, 'message' => 'Product deleted successfully.']);
+
+        try {
+            $product->delete();
+            return response()->json([
+                'success' => true,
+                'message' => 'Product deleted successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete product',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function toggleActive($id)

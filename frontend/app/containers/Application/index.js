@@ -4,137 +4,96 @@
  *
  */
 
-import React from 'react';
-
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Switch, Route } from 'react-router-dom';
+import { withRouter, Switch, Route } from 'react-router-dom';
 import { Container } from 'reactstrap';
-
 import actions from '../../actions';
 
-// routes
+import NavigationBar from '../../components/Common/NavigationBar';
+import Footer from '../../components/Common/Footer';
+import Notification from '../Notification';
+import NotFound from '../../components/Common/NotFound';
 import Login from '../Login';
 import Signup from '../Signup';
-import MerchantSignup from '../MerchantSignup';
-import HomePage from '../Homepage';
+import Homepage from '../Homepage';
 import Dashboard from '../Dashboard';
-import Support from '../Support';
-import Navigation from '../Navigation';
-import Authentication from '../Authentication';
-import Notification from '../Notification';
-import ForgotPassword from '../ForgotPassword';
-import ResetPassword from '../ResetPassword';
-import Shop from '../Shop';
-import BrandsPage from '../BrandsPage';
-import ProductPage from '../ProductPage';
-import Sell from '../Sell';
-import Contact from '../Contact';
-import OrderSuccess from '../OrderSuccess';
-import OrderPage from '../OrderPage';
-import AuthSuccess from '../AuthSuccess';
+import Product from '../Product';
 import Cart from '../Cart';
 import CheckoutContainer from '../Checkout';
+import OrderSuccess from '../OrderSuccess';
+import AuthSuccess from '../AuthSuccess';
+import Account from '../Account';
+import ProductPage from '../ProductPage';
+import Contact from '../Contact';
+import ResetPassword from '../ResetPassword';
+import ForgotPassword from '../ForgotPassword';
+import OrderDetail from '../Order';
 
-import Footer from '../../components/Common/Footer';
-import Header from '../../components/Common/Header';
-import Page404 from '../../components/Common/Page404';
-import { CART_ITEMS } from '../../constants';
+const Application = (props) => {
+  const {
+    history,
+    location,
+    cartItems,
+    authenticated,
+    products,
+    fetchProducts,
+    fetchStoreCategories,
+    fetchBrands,
+    fetchCartFromServer
+  } = props;
 
-// Thêm component CheckoutPage đơn giản
-const CheckoutPage = () => (
-  <div style={{ minHeight: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24 }}>
-    Trang nhập thông tin mua hàng (Checkout)
-  </div>
-);
+  useEffect(() => {
+    fetchProducts();
+    fetchStoreCategories();
+    fetchBrands();
+  }, []);
 
-class Application extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    this.handleStorage = this.handleStorage.bind(this);
-  }
-  componentDidMount() {
-    const token = localStorage.getItem('token');
-
-    if (token) {
-      this.props.fetchProfile();
+  useEffect(() => {
+    if (authenticated) {
+      fetchCartFromServer();
     }
+  }, [authenticated]);
 
-    this.props.handleCart();
+  return (
+    <div className='application'>
+      <Notification />
+      <NavigationBar history={history} authenticated={authenticated} cartItems={cartItems} />
+      <main className='main'>
+        <Container>
+          <div className='wrapper'>
+            <Switch>
+              <Route exact path='/' component={Homepage} />
+              <Route path='/cart' component={Cart} />
+              <Route path='/checkout' component={CheckoutContainer} />
+              <Route path='/order/success/:id' component={OrderSuccess} />
+              <Route path='/product/:slug' component={Product} />
+              <Route path='/login' component={Login} />
+              <Route path='/signup' component={Signup} />
+              <Route path='/dashboard' component={Dashboard} />
+              <Route path='/auth/success' component={AuthSuccess} />
+              <Route path='/account' component={Account} />
+              <Route path='/product-page' component={ProductPage} />
+              <Route path='/contact' component={Contact} />
+              <Route path='/reset-password/:token' component={ResetPassword} />
+              <Route path='/forgot-password' component={ForgotPassword} />
+              <Route path='/order/:id' component={OrderDetail} />
+              <Route component={NotFound} />
+            </Switch>
+          </div>
+        </Container>
+      </main>
+      <Footer />
+    </div>
+  );
+};
 
-    document.addEventListener('keydown', this.handleTabbing);
-    document.addEventListener('mousedown', this.handleMouseDown);
-    window.addEventListener('storage', this.handleStorage);
-  }
-
-  handleStorage(e) {
-    if (e.key === CART_ITEMS) {
-      this.props.handleCart();
-    }
-  }
-
-  handleTabbing(e) {
-    if (e.keyCode === 9) {
-      document.body.classList.add('user-is-tabbing');
-    }
-  }
-
-  handleMouseDown() {
-    document.body.classList.remove('user-is-tabbing');
-  }
-
-  render() {
-    return (
-      <div className='application'>
-        <Notification />
-        <Header />
-        <main className='main'>
-          <Container>
-            <div className='wrapper'>
-              <Switch>
-                <Route exact path='/' component={HomePage} />
-                <Route path='/shop' component={Shop} />
-                <Route path='/sell' component={Sell} />
-                <Route path='/contact' component={Contact} />
-                <Route path='/brands' component={BrandsPage} />
-                <Route path='/product/:slug' component={ProductPage} />
-                <Route path='/order/success/:id' component={OrderSuccess} />
-                <Route path='/order/:id' component={OrderPage} />
-                <Route path='/cart' component={Cart} />
-                <Route path='/checkout' component={CheckoutContainer} />
-                <Route path='/login' component={Login} />
-                <Route path='/register' component={Signup} />
-                <Route
-                  path='/merchant-signup/:token'
-                  component={MerchantSignup}
-                />
-                <Route path='/forgot-password' component={ForgotPassword} />
-                <Route
-                  path='/reset-password/:token'
-                  component={ResetPassword}
-                />
-                <Route path='/auth/success' component={AuthSuccess} />
-                <Route path='/support' component={Authentication(Support)} />
-                <Route
-                  path='/dashboard'
-                  component={Authentication(Dashboard)}
-                />
-                <Route path='/404' component={Page404} />
-                <Route path='*' component={Page404} />
-              </Switch>
-            </div>
-          </Container>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
-}
-
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     authenticated: state.authentication.authenticated,
-    products: state.product.storeProducts
+    cartItems: state.cart.cartItems,
+    products: state.product.products,
   };
 };
 
-export default connect(mapStateToProps, actions)(Application);
+export default withRouter(connect(mapStateToProps, actions)(Application));

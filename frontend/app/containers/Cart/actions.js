@@ -69,28 +69,97 @@ export const handleAddToCart = product => {
     localStorage.setItem(CART_ITEMS, JSON.stringify(newCartItems));
 
     dispatch(calculateCartTotal());
+    
+    // Thông báo thành công
+    dispatch(success({ 
+      title: `Đã thêm ${product.name} vào giỏ hàng!`, 
+      position: 'tr', 
+      autoDismiss: 2 
+    }));
   };
 };
 
 // Handle Remove From Cart
 export const handleRemoveFromCart = product => {
   return (dispatch, getState) => {
-    const cartItems = JSON.parse(localStorage.getItem(CART_ITEMS));
-    const newCartItems = cartItems.filter(item => item.id !== product.id);
-    localStorage.setItem(CART_ITEMS, JSON.stringify(newCartItems));
+    const { authenticated } = getState().authentication;
+    
+    if (authenticated) {
+      // Nếu user đã đăng nhập, xóa khỏi server
+      dispatch(removeFromCartServer(product.id));
+    } else {
+      // Nếu user chưa đăng nhập, xóa khỏi localStorage
+      const cartItems = JSON.parse(localStorage.getItem(CART_ITEMS)) || [];
+      const newCartItems = cartItems.filter(item => item.id !== product.id);
+      localStorage.setItem(CART_ITEMS, JSON.stringify(newCartItems));
 
-    dispatch({
-      type: REMOVE_FROM_CART,
-      payload: product
-    });
-    dispatch(calculateCartTotal());
-    // dispatch(toggleCart());
+      dispatch({
+        type: REMOVE_FROM_CART,
+        payload: product
+      });
+      dispatch(calculateCartTotal());
+    }
+    
+    // Thông báo thành công
+    dispatch(success({ 
+      title: `Đã xóa ${product.name} khỏi giỏ hàng!`, 
+      position: 'tr', 
+      autoDismiss: 2 
+    }));
+  };
+};
+
+// Remove from cart server
+export const removeFromCartServer = (productId) => {
+  return async (dispatch, getState) => {
+    try {
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        throw new Error('No authentication token');
+      }
+
+      // Trước tiên, lấy danh sách cart items để tìm cart item ID
+      const cartResponse = await axios.get(`${API_URL}/cart`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (cartResponse.data.success) {
+        const cartItems = cartResponse.data.cart || [];
+        const cartItem = cartItems.find(item => item.product_id === productId);
+        
+        if (cartItem) {
+          // Gọi API để xóa cart item
+          await axios.delete(`${API_URL}/cart/${cartItem.id}`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+
+          // Cập nhật Redux state
+          dispatch({
+            type: REMOVE_FROM_CART,
+            payload: { id: productId }
+          });
+          
+          dispatch(calculateCartTotal());
+        } else {
+          throw new Error('Cart item not found');
+        }
+      }
+      
+    } catch (error) {
+      console.error('Error removing from cart:', error);
+      handleError(error, dispatch);
+    }
   };
 };
 
 export const calculateCartTotal = () => {
   return (dispatch, getState) => {
-    const cartItems = getState().cart.cartItems;
+    const cartItems = getState().cart.cartItems || [];
 
     let total = 0;
 
@@ -110,19 +179,17 @@ export const calculateCartTotal = () => {
 // set cart store from local storage
 export const handleCart = () => {
   const cart = {
-    cartItems: JSON.parse(localStorage.getItem(CART_ITEMS)),
-    cartTotal: localStorage.getItem(CART_TOTAL),
-    cartId: localStorage.getItem(CART_ID)
+    cartItems: JSON.parse(localStorage.getItem(CART_ITEMS)) || [],
+    cartTotal: localStorage.getItem(CART_TOTAL) || 0,
+    cartId: localStorage.getItem(CART_ID) || null
   };
 
   return (dispatch, getState) => {
-    if (cart.cartItems != undefined) {
-      dispatch({
-        type: HANDLE_CART,
-        payload: cart
-      });
-      dispatch(calculateCartTotal());
-    }
+    dispatch({
+      type: HANDLE_CART,
+      payload: cart
+    });
+    dispatch(calculateCartTotal());
   };
 };
 
@@ -144,7 +211,14 @@ export const handleCheckout = () => {
 export const handleShopping = () => {
   return (dispatch, getState) => {
     dispatch(push('/shop'));
-    dispatch(toggleCart());
+    // dispatch(toggleCart()); // Comment out để tránh lỗi
+    
+    // Thông báo thành công
+    dispatch(success({ 
+      title: 'Đã chuyển đến trang mua sắm!', 
+      position: 'tr', 
+      autoDismiss: 2 
+    }));
   };
 };
 
@@ -230,7 +304,7 @@ export const fetchCartFromServer = () => {
         _id: item.product.id,
         name: item.product.name,
         slug: item.product.slug,
-        imageUrl: item.product.image_url,
+        image_url: item.product.image_url,
         price: parseFloat(item.price),
         quantity: item.quantity,
         totalPrice: parseFloat(item.price) * item.quantity,
@@ -270,6 +344,13 @@ export const addToCartServer = (product, quantity = 1) => {
       });
       console.log('Add to cart API response:', response.data);
       dispatch(fetchCartFromServer());
+      
+      // Thông báo thành công
+      dispatch(success({ 
+        title: `Đã thêm ${product.name} vào giỏ hàng!`, 
+        position: 'tr', 
+        autoDismiss: 2 
+      }));
     } catch (error) {
       console.error('Error adding to cart:', error);
       handleError(error, dispatch);

@@ -90,8 +90,8 @@ const OrderItems = props => {
                   <img
                     className='item-image'
                     src={`${
-                      item.product && (item.product.image_url || item.product.imageUrl)
-                        ? (item.product.image_url || item.product.imageUrl)
+                      item.product && item.product.image_url
+                        ? `http://localhost:3000${item.product.image_url}`
                         : '/images/placeholder-image.png'
                     }`}
                     alt={item.product?.name || 'Product'}

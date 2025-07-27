@@ -15,21 +15,140 @@ import { fetchProducts } from '../Product/actions';
 import { fetchStoreCategories } from '../Category/actions';
 import { updateWishlist } from '../WishList/actions';
 import { addToCartServer } from '../Cart/actions';
+import { sortOptions } from '../../utils/store';
+import SelectOption from '../../components/Common/SelectOption';
+
+// Pagination component
+const Pagination = ({ currentPage, totalPages, onPageChange }) => {
+  const pages = [];
+  const maxVisiblePages = 5;
+  
+  let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+  let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+  
+  if (endPage - startPage + 1 < maxVisiblePages) {
+    startPage = Math.max(1, endPage - maxVisiblePages + 1);
+  }
+  
+  for (let i = startPage; i <= endPage; i++) {
+    pages.push(i);
+  }
+
+  return (
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8, marginTop: 32 }}>
+      {/* Previous button */}
+      <button
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+        style={{
+          padding: '8px 12px',
+          border: '1px solid #e9ecef',
+          background: currentPage === 1 ? '#f8f9fa' : '#fff',
+          color: currentPage === 1 ? '#6c757d' : '#333',
+          borderRadius: 6,
+          cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+          fontSize: 14
+        }}
+      >
+        ← Trước
+      </button>
+      
+      {/* Page numbers */}
+      {pages.map(page => (
+        <button
+          key={page}
+          onClick={() => onPageChange(page)}
+          style={{
+            padding: '8px 12px',
+            border: '1px solid #e9ecef',
+            background: page === currentPage ? '#eab308' : '#fff',
+            color: page === currentPage ? '#222' : '#333',
+            borderRadius: 6,
+            cursor: 'pointer',
+            fontSize: 14,
+            fontWeight: page === currentPage ? 600 : 400
+          }}
+        >
+          {page}
+        </button>
+      ))}
+      
+      {/* Next button */}
+      <button
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+        style={{
+          padding: '8px 12px',
+          border: '1px solid #e9ecef',
+          background: currentPage === totalPages ? '#f8f9fa' : '#fff',
+          color: currentPage === totalPages ? '#6c757d' : '#333',
+          borderRadius: 6,
+          cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+          fontSize: 14
+        }}
+      >
+        Sau →
+      </button>
+    </div>
+  );
+};
 
 // Sidebar component
-const Sidebar = ({ categories, history }) => (
+const Sidebar = ({ categories, selectedCategory, onCategoryFilter, onClearFilter }) => (
   <aside className='sidebar-tiki p-3 bg-white rounded shadow-sm h-100'>
-    <h5 className='mb-3 text-success font-weight-bold'>Danh mục</h5>
+    <div className='d-flex justify-content-between align-items-center mb-3'>
+      <h5 className='text-success font-weight-bold mb-0'>Danh mục</h5>
+      {selectedCategory && (
+        <button
+          onClick={onClearFilter}
+          style={{
+            background: 'none',
+            border: 'none',
+            color: '#dc3545',
+            fontSize: 12,
+            cursor: 'pointer',
+            textDecoration: 'underline'
+          }}
+        >
+          Xóa lọc
+        </button>
+      )}
+    </div>
     <ul className='list-unstyled mb-0'>
       {categories && categories.map((cat, idx) => (
         <li
           key={cat.id || idx}
           className='mb-2 d-flex align-items-center sidebar-category-item'
-          style={{ cursor: 'pointer' }}
-          onClick={() => history.push(`/shop/category/${cat.slug || cat.id}`)}
+          style={{ 
+            cursor: 'pointer',
+            padding: '8px 12px',
+            borderRadius: 6,
+            background: selectedCategory && selectedCategory.id === cat.id ? '#e8f5e8' : 'transparent',
+            border: selectedCategory && selectedCategory.id === cat.id ? '1px solid #28a745' : '1px solid transparent',
+            transition: 'all 0.2s ease'
+          }}
+          onClick={() => onCategoryFilter(cat)}
+          onMouseEnter={(e) => {
+            if (!selectedCategory || selectedCategory.id !== cat.id) {
+              e.target.style.background = '#f8f9fa';
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!selectedCategory || selectedCategory.id !== cat.id) {
+              e.target.style.background = 'transparent';
+            }
+          }}
         >
           <span className='sidebar-icon mr-2'>🍈</span>
-          <span>{cat.name}</span>
+          <span style={{ 
+            color: selectedCategory && selectedCategory.id === cat.id ? '#28a745' : '#333',
+            fontWeight: selectedCategory && selectedCategory.id === cat.id ? 600 : 400
+          }}>
+            {cat.name}
+          </span>
+          {selectedCategory && selectedCategory.id === cat.id && (
+            <span style={{ marginLeft: 'auto', color: '#28a745', fontSize: 12 }}>✓</span>
+          )}
         </li>
       ))}
     </ul>
@@ -43,10 +162,65 @@ const Banner = () => (
   </div>
 );
 
+// Toolbar component với sắp xếp
+const ProductToolbar = ({ products, onSortChange, currentSort, currentPage, itemsPerPage, totalProducts }) => {
+  const startItem = (currentPage - 1) * itemsPerPage + 1;
+  const endItem = Math.min(currentPage * itemsPerPage, totalProducts);
+  
+  return (
+    <Row className='align-items-center mx-0 mb-4 py-3' style={{
+      background: 'linear-gradient(135deg, #fff 0%, #f8f9fa 100%)',
+      borderRadius: 12,
+      boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+      border: '1px solid #e9ecef',
+      position: 'relative',
+      zIndex: 10
+    }}>
+      <Col
+        xs={{ size: 12, order: 1 }}
+        sm={{ size: 12, order: 1 }}
+        md={{ size: 5, order: 1 }}
+        lg={{ size: 6, order: 1 }}
+        className='text-center text-md-left mb-2 mb-md-0'
+      >
+        <span style={{color: '#6c757d', fontSize: 14}}>Hiển thị: </span>
+        <span style={{fontWeight: 700, color: '#28a745', fontSize: 16}}>
+          {startItem}-{endItem} của {totalProducts} sản phẩm
+        </span>
+      </Col>
+      <Col
+        xs={{ size: 12, order: 2 }}
+        sm={{ size: 12, order: 2 }}
+        md={{ size: 2, order: 2 }}
+        lg={{ size: 2, order: 2 }}
+        className='text-right pr-0 d-none d-md-block'
+      >
+        <span style={{color: '#6c757d', fontSize: 14}}>Sắp xếp theo</span>
+      </Col>
+      <Col
+        xs={{ size: 12, order: 2 }}
+        sm={{ size: 12, order: 2 }}
+        md={{ size: 5, order: 2 }}
+        lg={{ size: 4, order: 2 }}
+        style={{ position: 'relative', zIndex: 15 }}
+      >
+        <SelectOption
+          name={'sorting'}
+          value={sortOptions.find(option => option.value === currentSort) || sortOptions[0]}
+          options={sortOptions}
+          handleSelectChange={(option) => {
+            onSortChange(option.value);
+          }}
+        />
+      </Col>
+    </Row>
+  );
+};
+
 // Product grid
 const ProductGrid = ({ products, onAddToCart, onToggleWishlist }) => (
   <div className='product-grid-tiki row'>
-    {products && products.slice(0, 12).map((product, idx) => (
+    {products && products.map((product, idx) => (
       <div className='col-12 col-sm-6 col-md-4 col-lg-3 mb-4 d-flex justify-content-center' key={product.id || idx}>
         <div className='product-card-tiki p-3 bg-white rounded shadow-sm h-100 d-flex flex-column align-items-center' style={{minHeight: 340, maxWidth: 270, width: '100%', position: 'relative'}}>
           {/* Icon trái tim ở góc phải trên ảnh */}
@@ -58,7 +232,7 @@ const ProductGrid = ({ products, onAddToCart, onToggleWishlist }) => (
               right: 16,
               background: 'none',
               border: 'none',
-              zIndex: 2,
+              zIndex: 1,
               outline: 'none',
               boxShadow: 'none',
               color: product.isLiked ? 'red' : '#fff',
@@ -72,7 +246,28 @@ const ProductGrid = ({ products, onAddToCart, onToggleWishlist }) => (
           </button>
           <Link to={`/product/${product.slug || product.id}`} style={{textDecoration: 'none', color: 'inherit', width: '100%'}} className='d-flex flex-column align-items-center'>
             <div style={{width: 120, height: 120, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12, background: '#f8f9fa', borderRadius: 8, position: 'relative'}}>
-              <img src={product.imageUrl || '/images/placeholder-image.png'} alt={product.name} style={{maxWidth: '100%', maxHeight: '100%', objectFit: 'cover', borderRadius: 8}} />
+              {product.image_url ? (
+                <img 
+                  src={`http://localhost:3000${product.image_url}`} 
+                  alt={product.name} 
+                  style={{maxWidth: '100%', maxHeight: '100%', objectFit: 'cover', borderRadius: 8}} 
+                />
+              ) : (
+                <div style={{
+                  width: '100%',
+                  height: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  background: '#f8f9fa',
+                  borderRadius: 8,
+                  color: '#6c757d',
+                  fontSize: 12,
+                  textAlign: 'center'
+                }}>
+                  Placeholder Image
+                </div>
+              )}
             </div>
             <h6 className='mb-1 text-truncate text-center w-100'>{product.name}</h6>
             <div className='text-warning font-weight-bold mb-1 text-center w-100'>{product.price} VNĐ</div>
@@ -90,15 +285,38 @@ const ProductGrid = ({ products, onAddToCart, onToggleWishlist }) => (
 );
 
 class Homepage extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      currentSort: 'created_at_desc',
+      currentPage: 1,
+      itemsPerPage: 12,
+      selectedCategory: null, // Thêm state cho category filter
+      searchQuery: '' // Thêm state cho search
+    };
+  }
+
   componentDidMount() {
     this.props.fetchProducts();
     this.props.fetchStoreCategories();
+    
+    // Kiểm tra URL params để lấy search query
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchQuery = urlParams.get('search');
+    if (searchQuery) {
+      this.setState({ searchQuery });
+    }
   }
 
   handleAddToCart = (product) => {
+    console.log('Adding to cart:', product);
+    console.log('User authenticated:', this.props.authenticated);
+    
     if (this.props.authenticated) {
+      console.log('Calling addToCartServer');
       this.props.addToCartServer(product, 1);
     } else {
+      console.log('Calling handleAddToCart (local)');
       this.props.handleAddToCart({ ...product, quantity: 1 });
     }
   };
@@ -108,35 +326,187 @@ class Homepage extends React.PureComponent {
     this.props.updateWishlist(!product.isLiked, product.id);
   };
 
+  handleSortChange = (sortValue) => {
+    this.setState({ currentSort: sortValue, currentPage: 1 });
+    // Chỉ sắp xếp local, không gọi API
+  };
+
+  handlePageChange = (page) => {
+    this.setState({ currentPage: page });
+    // Scroll to top when page changes
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Thêm function để xử lý filter theo category
+  handleCategoryFilter = (category) => {
+    this.setState({ 
+      selectedCategory: category,
+      currentPage: 1 
+    });
+  };
+
+  // Thêm function để clear filter
+  handleClearFilter = () => {
+    this.setState({ 
+      selectedCategory: null,
+      currentPage: 1 
+    });
+  };
+
+  // Thêm function để clear tất cả bộ lọc
+  handleClearAllFilters = () => {
+    this.setState({ 
+      selectedCategory: null,
+      searchQuery: '',
+      currentPage: 1 
+    });
+    // Clear URL params
+    window.history.replaceState({}, document.title, window.location.pathname);
+  };
+
+  getFilteredProducts = () => {
+    const { products } = this.props;
+    const { selectedCategory, searchQuery } = this.state;
+    
+    if (!products || products.length === 0) return [];
+    
+    let filteredProducts = [...products];
+
+    // Filter theo category nếu có
+    if (selectedCategory) {
+      filteredProducts = filteredProducts.filter(product => 
+        product.category_id === selectedCategory.id || 
+        (product.category && product.category.id === selectedCategory.id)
+      );
+    }
+
+    // Filter theo từ khóa tìm kiếm
+    if (searchQuery) {
+      filteredProducts = filteredProducts.filter(product => 
+        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.description.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+    
+    return filteredProducts;
+  };
+
+  getSortedProducts = () => {
+    const filteredProducts = this.getFilteredProducts();
+    const { currentSort } = this.state;
+    
+    if (!filteredProducts || filteredProducts.length === 0) return [];
+    
+    const sortedProducts = [...filteredProducts];
+    
+    switch (currentSort) {
+      case 'price_asc':
+        return sortedProducts.sort((a, b) => a.price - b.price);
+      case 'price_desc':
+        return sortedProducts.sort((a, b) => b.price - a.price);
+      case 'name_asc':
+        return sortedProducts.sort((a, b) => a.name.localeCompare(b.name));
+      case 'name_desc':
+        return sortedProducts.sort((a, b) => b.name.localeCompare(a.name));
+      case 'created_at_desc':
+      default:
+        return sortedProducts.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+    }
+  };
+
+  getPaginatedProducts = () => {
+    const sortedProducts = this.getSortedProducts();
+    const { currentPage, itemsPerPage } = this.state;
+    
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    
+    return sortedProducts.slice(startIndex, endIndex);
+  };
+
   render() {
     const { products, categories, history } = this.props;
+    const { currentPage, itemsPerPage, selectedCategory, searchQuery } = this.state;
+    const sortedProducts = this.getSortedProducts();
+    const paginatedProducts = this.getPaginatedProducts();
+    const totalPages = Math.ceil(sortedProducts.length / itemsPerPage);
+    
     return (
       <div className='homepage-tiki bg-light' style={{minHeight:'100vh'}}>
-        {/* Cart icon fixed ở góc phải trên */}
-        <div style={{position: 'fixed', top: 24, right: 32, zIndex: 1000}}>
-          <button
-            className='btn btn-success rounded-circle shadow d-flex align-items-center justify-content-center position-relative'
-            style={{width: 56, height: 56}}
-            onClick={() => history.push('/cart')}
-            aria-label='Xem giỏ hàng'
-          >
-            <FaShoppingCart size={28} color='#fff' />
-            {this.props.cartItems && this.props.cartItems.length > 0 && (
-              <span style={{position: 'absolute', top: 4, right: 4, background: 'red', color: '#fff', borderRadius: '50%', width: 20, height: 20, fontSize: 13, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 600}}>{this.props.cartItems.length}</span>
-            )}
-          </button>
-        </div>
         {/* Main layout */}
         <Container fluid>
           <Row>
             <Col xs='12' md='3' lg='2' className='mb-3'>
-              <Sidebar categories={categories} history={history} />
+              <Sidebar 
+                categories={categories} 
+                selectedCategory={selectedCategory} 
+                onCategoryFilter={this.handleCategoryFilter} 
+                onClearFilter={this.handleClearFilter} 
+              />
             </Col>
             <Col xs='12' md='9' lg='10'>
               <Banner />
               <div className='mb-4'>
-                <h5 className='font-weight-bold text-success mb-3'>Sản phẩm nổi bật</h5>
-                <ProductGrid products={products} onAddToCart={this.handleAddToCart} onToggleWishlist={this.handleToggleWishlist} />
+                <div className='d-flex justify-content-between align-items-center mb-3'>
+                  <h5 className='font-weight-bold text-success mb-0'>
+                    {searchQuery 
+                      ? `Kết quả tìm kiếm: "${searchQuery}"`
+                      : selectedCategory 
+                        ? `${selectedCategory.name}` 
+                        : 'Sản phẩm nổi bật'
+                    }
+                  </h5>
+                  <div className='d-flex align-items-center gap-2'>
+                    {(selectedCategory || searchQuery) && (
+                      <span style={{ fontSize: 14, color: '#6c757d' }}>
+                        {sortedProducts.length} sản phẩm
+                      </span>
+                    )}
+                    {(selectedCategory || searchQuery) && (
+                      <button
+                        onClick={this.handleClearAllFilters}
+                        style={{
+                          background: 'none',
+                          border: '1px solid #dc3545',
+                          color: '#dc3545',
+                          padding: '4px 8px',
+                          borderRadius: 4,
+                          fontSize: 12,
+                          cursor: 'pointer',
+                          transition: 'all 0.2s'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.background = '#dc3545';
+                          e.target.style.color = '#fff';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.background = 'none';
+                          e.target.style.color = '#dc3545';
+                        }}
+                      >
+                        Xóa bộ lọc
+                      </button>
+                    )}
+                  </div>
+                </div>
+                <ProductToolbar 
+                  products={paginatedProducts} 
+                  onSortChange={this.handleSortChange}
+                  currentSort={this.state.currentSort}
+                  currentPage={currentPage}
+                  itemsPerPage={itemsPerPage}
+                  totalProducts={sortedProducts.length}
+                />
+                <ProductGrid products={paginatedProducts} onAddToCart={this.handleAddToCart} onToggleWishlist={this.handleToggleWishlist} />
+                
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={this.handlePageChange}
+                  />
+                )}
               </div>
             </Col>
           </Row>

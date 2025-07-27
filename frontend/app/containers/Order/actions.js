@@ -18,7 +18,7 @@ import {
   CLEAR_ORDERS
 } from './constants';
 
-import { clearCart, getCartId } from '../Cart/actions';
+import { clearCart, getCartId, fetchCartFromServer } from '../Cart/actions';
 import { toggleCart } from '../Navigation/actions';
 import handleError from '../../utils/error';
 import { API_URL } from '../../constants';
@@ -69,12 +69,13 @@ export const fetchOrders = (page = 1) => {
   };
 };
 
-export const fetchAccountOrders = (page = 1) => {
+export const fetchAccountOrders = (isAdmin = false, page = 1) => {
   return async (dispatch, getState) => {
     try {
       dispatch(setOrderLoading(true));
 
-      const response = await axios.get(`${API_URL}/order/me`, {
+      const url = isAdmin ? `${API_URL}/order/all` : `${API_URL}/order`;
+      const response = await axios.get(url, {
         params: {
           page: page ?? 1,
           limit: 20
@@ -147,6 +148,34 @@ export const fetchOrder = (id, withLoading = true) => {
   };
 };
 
+export const fetchOrderById = (orderId) => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch(setOrderLoading(true));
+
+      console.log('Fetching order by ID:', orderId);
+      const response = await axios.get(`${API_URL}/order/${orderId}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      console.log('Order response:', response.data);
+
+      dispatch({
+        type: FETCH_ORDER,
+        payload: response.data.order
+      });
+    } catch (error) {
+      console.error('Error fetching order by ID:', error);
+      console.error('Error response:', error.response?.data);
+      handleError(error, dispatch);
+    } finally {
+      dispatch(setOrderLoading(false));
+    }
+  };
+};
+
 export const cancelOrder = () => {
   return async (dispatch, getState) => {
     try {
@@ -195,17 +224,47 @@ export const updateOrderItemStatus = (itemId, status) => {
   };
 };
 
-export const addOrder = () => {
+export const addOrder = (shippingInfo) => {
   return async (dispatch, getState) => {
     try {
-      // Gửi đơn hàng, không cần cartId, chỉ gửi notes nếu có
+      const cartItems = getState().cart.cartItems;
+      
+      console.log('Cart items before order:', cartItems);
+      
+      if (!cartItems || cartItems.length === 0) {
+        dispatch(success({ 
+          title: 'Giỏ hàng trống!', 
+          position: 'tr', 
+          autoDismiss: 2 
+        }));
+        return;
+      }
+
+      // Chuẩn bị dữ liệu sản phẩm cho order
+      const orderItems = cartItems.map(item => ({
+        product_id: item.id,
+        quantity: item.quantity,
+        price: item.price
+      }));
+
+      console.log('Order items to send:', orderItems);
+      
+      // Gửi đơn hàng với thông tin địa chỉ giao hàng và sản phẩm
       const response = await axios.post(`${API_URL}/order`, {
-        notes: '' // Có thể lấy từ form nếu muốn
+        notes: '',
+        full_name: shippingInfo.full_name,
+        phone: shippingInfo.phone,
+        address: shippingInfo.address,
+        items: orderItems // Gửi thông tin sản phẩm từ frontend
       });
+      
+      console.log('Order response:', response.data);
+      
       dispatch(success({ title: 'Đặt hàng thành công!', position: 'tr', autoDismiss: 2 }));
       dispatch(clearCart());
       dispatch(push(`/order/success/${response.data.order.id || response.data.order.order_number}`));
     } catch (error) {
+      console.error('Order error:', error.response?.data || error.message);
       handleError(error, dispatch);
     }
   };

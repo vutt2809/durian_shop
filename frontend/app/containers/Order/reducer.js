@@ -25,6 +25,7 @@ const initialState = {
     total: 0,
     status: ''
   },
+  selectedOrder: null, // Thêm state cho đơn hàng được chọn
   isLoading: false,
   advancedFilters: {
     totalPages: 1,
@@ -48,7 +49,8 @@ const orderReducer = (state = initialState, action) => {
     case FETCH_ORDER:
       return {
         ...state,
-        order: action.payload
+        order: action.payload,
+        selectedOrder: action.payload // Cập nhật selectedOrder khi fetch order
       };
     case SET_ADVANCED_FILTERS:
       return {

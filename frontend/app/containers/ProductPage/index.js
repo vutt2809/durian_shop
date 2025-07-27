@@ -68,8 +68,8 @@ class ProductPage extends React.PureComponent {
                   <img
                     className='item-image'
                     src={`${
-                      (product.image_url || product.imageUrl)
-                        ? (product.image_url || product.imageUrl)
+                      product.image_url
+                        ? `http://localhost:3000${product.image_url}`
                         : '/images/placeholder-image.png'
                     }`}
                     alt={product.name}

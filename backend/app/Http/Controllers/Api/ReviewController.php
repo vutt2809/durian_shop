@@ -24,6 +24,18 @@ class ReviewController extends Controller
         ]);
     }
 
+    public function all()
+    {
+        $reviews = Review::with(['user', 'product'])
+                        ->orderBy('created_at', 'desc')
+                        ->paginate(20);
+
+        return response()->json([
+            'success' => true,
+            'reviews' => $reviews
+        ]);
+    }
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [

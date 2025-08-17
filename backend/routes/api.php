@@ -9,8 +9,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\UserAddressController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\CartController;
-use App\Http\Controllers\Api\WishlistController;
-use App\Http\Controllers\Api\ReviewController;
+
 use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\MerchantController;
 
@@ -96,26 +95,14 @@ Route::middleware('auth:sanctum')->group(function () {
         // Admin only - get all orders (phải đặt trước /{id})
         Route::middleware(['auth:sanctum', 'admin'])->group(function () {
             Route::get('/all', [OrderController::class, 'all']);
+            Route::put('/{id}/status', [OrderController::class, 'updateStatus']);
         });
         
         Route::get('/{id}', [OrderController::class, 'show']);
         Route::put('/{id}/cancel', [OrderController::class, 'cancel']);
     });
 
-    // Wishlist routes
-    Route::prefix('wishlist')->group(function () {
-        Route::get('/', [WishlistController::class, 'index']);
-        Route::post('/', [WishlistController::class, 'store']);
-        Route::delete('/{id}', [WishlistController::class, 'destroy']);
-    });
 
-    // Review routes
-    Route::prefix('review')->group(function () {
-        Route::get('/product/{productId}', [ReviewController::class, 'index']);
-        Route::post('/', [ReviewController::class, 'store']);
-        Route::put('/{id}', [ReviewController::class, 'update']);
-        Route::delete('/{id}', [ReviewController::class, 'destroy']);
-    });
 
     // Admin routes
     Route::middleware(['auth:sanctum'])->group(function () {
@@ -150,12 +137,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::put('/{id}/active', [MerchantController::class, 'toggleActive']);
         });
 
-        // Review management
-        Route::prefix('reviews')->group(function () {
-            Route::get('/', [ReviewController::class, 'all']);
-            Route::put('/{id}', [ReviewController::class, 'update']);
-            Route::delete('/{id}', [ReviewController::class, 'destroy']);
-        });
+
     });
 });
 

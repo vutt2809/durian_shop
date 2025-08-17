@@ -29,11 +29,7 @@ export const MERCHANT_STATUS = {
   Waiting_Approval: 'Waiting Approval'
 };
 
-export const REVIEW_STATUS = {
-  Rejected: 'Rejected',
-  Approved: 'Approved',
-  Waiting_Approval: 'Waiting Approval'
-};
+
 
 export const EMAIL_PROVIDER = {
   Email: 'Email',

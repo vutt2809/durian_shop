@@ -46,15 +46,7 @@ class Product extends Model
         return $this->hasMany(OrderDetail::class);
     }
 
-    public function wishlist()
-    {
-        return $this->hasMany(Wishlist::class);
-    }
 
-    public function reviews()
-    {
-        return $this->hasMany(Review::class);
-    }
 
     public function scopeActive($query)
     {

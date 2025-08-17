@@ -101,7 +101,7 @@ const MerchantList = props => {
                     round={20}
                     icon={<RefreshIcon width={18} className='text-primary' />}
                     tooltip={true}
-                    tooltipContent={VI['Re Approve Review']}
+                    tooltipContent={VI['Re Approve']}
                     id={`re-approve-${merchant.id}`}
                     onClick={() => approveMerchant(merchant)}
                   />

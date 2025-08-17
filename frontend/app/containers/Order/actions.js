@@ -224,6 +224,56 @@ export const updateOrderItemStatus = (itemId, status) => {
   };
 };
 
+export const updateOrderStatusByAdmin = (orderId, status) => {
+  return async (dispatch, getState) => {
+    try {
+      console.log('🔄 Updating order status:', { orderId, status });
+      console.log('🔑 Token:', localStorage.getItem('token'));
+      
+      const response = await axios.put(
+        `${API_URL}/order/${orderId}/status`,
+        { status },
+        {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        }
+      );
+      
+      console.log('✅ API Response:', response.data);
+
+      // Cập nhật order trong state
+      dispatch({
+        type: FETCH_ORDER,
+        payload: response.data.order
+      });
+
+      // Cập nhật danh sách orders nếu đang ở trang danh sách
+      const currentOrders = getState().order.orders;
+      if (currentOrders && currentOrders.length > 0) {
+        const updatedOrders = currentOrders.map(order => 
+          order.id === orderId ? response.data.order : order
+        );
+        dispatch({
+          type: FETCH_ORDERS,
+          payload: updatedOrders
+        });
+      }
+
+      const successfulOptions = {
+        title: response.data.message,
+        position: 'tr',
+        autoDismiss: 2
+      };
+
+      dispatch(success(successfulOptions));
+    } catch (error) {
+      console.error('❌ Error updating order status:', error.response?.data || error.message);
+      handleError(error, dispatch);
+    }
+  };
+};
+
 export const addOrder = (shippingInfo) => {
   return async (dispatch, getState) => {
     try {

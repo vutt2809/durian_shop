@@ -35,8 +35,7 @@ const DashboardSidebar = ({ activeTab, onTabChange, user }) => {
     { id: 'products', label: 'Sản phẩm', icon: FaBox, color: '#8B5CF6' },
     { id: 'categories', label: 'Danh mục', icon: FaCog, color: '#06B6D4' },
     { id: 'users', label: 'Người dùng', icon: FaUser, color: '#84CC16' },
-    { id: 'reviews', label: 'Đánh giá', icon: FaStar, color: '#F59E0B' },
-    { id: 'wishlist', label: 'Yêu thích', icon: FaHeart, color: '#EC4899' },
+
     { id: 'support', label: 'Hỗ trợ', icon: FaHeadset, color: '#8B5CF6' },
   ];
 
@@ -295,7 +294,7 @@ const DashboardHeader = ({ title, subtitle, onSearch }) => {
 };
 
 // Overview Tab Component
-const OverviewTab = ({ user, orders, wishlist }) => {
+const OverviewTab = ({ user, orders }) => {
   const stats = [
     {
       title: 'Tổng đơn hàng',
@@ -311,40 +310,11 @@ const OverviewTab = ({ user, orders, wishlist }) => {
       color: '#F59E0B',
       bgColor: '#FFFBEB'
     },
-    {
-      title: 'Sản phẩm yêu thích',
-      value: wishlist?.length || 0,
-      icon: FaHeart,
-      color: '#EC4899',
-      bgColor: '#FDF2F8'
-    },
-    {
-      title: 'Đánh giá đã viết',
-      value: 0,
-      icon: FaStar,
-      color: '#10B981',
-      bgColor: '#ECFDF5'
-    }
+
   ];
 
   return (
     <div style={{ padding: '32px' }}>
-      {/* Welcome Section */}
-      <div style={{
-        background: 'linear-gradient(135deg, #667EEA 0%, #764BA2 100%)',
-        borderRadius: 16,
-        padding: '32px',
-        color: '#fff',
-        marginBottom: 32
-      }}>
-        <h2 style={{ fontSize: 24, fontWeight: 600, margin: '0 0 8px 0' }}>
-          Chào mừng trở lại, {user?.name || 'Người dùng'}! 👋
-        </h2>
-        <p style={{ fontSize: 16, margin: 0, opacity: 0.9 }}>
-          Đây là tổng quan về tài khoản của bạn
-        </p>
-      </div>
-
       {/* Stats Grid */}
       <div style={{
         display: 'grid',
@@ -462,6 +432,7 @@ const OverviewTab = ({ user, orders, wishlist }) => {
 
 // Orders Tab Component
 const OrdersTab = ({ orders, isLoading, fetchAccountOrders, user, history }) => {
+
   const [currentPage, setCurrentPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -470,6 +441,7 @@ const OrdersTab = ({ orders, isLoading, fetchAccountOrders, user, history }) => 
   useEffect(() => {
     // Gọi API với tham số isAdmin dựa trên role của user
     const isAdmin = user?.role === 'admin';
+
     fetchAccountOrders(isAdmin);
   }, [user]);
 
@@ -510,6 +482,8 @@ const OrdersTab = ({ orders, isLoading, fetchAccountOrders, user, history }) => 
     history.push(`/order/${order.id}`);
   };
 
+
+
   const getProductCount = (order) => {
     // Kiểm tra nhiều cách để lấy số lượng sản phẩm
     if (order.orderDetails && Array.isArray(order.orderDetails)) {
@@ -527,22 +501,6 @@ const OrdersTab = ({ orders, isLoading, fetchAccountOrders, user, history }) => 
 
   return (
     <div style={{ padding: '32px' }}>
-      {/* Header Section */}
-      <div style={{
-        background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
-        borderRadius: 16,
-        padding: '32px',
-        color: '#fff',
-        marginBottom: 32
-      }}>
-        <h2 style={{ fontSize: 24, fontWeight: 600, margin: '0 0 8px 0' }}>
-          Quản lý đơn hàng 📦
-        </h2>
-        <p style={{ fontSize: 16, margin: 0, opacity: 0.9 }}>
-          Theo dõi và quản lý tất cả đơn hàng của bạn
-        </p>
-      </div>
-
       {/* Filters and Search */}
       <div style={{
         background: '#fff',
@@ -718,7 +676,7 @@ const OrdersTab = ({ orders, isLoading, fetchAccountOrders, user, history }) => 
                     </span>
                   </div>
                   
-                  <div>
+                  <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                     <button 
                       onClick={() => handleViewOrderDetails(order)}
                       style={{
@@ -737,6 +695,8 @@ const OrdersTab = ({ orders, isLoading, fetchAccountOrders, user, history }) => 
                     >
                       Xem chi tiết
                     </button>
+                    
+
                   </div>
                 </div>
               );
@@ -842,21 +802,6 @@ const AccountTab = ({ user }) => {
   return (
     <div style={{ padding: '32px' }}>
       <div style={{
-        background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
-        borderRadius: 16,
-        padding: '32px',
-        color: '#fff',
-        marginBottom: 32
-      }}>
-        <h2 style={{ fontSize: 24, fontWeight: 600, margin: '0 0 8px 0' }}>
-          Thông tin tài khoản 👤
-        </h2>
-        <p style={{ fontSize: 16, margin: 0, opacity: 0.9 }}>
-          Quản lý thông tin cá nhân và cài đặt tài khoản
-        </p>
-      </div>
-
-      <div style={{
         background: '#fff',
         borderRadius: 12,
         padding: '24px',
@@ -943,21 +888,6 @@ const AddressTab = ({ user }) => {
 
   return (
     <div style={{ padding: '32px' }}>
-      <div style={{
-        background: 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)',
-        borderRadius: 16,
-        padding: '32px',
-        color: '#fff',
-        marginBottom: 32
-      }}>
-        <h2 style={{ fontSize: 24, fontWeight: 600, margin: '0 0 8px 0' }}>
-          Quản lý địa chỉ 📍
-        </h2>
-        <p style={{ fontSize: 16, margin: 0, opacity: 0.9 }}>
-          Thêm và quản lý địa chỉ giao hàng của bạn
-        </p>
-      </div>
-
       {isLoading ? (
         <div style={{ padding: '40px', textAlign: 'center', color: '#6B7280' }}>
           <div style={{ fontSize: 18, marginBottom: 8 }}>⏳</div>
@@ -1093,195 +1023,12 @@ const AddressTab = ({ user }) => {
   );
 };
 
-// Wishlist Tab Component
-const WishlistTab = ({ wishlist }) => {
-  const [wishlistItems, setWishlistItems] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    fetchWishlist();
-  }, []);
-
-  const fetchWishlist = async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch('http://localhost:3000/api/wishlist', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-      const data = await response.json();
-      if (data.success) {
-        setWishlistItems(data.wishlist || []);
-      }
-    } catch (error) {
-      console.error('Error fetching wishlist:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND'
-    }).format(amount);
-  };
-
-  return (
-    <div style={{ padding: '32px' }}>
-      <div style={{
-        background: 'linear-gradient(135deg, #EC4899 0%, #DB2777 100%)',
-        borderRadius: 16,
-        padding: '32px',
-        color: '#fff',
-        marginBottom: 32
-      }}>
-        <h2 style={{ fontSize: 24, fontWeight: 600, margin: '0 0 8px 0' }}>
-          Danh sách yêu thích ❤️
-        </h2>
-        <p style={{ fontSize: 16, margin: 0, opacity: 0.9 }}>
-          Quản lý các sản phẩm bạn đã yêu thích
-        </p>
-      </div>
-
-      {isLoading ? (
-        <div style={{ padding: '40px', textAlign: 'center', color: '#6B7280' }}>
-          <div style={{ fontSize: 18, marginBottom: 8 }}>⏳</div>
-          Đang tải dữ liệu...
-        </div>
-      ) : wishlistItems.length > 0 ? (
-        <div style={{
-          background: '#fff',
-          borderRadius: 12,
-          border: '1px solid #E5E7EB',
-          overflow: 'hidden',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-        }}>
-          <div style={{
-            padding: '20px 24px',
-            borderBottom: '1px solid #E5E7EB',
-            background: '#F9FAFB'
-          }}>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 2fr 1fr 1fr 1fr',
-              gap: 16,
-              fontSize: 14,
-              fontWeight: 600,
-              color: '#374151'
-            }}>
-              <div>ID</div>
-              <div>Sản phẩm</div>
-              <div>Giá</div>
-              <div>Ngày thêm</div>
-              <div>Thao tác</div>
-            </div>
-          </div>
-          
-          <div>
-            {wishlistItems.map((item, index) => (
-              <div key={item.id} style={{
-                padding: '20px 24px',
-                borderBottom: index < wishlistItems.length - 1 ? '1px solid #F3F4F6' : 'none',
-                display: 'grid',
-                gridTemplateColumns: '1fr 2fr 1fr 1fr 1fr',
-                gap: 16,
-                alignItems: 'center'
-              }}>
-                <div style={{ fontSize: 14, fontWeight: 500, color: '#111827' }}>
-                  #{item.id}
-                </div>
-                
-                <div>
-                  <div style={{ fontSize: 16, fontWeight: 600, color: '#111827' }}>
-                    {item.product?.name || 'Sản phẩm không tồn tại'}
-                  </div>
-                  <div style={{ fontSize: 12, color: '#6B7280', marginTop: 2 }}>
-                    {item.product?.category?.name || 'Chưa phân loại'}
-                  </div>
-                </div>
-                
-                <div style={{ fontSize: 16, fontWeight: 600, color: '#111827' }}>
-                  {formatCurrency(item.product?.price || 0)}
-                </div>
-                
-                <div style={{ fontSize: 14, color: '#374151' }}>
-                  {new Date(item.created_at).toLocaleDateString('vi-VN')}
-                </div>
-                
-                <div style={{ display: 'flex', gap: 8 }}>
-                  <button style={{
-                    padding: '6px 12px',
-                    background: '#10B981',
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: 6,
-                    fontSize: 12,
-                    fontWeight: 500,
-                    cursor: 'pointer',
-                    transition: 'background-color 0.2s'
-                  }}
-                  onMouseEnter={(e) => e.target.style.background = '#059669'}
-                  onMouseLeave={(e) => e.target.style.background = '#10B981'}
-                  >
-                    Thêm vào giỏ
-                  </button>
-                  <button style={{
-                    padding: '6px 12px',
-                    background: '#EF4444',
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: 6,
-                    fontSize: 12,
-                    fontWeight: 500,
-                    cursor: 'pointer',
-                    transition: 'background-color 0.2s'
-                  }}
-                  onMouseEnter={(e) => e.target.style.background = '#DC2626'}
-                  onMouseLeave={(e) => e.target.style.background = '#EF4444'}
-                  >
-                    Xóa
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      ) : (
-        <div style={{ padding: '40px', textAlign: 'center', color: '#6B7280' }}>
-          <div style={{ fontSize: 48, marginBottom: 16 }}>❤️</div>
-          <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 8 }}>
-            Chưa có sản phẩm yêu thích
-          </div>
-          <div style={{ fontSize: 14 }}>
-            Khám phá sản phẩm và thêm vào danh sách yêu thích!
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
 
 // Support Tab Component
 const SupportTab = () => {
   return (
     <div style={{ padding: '32px' }}>
-      <div style={{
-        background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)',
-        borderRadius: 16,
-        padding: '32px',
-        color: '#fff',
-        marginBottom: 32
-      }}>
-        <h2 style={{ fontSize: 24, fontWeight: 600, margin: '0 0 8px 0' }}>
-          Hỗ trợ khách hàng 🎧
-        </h2>
-        <p style={{ fontSize: 16, margin: 0, opacity: 0.9 }}>
-          Liên hệ với chúng tôi để được hỗ trợ nhanh chóng
-        </p>
-      </div>
-
       <div style={{
         background: '#fff',
         borderRadius: 12,
@@ -1362,11 +1109,7 @@ const ProductsTab = ({ user }) => {
   }, [user]);
 
   const checkUserRole = () => {
-    // Lấy user từ Redux store thay vì localStorage
-    console.log('User from Redux:', user);
-    console.log('User role:', user?.role);
     setIsAdmin(user?.role === 'admin');
-    console.log('Is admin:', user?.role === 'admin');
   };
 
   const fetchProducts = async () => {
@@ -2062,21 +1805,6 @@ const ProductsTab = ({ user }) => {
 
   return (
     <div style={{ padding: '32px' }}>
-      <div style={{
-        background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)',
-        borderRadius: 16,
-        padding: '32px',
-        color: '#fff',
-        marginBottom: 32
-      }}>
-        <h2 style={{ fontSize: 24, fontWeight: 600, margin: '0 0 8px 0' }}>
-          Quản lý sản phẩm 📦
-        </h2>
-        <p style={{ fontSize: 16, margin: 0, opacity: 0.9 }}>
-          Thêm, chỉnh sửa và quản lý tất cả sản phẩm
-        </p>
-      </div>
-
       {/* Add Product Button for Admin */}
       {isAdmin && (
         <div style={{ marginBottom: 24 }}>
@@ -2305,61 +2033,506 @@ const ProductsTab = ({ user }) => {
   );
 };
 
-// Reviews Tab Component
-const ReviewsTab = () => {
-  const [reviews, setReviews] = useState([]);
+// Categories Tab Component
+const CategoriesTab = ({ user }) => {
+  const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const [itemsPerPage] = useState(10);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  // Form states
+  const [formData, setFormData] = useState({
+    name: '',
+    description: '',
+    is_active: true
+  });
 
   useEffect(() => {
-    fetchReviews();
-  }, []);
+    fetchCategories();
+    checkUserRole();
+  }, [currentPage, user]);
 
-  const fetchReviews = async () => {
+  useEffect(() => {
+    checkUserRole();
+  }, [user]);
+
+  const checkUserRole = () => {
+    setIsAdmin(user?.role === 'admin');
+  };
+
+  const fetchCategories = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('http://localhost:3000/api/reviews', {
+      const response = await fetch(`http://localhost:3000/api/category?page=${currentPage}&limit=${itemsPerPage}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       });
       const data = await response.json();
       if (data.success) {
-        setReviews(data.reviews?.data || data.reviews || []);
+        setCategories(data.categories?.data || data.categories || []);
+        setTotalPages(data.categories?.last_page || 1);
+        setTotalItems(data.categories?.total || 0);
       }
     } catch (error) {
-      console.error('Error fetching reviews:', error);
+      console.error('Error fetching categories:', error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const renderStars = (rating) => {
-    return '⭐'.repeat(rating) + '☆'.repeat(5 - rating);
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handleAddCategory = () => {
+    setFormData({
+      name: '',
+      description: '',
+      is_active: true
+    });
+    setShowAddModal(true);
+  };
+
+  const handleEditCategory = (category) => {
+    setSelectedCategory(category);
+    setFormData({
+      name: category.name,
+      description: category.description || '',
+      is_active: category.is_active
+    });
+    setShowEditModal(true);
+  };
+
+  const handleDeleteCategory = (category) => {
+    setSelectedCategory(category);
+    setShowDeleteModal(true);
+  };
+
+  const handleSubmit = async (type) => {
+    try {
+      const url = type === 'add' 
+        ? 'http://localhost:3000/api/category'
+        : `http://localhost:3000/api/category/${selectedCategory.id}`;
+      
+      const method = type === 'add' ? 'POST' : type === 'edit' ? 'PUT' : 'DELETE';
+      
+      const body = type === 'delete' ? null : JSON.stringify(formData);
+      
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        fetchCategories();
+        setShowAddModal(false);
+        setShowEditModal(false);
+        setShowDeleteModal(false);
+        setSelectedCategory(null);
+      } else {
+        alert(data.message || 'Có lỗi xảy ra');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Có lỗi xảy ra');
+    }
+  };
+
+  const renderModal = (type) => {
+    const isAdd = type === 'add';
+    const isEdit = type === 'edit';
+    const isDelete = type === 'delete';
+
+    return (
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: 'rgba(0,0,0,0.5)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 1000
+      }}>
+        <div style={{
+          background: '#fff',
+          borderRadius: 12,
+          padding: '32px',
+          width: '90%',
+          maxWidth: 500,
+          maxHeight: '90vh',
+          overflow: 'auto'
+        }}>
+          <h3 style={{ fontSize: 20, fontWeight: 600, margin: '0 0 24px 0', color: '#111827' }}>
+            {isAdd ? 'Thêm danh mục mới' : isEdit ? 'Chỉnh sửa danh mục' : 'Xóa danh mục'}
+          </h3>
+
+          {!isDelete ? (
+            <div style={{ marginBottom: 24 }}>
+              <label style={{ display: 'block', marginBottom: 8, fontWeight: 500, color: '#374151' }}>
+                Tên danh mục *
+              </label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) => setFormData({...formData, name: e.target.value})}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  border: '1px solid #D1D5DB',
+                  borderRadius: 8,
+                  fontSize: 14
+                }}
+                placeholder="Nhập tên danh mục"
+              />
+            </div>
+          ) : null}
+
+          {!isDelete ? (
+            <div style={{ marginBottom: 24 }}>
+              <label style={{ display: 'block', marginBottom: 8, fontWeight: 500, color: '#374151' }}>
+                Mô tả
+              </label>
+              <textarea
+                value={formData.description}
+                onChange={(e) => setFormData({...formData, description: e.target.value})}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  border: '1px solid #D1D5DB',
+                  borderRadius: 8,
+                  fontSize: 14,
+                  minHeight: 80,
+                  resize: 'vertical'
+                }}
+                placeholder="Nhập mô tả danh mục"
+              />
+            </div>
+          ) : null}
+
+          {!isDelete ? (
+            <div style={{ marginBottom: 24 }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <input
+                  type="checkbox"
+                  checked={formData.is_active}
+                  onChange={(e) => setFormData({...formData, is_active: e.target.checked})}
+                />
+                <span style={{ fontWeight: 500, color: '#374151' }}>Kích hoạt</span>
+              </label>
+            </div>
+          ) : null}
+
+          {isDelete && (
+            <div style={{ marginBottom: 24, padding: '16px', background: '#FEF2F2', borderRadius: 8, border: '1px solid #FECACA' }}>
+              <p style={{ margin: 0, color: '#991B1B' }}>
+                Bạn có chắc chắn muốn xóa danh mục "{selectedCategory?.name}"? Hành động này không thể hoàn tác.
+              </p>
+            </div>
+          )}
+
+          <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end' }}>
+            <button
+              onClick={() => {
+                setShowAddModal(false);
+                setShowEditModal(false);
+                setShowDeleteModal(false);
+                setSelectedCategory(null);
+              }}
+              style={{
+                padding: '10px 20px',
+                border: '1px solid #D1D5DB',
+                borderRadius: 8,
+                background: '#fff',
+                color: '#374151',
+                cursor: 'pointer',
+                fontSize: 14
+              }}
+            >
+              Hủy
+            </button>
+            <button
+              onClick={() => handleSubmit(type)}
+              style={{
+                padding: '10px 20px',
+                border: 'none',
+                borderRadius: 8,
+                background: isDelete ? '#EF4444' : '#3B82F6',
+                color: '#fff',
+                cursor: 'pointer',
+                fontSize: 14,
+                fontWeight: 500
+              }}
+            >
+              {isAdd ? 'Thêm' : isEdit ? 'Cập nhật' : 'Xóa'}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   return (
     <div style={{ padding: '32px' }}>
-      <div style={{
-        background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
-        borderRadius: 16,
-        padding: '32px',
-        color: '#fff',
-        marginBottom: 32
-      }}>
-        <h2 style={{ fontSize: 24, fontWeight: 600, margin: '0 0 8px 0' }}>
-          Quản lý đánh giá ⭐
-        </h2>
-        <p style={{ fontSize: 16, margin: 0, opacity: 0.9 }}>
-          Xem và quản lý tất cả đánh giá của khách hàng
-        </p>
-      </div>
+      {isAdmin && (
+        <div style={{ marginBottom: 24 }}>
+          <button
+            onClick={handleAddCategory}
+            style={{
+              padding: '12px 24px',
+              background: '#3B82F6',
+              color: '#fff',
+              border: 'none',
+              borderRadius: 8,
+              fontSize: 14,
+              fontWeight: 500,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8
+            }}
+          >
+            <span>+</span>
+            Thêm danh mục mới
+          </button>
+        </div>
+      )}
 
       {isLoading ? (
         <div style={{ padding: '40px', textAlign: 'center', color: '#6B7280' }}>
           <div style={{ fontSize: 18, marginBottom: 8 }}>⏳</div>
           Đang tải dữ liệu...
         </div>
-      ) : reviews.length > 0 ? (
+      ) : categories.length > 0 ? (
+        <div style={{
+          background: '#fff',
+          borderRadius: 12,
+          border: '1px solid #E5E7EB',
+          overflow: 'hidden',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+        }}>
+          <div style={{
+            padding: '20px 24px',
+            borderBottom: '1px solid #E5E7EB',
+            background: '#F9FAFB'
+          }}>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 2fr 1fr 1fr',
+              gap: 16,
+              fontSize: 14,
+              fontWeight: 600,
+              color: '#374151'
+            }}>
+              <div>ID</div>
+              <div>Tên danh mục</div>
+              <div>Mô tả</div>
+              <div>Hành động</div>
+            </div>
+          </div>
+          
+          <div>
+            {categories.map((category, index) => (
+              <div key={category.id} style={{
+                padding: '20px 24px',
+                borderBottom: index < categories.length - 1 ? '1px solid #F3F4F6' : 'none',
+                display: 'grid',
+                gridTemplateColumns: '1fr 2fr 1fr 1fr',
+                gap: 16,
+                alignItems: 'center'
+              }}>
+                <div style={{ fontSize: 14, fontWeight: 500, color: '#111827' }}>
+                  #{category.id}
+                </div>
+                
+                <div>
+                  <div style={{ fontSize: 16, fontWeight: 600, color: '#111827' }}>
+                    {category.name}
+                  </div>
+                  <div style={{ fontSize: 12, color: '#6B7280', marginTop: 2 }}>
+                    {category.is_active ? 'Đang hoạt động' : 'Đã ẩn'}
+                  </div>
+                </div>
+                
+                <div style={{ fontSize: 14, color: '#374151' }}>
+                  {category.description || 'Không có mô tả'}
+                </div>
+                
+                {isAdmin && (
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <button
+                      onClick={() => handleEditCategory(category)}
+                      style={{
+                        padding: '6px 12px',
+                        background: '#F59E0B',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: 6,
+                        fontSize: 12,
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Sửa
+                    </button>
+                    <button
+                      onClick={() => handleDeleteCategory(category)}
+                      style={{
+                        padding: '6px 12px',
+                        background: '#EF4444',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: 6,
+                        fontSize: 12,
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Xóa
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div style={{ padding: '40px', textAlign: 'center', color: '#6B7280' }}>
+          <div style={{ fontSize: 48, marginBottom: 16 }}>📂</div>
+          <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 8 }}>
+            Chưa có danh mục nào
+          </div>
+          <div style={{ fontSize: 14 }}>
+            {isAdmin ? 'Bắt đầu tạo danh mục đầu tiên' : 'Chưa có danh mục nào trong hệ thống'}
+          </div>
+        </div>
+      )}
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          gap: 8, 
+          marginTop: 32 
+        }}>
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            style={{
+              padding: '8px 16px',
+              border: '1px solid #D1D5DB',
+              borderRadius: 6,
+              background: currentPage === 1 ? '#F3F4F6' : '#fff',
+              color: currentPage === 1 ? '#9CA3AF' : '#374151',
+              cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+              fontSize: 14
+            }}
+          >
+            Trước
+          </button>
+          
+          <span style={{ fontSize: 14, color: '#374151' }}>
+            Trang {currentPage} / {totalPages}
+          </span>
+          
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            style={{
+              padding: '8px 16px',
+              border: '1px solid #D1D5DB',
+              borderRadius: 6,
+              background: currentPage === totalPages ? '#F3F4F6' : '#fff',
+              color: currentPage === totalPages ? '#9CA3AF' : '#374151',
+              cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+              fontSize: 14
+            }}
+          >
+            Sau
+          </button>
+        </div>
+      )}
+
+      {/* Modals */}
+      {showAddModal && renderModal('add')}
+      {showEditModal && renderModal('edit')}
+      {showDeleteModal && renderModal('delete')}
+    </div>
+  );
+};
+
+// Users Tab Component
+const UsersTab = ({ user }) => {
+  const [users, setUsers] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const [itemsPerPage] = useState(10);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    fetchUsers();
+    checkUserRole();
+  }, [currentPage, user]);
+
+  useEffect(() => {
+    checkUserRole();
+  }, [user]);
+
+  const checkUserRole = () => {
+    setIsAdmin(user?.role === 'admin');
+  };
+
+  const fetchUsers = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`http://localhost:3000/api/users?page=${currentPage}&limit=${itemsPerPage}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      const data = await response.json();
+      if (data.success) {
+        setUsers(data.users?.data || data.users || []);
+        setTotalPages(data.users?.last_page || 1);
+        setTotalItems(data.users?.total || 0);
+      }
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  return (
+    <div style={{ padding: '32px' }}>
+      {isLoading ? (
+        <div style={{ padding: '40px', textAlign: 'center', color: '#6B7280' }}>
+          <div style={{ fontSize: 18, marginBottom: 8 }}>⏳</div>
+          Đang tải dữ liệu...
+        </div>
+      ) : users.length > 0 ? (
         <div style={{
           background: '#fff',
           borderRadius: 12,
@@ -2382,46 +2555,37 @@ const ReviewsTab = () => {
             }}>
               <div>ID</div>
               <div>Thông tin</div>
-              <div>Sản phẩm</div>
-              <div>Đánh giá</div>
+              <div>Email</div>
+              <div>Vai trò</div>
               <div>Trạng thái</div>
             </div>
           </div>
           
           <div>
-            {reviews.map((review, index) => (
-              <div key={review.id} style={{
+            {users.map((userItem, index) => (
+              <div key={userItem.id} style={{
                 padding: '20px 24px',
-                borderBottom: index < reviews.length - 1 ? '1px solid #F3F4F6' : 'none',
+                borderBottom: index < users.length - 1 ? '1px solid #F3F4F6' : 'none',
                 display: 'grid',
                 gridTemplateColumns: '1fr 2fr 1fr 1fr 1fr',
                 gap: 16,
                 alignItems: 'center'
               }}>
                 <div style={{ fontSize: 14, fontWeight: 500, color: '#111827' }}>
-                  #{review.id}
+                  #{userItem.id}
                 </div>
                 
                 <div>
                   <div style={{ fontSize: 16, fontWeight: 600, color: '#111827' }}>
-                    {review.title}
+                    {userItem.name}
                   </div>
                   <div style={{ fontSize: 12, color: '#6B7280', marginTop: 2 }}>
-                    {review.user?.name || 'Khách hàng'}
+                    Đăng ký: {new Date(userItem.created_at).toLocaleDateString('vi-VN')}
                   </div>
                 </div>
                 
                 <div style={{ fontSize: 14, color: '#374151' }}>
-                  {review.product?.name || 'Sản phẩm không tồn tại'}
-                </div>
-                
-                <div>
-                  <div style={{ fontSize: 14, color: '#374151', marginBottom: 4 }}>
-                    {renderStars(review.rating)}
-                  </div>
-                  <div style={{ fontSize: 12, color: '#6B7280' }}>
-                    {review.rating}/5
-                  </div>
+                  {userItem.email}
                 </div>
                 
                 <div>
@@ -2430,10 +2594,23 @@ const ReviewsTab = () => {
                     borderRadius: 12,
                     fontSize: 12,
                     fontWeight: 500,
-                    background: review.is_active ? '#D1FAE5' : '#FEE2E2',
-                    color: review.is_active ? '#065F46' : '#991B1B'
+                    background: userItem.role === 'admin' ? '#FEF3C7' : '#DBEAFE',
+                    color: userItem.role === 'admin' ? '#92400E' : '#1E40AF'
                   }}>
-                    {review.is_active ? 'Hiển thị' : 'Ẩn'}
+                    {userItem.role === 'admin' ? 'Admin' : 'Người dùng'}
+                  </span>
+                </div>
+                
+                <div>
+                  <span style={{
+                    padding: '4px 8px',
+                    borderRadius: 12,
+                    fontSize: 12,
+                    fontWeight: 500,
+                    background: userItem.is_active ? '#D1FAE5' : '#FEE2E2',
+                    color: userItem.is_active ? '#065F46' : '#991B1B'
+                  }}>
+                    {userItem.is_active ? 'Hoạt động' : 'Đã khóa'}
                   </span>
                 </div>
               </div>
@@ -2442,30 +2619,80 @@ const ReviewsTab = () => {
         </div>
       ) : (
         <div style={{ padding: '40px', textAlign: 'center', color: '#6B7280' }}>
-          <div style={{ fontSize: 48, marginBottom: 16 }}>⭐</div>
+          <div style={{ fontSize: 48, marginBottom: 16 }}>👥</div>
           <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 8 }}>
-            Chưa có đánh giá nào
+            Chưa có người dùng nào
           </div>
           <div style={{ fontSize: 14 }}>
-            Chưa có đánh giá nào trong hệ thống
+            Chưa có người dùng nào trong hệ thống
           </div>
+        </div>
+      )}
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          gap: 8, 
+          marginTop: 32 
+        }}>
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            style={{
+              padding: '8px 16px',
+              border: '1px solid #D1D5DB',
+              borderRadius: 6,
+              background: currentPage === 1 ? '#F3F4F6' : '#fff',
+              color: currentPage === 1 ? '#9CA3AF' : '#374151',
+              cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+              fontSize: 14
+            }}
+          >
+            Trước
+          </button>
+          
+          <span style={{ fontSize: 14, color: '#374151' }}>
+            Trang {currentPage} / {totalPages}
+          </span>
+          
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            style={{
+              padding: '8px 16px',
+              border: '1px solid #D1D5DB',
+              borderRadius: 6,
+              background: currentPage === totalPages ? '#F3F4F6' : '#fff',
+              color: currentPage === totalPages ? '#9CA3AF' : '#374151',
+              cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+              fontSize: 14
+            }}
+          >
+            Sau
+          </button>
         </div>
       )}
     </div>
   );
 };
 
+
+
 // Main Dashboard Component
 const Dashboard = (props) => {
   const [activeTab, setActiveTab] = useState('overview');
   const [userLoaded, setUserLoaded] = useState(false);
-  const { user, orders, wishlist, fetchAccountOrders } = props;
+  const { user, orders, fetchAccountOrders } = props;
 
   useEffect(() => {
+
     // Gọi API khi component mount
     fetchAccountOrders();
     
-    // Fetch user profile nếu có token (để đảm bảo user data được load sau reload)
+        // Fetch user profile nếu có token (để đảm bảo user data được load sau reload)
     if (localStorage.getItem('token')) {
       fetchUserProfile();
     }
@@ -2474,9 +2701,6 @@ const Dashboard = (props) => {
   // Thêm useEffect để log user data khi thay đổi
   useEffect(() => {
     if (user) {
-      console.log('User data loaded:', user);
-      console.log('User role:', user.role);
-      console.log('Is admin:', user.role === 'admin');
       setUserLoaded(true);
     }
   }, [user]);
@@ -2558,22 +2782,7 @@ const Dashboard = (props) => {
           }
         }).catch(error => console.error('Error fetching merchants:', error));
         break;
-      case 'reviews':
-        // Gọi API để lấy danh sách đánh giá
-        fetch('http://localhost:3000/api/reviews', {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        }).catch(error => console.error('Error fetching reviews:', error));
-        break;
-      case 'wishlist':
-        // Gọi API để lấy danh sách yêu thích
-        fetch('http://localhost:3000/api/wishlist', {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        }).catch(error => console.error('Error fetching wishlist:', error));
-        break;
+
       case 'support':
         // Không cần gọi API cho support
         break;
@@ -2584,13 +2793,15 @@ const Dashboard = (props) => {
 
   const renderTabContent = () => {
     const userKey = user?.role || 'guest';
+
     
     switch (activeTab) {
       case 'overview':
-        return <OverviewTab key="overview" user={user} orders={orders} wishlist={wishlist} />;
+        return <OverviewTab key="overview" user={user} orders={orders} />;
       case 'account':
         return <AccountTab key="account" user={user} />;
       case 'orders':
+
         return <OrdersTab key="orders" orders={orders} isLoading={false} fetchAccountOrders={fetchAccountOrders} user={user} history={props.history} />;
       case 'address':
         return <AddressTab key="address" user={user} />;
@@ -2602,14 +2813,11 @@ const Dashboard = (props) => {
         return <UsersTab key={`users-${userKey}`} user={user} />;
       case 'sellers':
         return <SellersTab key="sellers" />;
-      case 'reviews':
-        return <ReviewsTab key="reviews" />;
-      case 'wishlist':
-        return <WishlistTab key="wishlist" wishlist={wishlist} />;
+
       case 'support':
         return <SupportTab key="support" />;
       default:
-        return <OverviewTab key="overview-default" user={user} orders={orders} wishlist={wishlist} />;
+        return <OverviewTab key="overview-default" user={user} orders={orders} />;
     }
   };
 
@@ -2622,8 +2830,7 @@ const Dashboard = (props) => {
       products: 'Sản phẩm',
       categories: 'Danh mục',
       users: 'Người dùng',
-      reviews: 'Đánh giá',
-      wishlist: 'Yêu thích',
+      
       support: 'Hỗ trợ'
     };
     return titles[activeTab] || 'Dashboard';
@@ -2656,10 +2863,11 @@ const Dashboard = (props) => {
 };
 
 const mapStateToProps = (state) => {
+
   return {
     user: state.account.user,
     orders: state.order.orders,
-    wishlist: state.wishlist.wishlist
+
   };
 };
 
@@ -2667,7 +2875,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
     fetchAccountOrders: (isAdmin = false) => dispatch(fetchAccountOrders(isAdmin)),
-    fetchProfile: () => dispatch(fetchProfile())
+    fetchProfile: () => dispatch(fetchProfile()),
+
   };
 };
 

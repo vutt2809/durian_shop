@@ -36,9 +36,7 @@ export const VI = {
   'Address': 'Địa chỉ',
   'Users': 'Người dùng',
   'Merchants': 'Người bán',
-  'Reviews': 'Đánh giá',
-  'Wishlist': 'Danh sách yêu thích',
-  'WishList': 'Danh sách yêu thích',
+
   'Support': 'Hỗ trợ',
   
   // Buttons
@@ -57,7 +55,8 @@ export const VI = {
   'Cancel Order': 'Hủy đơn hàng',
   'Approve': 'Phê duyệt',
   'Reject': 'Từ chối',
-  'Re Approve Review': 'Phê duyệt lại đánh giá',
+  'Re Approve': 'Phê duyệt lại',
+
   
   // Forms
   'Name': 'Tên',
@@ -68,7 +67,7 @@ export const VI = {
   'Message': 'Tin nhắn',
   'Title': 'Tiêu đề',
   'Comment': 'Bình luận',
-  'Rating': 'Đánh giá',
+
   'Description': 'Mô tả',
   'Brand': 'Thương hiệu',
   'Business': 'Kinh doanh',
@@ -91,8 +90,7 @@ export const VI = {
   'Your Business Brand': 'Thương hiệu kinh doanh của bạn',
   'Please Describe Your Business': 'Vui lòng mô tả doanh nghiệp của bạn',
   'Please Describe Your Message': 'Vui lòng mô tả tin nhắn của bạn',
-  'Enter Review title': 'Nhập tiêu đề đánh giá',
-  'Write Review': 'Viết đánh giá',
+
   'Type Email, Phone Number, Brand Or Status': 'Nhập Email, SĐT, Thương hiệu hoặc Trạng thái',
   'Brand Name': 'Tên thương hiệu',
   'Brand Description': 'Mô tả thương hiệu',
@@ -136,8 +134,7 @@ export const VI = {
   'Role': 'Vai trò',
   'Joined': 'Ngày tham gia',
   'User': 'Người dùng',
-  'No items found in your wishlist.': 'Không có sản phẩm nào trong danh sách yêu thích.',
-  'Review': 'Đánh giá',
+
   'Date': 'Ngày',
   'Type name, price or status': 'Nhập tên, giá hoặc trạng thái',
   'Order ID': 'Mã đơn hàng',
@@ -145,18 +142,16 @@ export const VI = {
   'Total': 'Tổng tiền',
   'Type order number or status': 'Nhập mã đơn hàng hoặc trạng thái',
   'Type user name or email': 'Nhập tên hoặc email người dùng',
-  'Type product name or review title': 'Nhập tên sản phẩm hoặc tiêu đề đánh giá',
-  'No reviews found': 'Không tìm thấy đánh giá nào',
-  'No wishlist found': 'Không tìm thấy danh sách yêu thích nào',
+
   
   // Messages
   'No categories found.': 'Không tìm thấy danh mục.',
   'No products found.': 'Không tìm thấy sản phẩm.',
-  'No reviews found.': 'Không tìm thấy đánh giá.',
+
   'No orders found.': 'Không tìm thấy đơn hàng.',
   'Order Details': 'Chi tiết đơn hàng',
   'Order Date': 'Ngày đặt hàng',
-  'Review Added on': 'Đánh giá được thêm vào',
+
   'Approved': 'Đã phê duyệt',
   'Rejected': 'Đã từ chối',
   'Waiting Approval': 'Chờ phê duyệt',
@@ -179,7 +174,7 @@ export const VI = {
   'Subscribe': 'Đăng ký',
   'Add Brand': 'Thêm thương hiệu',
   'Add Category': 'Thêm danh mục',
-  'Add Review': 'Thêm đánh giá',
+
   'Add Product': 'Thêm sản phẩm',
   'Add Merchant': 'Thêm người bán',
   

@@ -13,25 +13,26 @@ const OrderSummary = props => {
 
   return (
     <Col className='order-summary pt-3'>
-      <h2>Order Summary</h2>
+      <h2>Thông tin đơn hàng</h2>
       <div className='d-flex align-items-center summary-item'>
-        <p className='summary-label'>Subtotal</p>
-        <p className='summary-value ml-auto'>${order.total}</p>
+        <p className='summary-label'>Tổng tiền hàng</p>
+        <p className='summary-value ml-auto'>{new Intl.NumberFormat('vi-VN', {
+          style: 'currency',
+          currency: 'VND'
+        }).format(order.subtotal)}</p>
       </div>
       <div className='d-flex align-items-center summary-item'>
-        <p className='summary-label'>Est. Sales Tax</p>
-        <p className='summary-value ml-auto'>${order.totalTax}</p>
-      </div>
-
-      <div className='d-flex align-items-center summary-item'>
-        <p className='summary-label'>Shipping & Handling</p>
-        <p className='summary-value ml-auto'>$0</p>
+        <p className='summary-label'>Phí vận chuyển</p>
+        <p className='summary-value ml-auto'>Miễn phí</p>
       </div>
 
       <hr />
       <div className='d-flex align-items-center summary-item'>
-        <p className='summary-label'>Total</p>
-        <p className='summary-value ml-auto'>${order.totalWithTax}</p>
+        <p className='summary-label'>Tổng cộng</p>
+        <p className='summary-value ml-auto'>{new Intl.NumberFormat('vi-VN', {
+          style: 'currency',
+          currency: 'VND'
+        }).format(order.total)}</p>
       </div>
     </Col>
   );

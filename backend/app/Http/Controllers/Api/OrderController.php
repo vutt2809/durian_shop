@@ -203,4 +203,62 @@ class OrderController extends Controller
             'order' => $order
         ]);
     }
+
+    public function updateStatus(Request $request, $id)
+    {
+        // Chỉ admin mới được phép cập nhật trạng thái
+        if ($request->user()->role !== 'admin') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized. Admin access required.'
+            ], 403);
+        }
+
+        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
+            'status' => 'required|string|in:pending,processing,shipped,delivered,cancelled'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors()->first()
+            ], 400);
+        }
+
+        $order = Order::find($id);
+
+        if (!$order) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Order not found.'
+            ], 404);
+        }
+
+        $oldStatus = $order->status;
+        $newStatus = $request->status;
+
+        // Kiểm tra logic chuyển đổi trạng thái
+        $allowedTransitions = [
+            'pending' => ['processing', 'cancelled'],
+            'processing' => ['shipped', 'cancelled'],
+            'shipped' => ['delivered', 'cancelled'],
+            'delivered' => [], // Không thể chuyển từ delivered
+            'cancelled' => [] // Không thể chuyển từ cancelled
+        ];
+
+        if (!in_array($newStatus, $allowedTransitions[$oldStatus])) {
+            return response()->json([
+                'success' => false,
+                'message' => "Cannot change status from '{$oldStatus}' to '{$newStatus}'."
+            ], 400);
+        }
+
+        $order->update(['status' => $newStatus]);
+
+        return response()->json([
+            'success' => true,
+            'message' => "Order status updated from '{$oldStatus}' to '{$newStatus}' successfully.",
+            'order' => $order->load(['orderDetails.product', 'shippingAddress', 'user'])
+        ]);
+    }
 } 

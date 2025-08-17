@@ -9,11 +9,11 @@ import { connect } from 'react-redux';
 import { Row, Col, Container } from 'reactstrap';
 import actions from '../../actions';
 import { withRouter, Link } from 'react-router-dom';
-import { FaShoppingCart, FaHeart } from 'react-icons/fa';
+import { FaShoppingCart } from 'react-icons/fa';
 import { handleAddToCart } from '../Cart/actions';
 import { fetchProducts } from '../Product/actions';
 import { fetchStoreCategories } from '../Category/actions';
-import { updateWishlist } from '../WishList/actions';
+
 import { addToCartServer } from '../Cart/actions';
 import { sortOptions } from '../../utils/store';
 import SelectOption from '../../components/Common/SelectOption';
@@ -218,32 +218,12 @@ const ProductToolbar = ({ products, onSortChange, currentSort, currentPage, item
 };
 
 // Product grid
-const ProductGrid = ({ products, onAddToCart, onToggleWishlist }) => (
+const ProductGrid = ({ products, onAddToCart }) => (
   <div className='product-grid-tiki row'>
     {products && products.map((product, idx) => (
       <div className='col-12 col-sm-6 col-md-4 col-lg-3 mb-4 d-flex justify-content-center' key={product.id || idx}>
         <div className='product-card-tiki p-3 bg-white rounded shadow-sm h-100 d-flex flex-column align-items-center' style={{minHeight: 340, maxWidth: 270, width: '100%', position: 'relative'}}>
-          {/* Icon trái tim ở góc phải trên ảnh */}
-          <button
-            className='btn p-0'
-            style={{
-              position: 'absolute',
-              top: 12,
-              right: 16,
-              background: 'none',
-              border: 'none',
-              zIndex: 1,
-              outline: 'none',
-              boxShadow: 'none',
-              color: product.isLiked ? 'red' : '#fff',
-              fontSize: 26,
-              transition: 'color 0.2s',
-            }}
-            onClick={() => onToggleWishlist(product)}
-            aria-label='Yêu thích'
-          >
-            <FaHeart style={{ filter: product.isLiked ? 'none' : 'drop-shadow(0 0 2px #888)' }} />
-          </button>
+
           <Link to={`/product/${product.slug || product.id}`} style={{textDecoration: 'none', color: 'inherit', width: '100%'}} className='d-flex flex-column align-items-center'>
             <div style={{width: 120, height: 120, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12, background: '#f8f9fa', borderRadius: 8, position: 'relative'}}>
               {product.image_url ? (
@@ -321,10 +301,7 @@ class Homepage extends React.PureComponent {
     }
   };
 
-  handleToggleWishlist = (product) => {
-    // Giả sử có action updateWishlist(productId, liked)
-    this.props.updateWishlist(!product.isLiked, product.id);
-  };
+
 
   handleSortChange = (sortValue) => {
     this.setState({ currentSort: sortValue, currentPage: 1 });
@@ -497,7 +474,7 @@ class Homepage extends React.PureComponent {
                   itemsPerPage={itemsPerPage}
                   totalProducts={sortedProducts.length}
                 />
-                <ProductGrid products={paginatedProducts} onAddToCart={this.handleAddToCart} onToggleWishlist={this.handleToggleWishlist} />
+                <ProductGrid products={paginatedProducts} onAddToCart={this.handleAddToCart} />
                 
                 {/* Pagination */}
                 {totalPages > 1 && (
@@ -521,17 +498,13 @@ class Homepage extends React.PureComponent {
 }
 
 const mapStateToProps = state => ({
-  products: state.product.products.map(product => ({
-    ...product,
-    isLiked: (state.wishlist.wishlist || []).some(item => item.product_id === product.id || (item.product && item.product.id === product.id)),
-  })),
+  products: state.product.products,
   categories: state.category.storeCategories,
-  wishlist: state.wishlist.wishlist,
   cartItems: state.cart.cartItems,
   authenticated: state.authentication.authenticated
 });
 
 export default connect(
   mapStateToProps,
-  { handleAddToCart, fetchProducts, fetchStoreCategories, updateWishlist, addToCartServer }
+  { handleAddToCart, fetchProducts, fetchStoreCategories, addToCartServer }
 )(withRouter(Homepage));

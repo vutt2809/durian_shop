@@ -18,24 +18,20 @@ const OrderMeta = props => {
   const { order, cancelOrder, onBack } = props;
 
   const renderMetaAction = () => {
-    const isNotDelivered =
-      order.products.filter(i => i.status === CART_ITEM_STATUS.Delivered)
-        .length < 1;
-
-    if (isNotDelivered) {
-      return <Button size='sm' text={VI['Cancel Order']} onClick={cancelOrder} />;
+    if (order.status === 'pending') {
+      return <Button size='sm' text='Hủy đơn hàng' onClick={cancelOrder} />;
     }
   };
 
   return (
     <div className='order-meta'>
       <div className='d-flex align-items-center justify-content-between mb-3 title'>
-        <h2 className='mb-0'>{VI['Order Details']}</h2>
+        <h2 className='mb-0'>Đơn hàng #{order.order_number}</h2>
         <Button
           variant='link'
           icon={<ArrowBackIcon />}
           size='sm'
-          text={VI['Back to orders']}
+          text='Quay lại'
           onClick={onBack}
         ></Button>
       </div>
@@ -44,20 +40,20 @@ const OrderMeta = props => {
         <Col xs='12' md='8'>
           <Row>
             <Col xs='4'>
-              <p className='one-line-ellipsis'>{VI['Order ID']}</p>
-            </Col>
-            <Col xs='8'>
-              <span className='order-label one-line-ellipsis'>{` ${orderid}`}</span>
-            </Col>
-          </Row>
-          <Row>
-            <Col xs='4'>
               <p className='one-line-ellipsis'>{VI['Order Date']}</p>
             </Col>
             <Col xs='8'>
               <span className='order-label one-line-ellipsis'>{` ${formatDate(
-                order.created
+                order.created_at
               )}`}</span>
+            </Col>
+          </Row>
+          <Row>
+            <Col xs='4'>
+              <p className='one-line-ellipsis'>Trạng thái</p>
+            </Col>
+            <Col xs='8'>
+              <span className='order-label one-line-ellipsis'>{` ${order.status === 'pending' ? 'Chờ xử lý' : order.status === 'processing' ? 'Đang xử lý' : order.status === 'shipped' ? 'Đã giao hàng' : order.status === 'delivered' ? 'Đã nhận hàng' : order.status === 'cancelled' ? 'Đã hủy' : order.status}`}</span>
             </Col>
           </Row>
         </Col>

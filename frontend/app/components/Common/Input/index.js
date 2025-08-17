@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import ReactStars from 'react-rating-stars-component';
+
 
 const Input = props => {
   const {
@@ -85,31 +85,7 @@ const Input = props => {
         <span className='invalid-message'>{error && error[0]}</span>
       </div>
     );
-  } else if (type === 'stars') {
-    const styles = `input-box${error ? ' invalid' : ''}`;
 
-    return (
-      <div className={styles}>
-        {label && <label>{label}</label>}
-        <ReactStars
-          name={name}
-          starCount={5}
-          size={30}
-          color={'#adb5bd'}
-          activeColor={'#ffb302'}
-          a11y={true}
-          isHalf={false}
-          emptyIcon={<i className='fa fa-star' />}
-          halfIcon={<i className='fa fa-star-half-alt' />}
-          filledIcon={<i className='fa fa-star' />}
-          value={value}
-          onChange={value => {
-            onInputChange(name, value);
-          }}
-        />
-        <span className='invalid-message'>{error && error[0]}</span>
-      </div>
-    );
   } else {
     const styles = `input-box${inlineElement ? ` inline-btn-box` : ''} ${
       error ? 'invalid' : ''

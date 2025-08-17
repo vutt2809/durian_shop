@@ -41,12 +41,7 @@ class ProductController extends Controller
             $query->whereBetween('price', [$request->min, $request->max]);
         }
 
-        // Filter by rating
-        if ($request->has('rating') && $request->rating > 0) {
-            $query->whereHas('reviews')
-                  ->withAvg('reviews', 'rating')
-                  ->having('reviews_avg_rating', '>=', $request->rating);
-        }
+
 
         // Search by name
         if ($request->has('search')) {
@@ -80,14 +75,7 @@ class ProductController extends Controller
         $limit = $request->get('limit', 10); // Default to 12 if not specified
         $products = $query->paginate($limit);
 
-        if ($request->user()) {
-            $userWishlistIds = $request->user()->wishlist()->pluck('product_id')->toArray();
-            
-            $products->getCollection()->transform(function ($product) use ($userWishlistIds) {
-                $product->isLiked = in_array($product->id, $userWishlistIds);
-                return $product;
-            });
-        }
+
 
         return response()->json([
             'success' => true,
@@ -97,7 +85,7 @@ class ProductController extends Controller
 
     public function show($id_or_slug)
     {
-        $query = Product::with(['category', 'reviews.user'])->active();
+        $query = Product::with(['category'])->active();
 
         if (is_numeric($id_or_slug)) {
             $product = $query->where('id', $id_or_slug)->first();
@@ -109,9 +97,7 @@ class ProductController extends Controller
             return response()->json(['error' => 'Product not found.'], 404);
         }
 
-        if (request()->user()) {
-            $product->isLiked = request()->user()->wishlist()->where('product_id', $product->id)->exists();
-        }
+
 
         return response()->json([
             'success' => true,

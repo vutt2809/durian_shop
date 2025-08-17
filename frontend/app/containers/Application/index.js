@@ -58,7 +58,7 @@ const Application = (props) => {
   return (
     <div className='application'>
       <Notification />
-      <NavigationBar history={history} authenticated={authenticated} cartItems={cartItems} />
+      {!location.pathname.startsWith('/dashboard') && <NavigationBar history={history} authenticated={authenticated} cartItems={cartItems} />}
       <main className='main'>
         <Container>
           <div className='wrapper'>
@@ -83,7 +83,7 @@ const Application = (props) => {
           </div>
         </Container>
       </main>
-      <Footer />
+      {!location.pathname.startsWith('/dashboard') && <Footer />}
     </div>
   );
 };

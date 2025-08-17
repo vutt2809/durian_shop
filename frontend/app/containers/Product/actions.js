@@ -433,7 +433,6 @@ const productsFilterOrganizer = (n, v, s) => {
         brand: 'all',
         min: s.min,
         max: s.max,
-        rating: s.rating,
         order: s.order,
         page: s.currentPage,
         limit: s.limit
@@ -445,7 +444,6 @@ const productsFilterOrganizer = (n, v, s) => {
         brand: v,
         min: s.min,
         max: s.max,
-        rating: s.rating,
         order: s.order,
         page: s.currentPage,
         limit: s.limit
@@ -457,7 +455,6 @@ const productsFilterOrganizer = (n, v, s) => {
         brand: s.brand,
         min: s.min,
         max: s.max,
-        rating: s.rating,
         order: v,
         page: s.currentPage,
         limit: s.limit
@@ -469,23 +466,11 @@ const productsFilterOrganizer = (n, v, s) => {
         brand: s.brand,
         min: v[0],
         max: v[1],
-        rating: s.rating,
         order: s.order,
         page: s.currentPage,
         limit: s.limit
       };
-    case 'rating':
-      return {
-        name: s.name,
-        category: s.category,
-        brand: s.brand,
-        min: s.min,
-        max: s.max,
-        rating: v,
-        order: s.order,
-        page: s.currentPage,
-        limit: s.limit
-      };
+
     case 'pagination':
       return {
         name: s.name,
@@ -493,7 +478,6 @@ const productsFilterOrganizer = (n, v, s) => {
         brand: s.brand,
         min: s.min,
         max: s.max,
-        rating: s.rating,
         order: s.order,
         page: v ?? s.currentPage,
         limit: s.limit
@@ -505,7 +489,6 @@ const productsFilterOrganizer = (n, v, s) => {
         brand: 'all',
         min: s.min,
         max: s.max,
-        rating: s.rating,
         order: s.order,
         page: s.currentPage,
         limit: s.limit

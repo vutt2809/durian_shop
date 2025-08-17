@@ -41,7 +41,7 @@ class OrderPage extends React.PureComponent {
       <div className='order-page'>
         {isLoading ? (
           <LoadingIndicator backdrop />
-        ) : orderid ? (
+        ) : order && order.id ? (
           <OrderDetails
             order={order}
             user={user}
@@ -56,7 +56,7 @@ class OrderPage extends React.PureComponent {
             }}
           />
         ) : (
-          <NotFound message='No order found.' />
+          <NotFound message='Không tìm thấy đơn hàng.' />
         )}
       </div>
     );

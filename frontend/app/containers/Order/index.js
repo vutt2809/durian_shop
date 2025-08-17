@@ -9,9 +9,9 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Container, Row, Col, Card, Badge } from 'reactstrap';
 import { FaArrowLeft, FaMapMarkerAlt, FaPhone, FaUser, FaCalendar, FaBox } from 'react-icons/fa';
-import { fetchOrderById } from './actions';
+import { fetchOrderById, updateOrderStatusByAdmin } from './actions';
 
-const OrderDetail = ({ match, history, order, isLoading, fetchOrderById }) => {
+const OrderDetail = ({ match, history, order, isLoading, fetchOrderById, updateOrderStatusByAdmin, user }) => {
   const [orderData, setOrderData] = useState(null);
 
   useEffect(() => {
@@ -40,6 +40,27 @@ const OrderDetail = ({ match, history, order, isLoading, fetchOrderById }) => {
       case 'delivered': return { bg: '#D1FAE5', color: '#065F46', text: 'Đã giao hàng' };
       case 'cancelled': return { bg: '#FEE2E2', color: '#991B1B', text: 'Đã hủy' };
       default: return { bg: '#F3F4F6', color: '#374151', text: status };
+    }
+  };
+
+  const getAvailableStatuses = (currentStatus) => {
+    const statusTransitions = {
+      'pending': ['processing', 'cancelled'],
+      'processing': ['shipped', 'cancelled'],
+      'shipped': ['delivered', 'cancelled'],
+      'delivered': [],
+      'cancelled': []
+    };
+    return statusTransitions[currentStatus] || [];
+  };
+
+  const handleStatusUpdate = (newStatus) => {
+    console.log('🎯 OrderDetail handleStatusUpdate called:', { newStatus, orderDataId: orderData?.id, userRole: user?.role });
+    if (orderData && user?.role === 'admin') {
+      console.log('👑 Admin detected in OrderDetail, calling updateOrderStatusByAdmin');
+      updateOrderStatusByAdmin(orderData.id, newStatus);
+    } else {
+      console.log('❌ Not admin or no orderData in OrderDetail');
     }
   };
 
@@ -120,16 +141,56 @@ const OrderDetail = ({ match, history, order, isLoading, fetchOrderById }) => {
           <h1 style={{ fontSize: 28, fontWeight: 700, color: '#111827', margin: 0 }}>
             Đơn hàng #{orderData.order_number || orderData.id}
           </h1>
-          <Badge style={{
-            padding: '8px 16px',
-            fontSize: 14,
-            fontWeight: 600,
-            background: statusInfo.bg,
-            color: statusInfo.color,
-            border: 'none'
-          }}>
-            {statusInfo.text}
-          </Badge>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            <Badge style={{
+              padding: '8px 16px',
+              fontSize: 14,
+              fontWeight: 600,
+              background: statusInfo.bg,
+              color: statusInfo.color,
+              border: 'none'
+            }}>
+              {statusInfo.text}
+            </Badge>
+            
+            {/* Admin Status Update */}
+            {(() => {
+              const isAdmin = user?.role === 'admin';
+              console.log('🔍 OrderDetail admin check:', { isAdmin, userRole: user?.role });
+              return isAdmin;
+            })() && (
+              <div style={{ position: 'relative' }}>
+                <select
+                  value=""
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      handleStatusUpdate(e.target.value);
+                      e.target.value = '';
+                    }
+                  }}
+                  style={{
+                    padding: '8px 12px',
+                    border: '1px solid #D1D5DB',
+                    borderRadius: 6,
+                    fontSize: 14,
+                    background: '#fff',
+                    cursor: 'pointer',
+                    minWidth: 140
+                  }}
+                >
+                  <option value="">Cập nhật trạng thái</option>
+                  {getAvailableStatuses(orderData.status).map(status => {
+                    const statusInfo = getStatusColor(status);
+                    return (
+                      <option key={status} value={status}>
+                        {statusInfo.text}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+            )}
+          </div>
         </div>
         
         <p style={{ color: '#6B7280', fontSize: 16, margin: 0 }}>
@@ -146,14 +207,14 @@ const OrderDetail = ({ match, history, order, isLoading, fetchOrderById }) => {
               Chi tiết sản phẩm
             </h3>
             
-            {orderData.orderDetails && orderData.orderDetails.length > 0 ? (
+            {orderData.order_details && orderData.order_details.length > 0 ? (
               <div>
-                {orderData.orderDetails.map((item, index) => (
+                {orderData.order_details.map((item, index) => (
                   <div key={index} style={{
                     display: 'flex',
                     alignItems: 'center',
                     padding: '16px 0',
-                    borderBottom: index < orderData.orderDetails.length - 1 ? '1px solid #F3F4F6' : 'none'
+                    borderBottom: index < orderData.order_details.length - 1 ? '1px solid #F3F4F6' : 'none'
                   }}>
                     <div style={{
                       width: 80,
@@ -281,11 +342,13 @@ const OrderDetail = ({ match, history, order, isLoading, fetchOrderById }) => {
 
 const mapStateToProps = (state) => ({
   order: state.order.order, // Sử dụng order thay vì selectedOrder
-  isLoading: state.order.isLoading
+  isLoading: state.order.isLoading,
+  user: state.account.user
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchOrderById: (orderId) => dispatch(fetchOrderById(orderId))
+  fetchOrderById: (orderId) => dispatch(fetchOrderById(orderId)),
+  updateOrderStatusByAdmin: (orderId, status) => dispatch(updateOrderStatusByAdmin(orderId, status))
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(OrderDetail));

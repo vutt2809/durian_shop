@@ -7,7 +7,6 @@
 import { error } from 'react-notification-system-redux';
 
 import { signOut } from '../containers/Login/actions';
-import { VI } from '../constants/vi';
 
 const handleError = (err, dispatch, title = '') => {
   const unsuccessfulOptions = {
@@ -19,7 +18,7 @@ const handleError = (err, dispatch, title = '') => {
 
   if (err.response) {
     if (err.response.status === 400) {
-      unsuccessfulOptions.title = title ? title : VI['Please Try Again!'];
+      unsuccessfulOptions.title = title ? title : 'Vui lòng thử lại!';
       unsuccessfulOptions.message = err.response.data.error;
       dispatch(error(unsuccessfulOptions));
     } else if (err.response.status === 404) {
@@ -28,11 +27,11 @@ const handleError = (err, dispatch, title = '') => {
       //   'Your request could not be processed. Please try again.';
       // dispatch(error(unsuccessfulOptions));
     } else if (err.response.status === 401) {
-      unsuccessfulOptions.message = VI['Unauthorized Access! Please login again'];
+      unsuccessfulOptions.message = 'Truy cập không được phép! Vui lòng đăng nhập lại';
       dispatch(signOut());
       dispatch(error(unsuccessfulOptions));
     } else if (err.response.status === 403) {
-      unsuccessfulOptions.message = VI['Forbidden! You are not allowed to access this resource.'];
+      unsuccessfulOptions.message = 'Bị cấm! Bạn không được phép truy cập tài nguyên này.';
       dispatch(error(unsuccessfulOptions));
     }
   } else if (err.message) {
@@ -40,7 +39,7 @@ const handleError = (err, dispatch, title = '') => {
     dispatch(error(unsuccessfulOptions));
   } else {
     // fallback
-    unsuccessfulOptions.message = VI['Your request could not be processed. Please try again.'];
+    unsuccessfulOptions.message = 'Yêu cầu của bạn không thể xử lý. Vui lòng thử lại.';
   }
 };
 

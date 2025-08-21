@@ -8,7 +8,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Container, Row, Col, Card, Badge } from 'reactstrap';
-import { FaArrowLeft, FaMapMarkerAlt, FaPhone, FaUser, FaCalendar, FaBox } from 'react-icons/fa';
+
 import { fetchOrderById, updateOrderStatusByAdmin } from './actions';
 
 const OrderDetail = ({ match, history, order, isLoading, fetchOrderById, updateOrderStatusByAdmin, user }) => {
@@ -203,7 +203,6 @@ const OrderDetail = ({ match, history, order, isLoading, fetchOrderById, updateO
         <Col lg="8">
           <Card style={{ padding: 24, marginBottom: 24, border: '1px solid #E5E7EB' }}>
             <h3 style={{ fontSize: 20, fontWeight: 600, marginBottom: 20, color: '#111827' }}>
-              <FaBox style={{ marginRight: 8, color: '#F59E0B' }} />
               Chi tiết sản phẩm
             </h3>
             
@@ -299,29 +298,23 @@ const OrderDetail = ({ match, history, order, isLoading, fetchOrderById, updateO
           </Card>
 
           {/* Shipping Information */}
-          {orderData.shippingAddress && (
-            <Card style={{ padding: 24, border: '1px solid #E5E7EB' }}>
-              <h3 style={{ fontSize: 20, fontWeight: 600, marginBottom: 20, color: '#111827' }}>
-                <FaMapMarkerAlt style={{ marginRight: 8, color: '#EF4444' }} />
-                Thông tin giao hàng
-              </h3>
-              
-              <div style={{ marginBottom: 12 }}>
-                <div style={{ display: 'flex', alignItems: 'center', marginBottom: 8 }}>
-                  <FaUser style={{ marginRight: 8, color: '#6B7280' }} />
-                  <span style={{ fontWeight: 600 }}>{orderData.shippingAddress.full_name}</span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', marginBottom: 8 }}>
-                  <FaPhone style={{ marginRight: 8, color: '#6B7280' }} />
-                  <span>{orderData.shippingAddress.phone}</span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'flex-start' }}>
-                  <FaMapMarkerAlt style={{ marginRight: 8, color: '#6B7280', marginTop: 2 }} />
-                  <span>{orderData.shippingAddress.address}</span>
-                </div>
+          <Card style={{ padding: 24, border: '1px solid #E5E7EB' }}>
+            <h3 style={{ fontSize: 20, fontWeight: 600, marginBottom: 20, color: '#111827' }}>
+              Thông tin giao hàng
+            </h3>
+            
+            <div style={{ marginBottom: 12 }}>
+              <div style={{ marginBottom: 8 }}>
+                <span style={{ fontWeight: 600 }}>{orderData.full_name}</span>
               </div>
-            </Card>
-          )}
+              <div style={{ marginBottom: 8 }}>
+                <span>{orderData.phone}</span>
+              </div>
+              <div>
+                <span>{orderData.address}</span>
+              </div>
+            </div>
+          </Card>
 
           {/* Order Notes */}
           {orderData.notes && (

@@ -36,8 +36,7 @@ class OrderSuccess extends React.PureComponent {
         {isLoading ? (
           <LoadingIndicator />
         ) : order ? (
-          <div style={{ maxWidth: 520, width: '100%', background: '#fff', borderRadius: 24, boxShadow: '0 8px 32px rgba(234,179,8,0.10)', padding: '44px 32px', margin: '40px 0', border: '1.5px solid #ffe259', textAlign: 'center' }}>
-            <div style={{fontSize: 64, color: '#388e3c', marginBottom: 16}}>✅</div>
+          <div style={{ maxWidth: 520, width: '100%', background: '#fff', borderRadius: 24, boxShadow: '0 8px 32px rgba(234,179,8,0.10)', padding: '44px 32px', margin: '40px 0', textAlign: 'center' }}>
             <h2 style={{ fontWeight: 800, fontSize: 28, color: '#388e3c', margin: '0 0 16px 0', letterSpacing: 1 }}>Đặt hàng thành công!</h2>
             <p style={{ fontSize: 18, color: '#666', marginBottom: 8 }}>
               Cảm ơn bạn đã đặt hàng. Mã đơn hàng của bạn là:
@@ -51,13 +50,13 @@ class OrderSuccess extends React.PureComponent {
             <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
               <Link 
                 to='/dashboard/orders' 
-                style={{ padding: '12px 24px', background: '#eab308', color: '#222', textDecoration: 'none', borderRadius: 8, fontWeight: 600, fontSize: 16 }}
+                style={{ padding: '12px 24px', textDecoration: 'none', borderRadius: 8, fontWeight: 600, fontSize: 16 }}
               >
                 Xem đơn hàng
               </Link>
               <Link 
                 to='/shop' 
-                style={{ padding: '12px 24px', background: '#388e3c', color: '#fff', textDecoration: 'none', borderRadius: 8, fontWeight: 600, fontSize: 16 }}
+                style={{ padding: '12px 24px', textDecoration: 'none', borderRadius: 8, fontWeight: 600, fontSize: 16 }}
               >
                 Tiếp tục mua sắm
               </Link>

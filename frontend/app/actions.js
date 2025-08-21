@@ -17,12 +17,10 @@ import * as cart from './containers/Cart/actions';
 import * as newsletter from './containers/Newsletter/actions';
 import * as dashboard from './containers/Dashboard/actions';
 import * as account from './containers/Account/actions';
-import * as address from './containers/Address/actions';
 import * as resetPassword from './containers/ResetPassword/actions';
 import * as users from './containers/Users/actions';
 import * as product from './containers/Product/actions';
 import * as category from './containers/Category/actions';
-import * as brand from './containers/Brand/actions';
 import * as menu from './containers/NavigationMenu/actions';
 import * as shop from './containers/Shop/actions';
 import * as merchant from './containers/Merchant/actions';
@@ -44,12 +42,10 @@ export default function mapDispatchToProps(dispatch) {
       ...newsletter,
       ...dashboard,
       ...account,
-      ...address,
       ...resetPassword,
       ...users,
       ...product,
       ...category,
-      ...brand,
       ...menu,
       ...shop,
       ...merchant,

@@ -6,7 +6,6 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\CategoryController;
-use App\Http\Controllers\Api\UserAddressController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\CartController;
 
@@ -69,15 +68,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/password', [UserController::class, 'updatePassword']);
     });
 
-    // Address routes
-    Route::prefix('address')->group(function () {
-        Route::get('/', [UserAddressController::class, 'index']);
-        Route::post('/', [UserAddressController::class, 'store']);
-        Route::put('/{id}', [UserAddressController::class, 'update']);
-        Route::delete('/{id}', [UserAddressController::class, 'destroy']);
-        Route::put('/{id}/default', [UserAddressController::class, 'setDefault']);
-    });
-
     // Cart routes
     Route::prefix('cart')->group(function () {
         Route::get('/', [CartController::class, 'index']);
@@ -102,30 +92,20 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/{id}/cancel', [OrderController::class, 'cancel']);
     });
 
-
-
-    // Admin routes
-    Route::middleware(['auth:sanctum'])->group(function () {
-        // Product management
-        Route::prefix('product')->group(function () {
-            Route::post('/', [ProductController::class, 'store']);
-            Route::put('/{id}', [ProductController::class, 'update']);
-            Route::delete('/{id}', [ProductController::class, 'destroy']);
-            Route::put('/{id}/active', [ProductController::class, 'toggleActive']);
-        });
-
+    // Admin only routes
+    Route::middleware(['auth:sanctum', 'admin'])->group(function () {
         // Category management
         Route::prefix('category')->group(function () {
             Route::post('/', [CategoryController::class, 'store']);
             Route::put('/{id}', [CategoryController::class, 'update']);
             Route::delete('/{id}', [CategoryController::class, 'destroy']);
-            Route::put('/{id}/active', [CategoryController::class, 'toggleActive']);
         });
 
         // User management
         Route::prefix('users')->group(function () {
-            Route::get('/', [UserController::class, 'index']);
-            Route::get('/{id}', [UserController::class, 'show']);
+            Route::get('/', [UserController::class, 'all']);
+            Route::put('/{id}/role', [UserController::class, 'updateRole']);
+            Route::delete('/{id}', [UserController::class, 'destroy']);
         });
 
         // Merchant management
@@ -134,10 +114,8 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('/', [MerchantController::class, 'store']);
             Route::put('/{id}', [MerchantController::class, 'update']);
             Route::delete('/{id}', [MerchantController::class, 'destroy']);
-            Route::put('/{id}/active', [MerchantController::class, 'toggleActive']);
+            Route::put('/{id}/approve', [MerchantController::class, 'approve']);
         });
-
-
     });
 });
 

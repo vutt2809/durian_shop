@@ -21,6 +21,30 @@ class UserController extends Controller
         ]);
     }
 
+    // Admin: list all users with pagination
+    public function all(Request $request)
+    {
+        if ($request->user()->role !== 'admin') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized. Admin access required.'
+            ], 403);
+        }
+
+        $page = $request->get('page', 1);
+        $limit = $request->get('limit', 20);
+
+        $users = User::orderBy('created_at', 'desc')->paginate($limit, ['*'], 'page', $page);
+
+        return response()->json([
+            'success' => true,
+            'users' => $users->items(),
+            'totalPages' => $users->lastPage(),
+            'currentPage' => $users->currentPage(),
+            'count' => $users->total()
+        ]);
+    }
+
     public function show($id)
     {
         $user = User::find($id);
@@ -91,6 +115,70 @@ class UserController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Password updated successfully.'
+        ]);
+    }
+
+    // Admin: update role
+    public function updateRole(Request $request, $id)
+    {
+        if ($request->user()->role !== 'admin') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized. Admin access required.'
+            ], 403);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'role' => 'required|in:admin,customer'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => $validator->errors()->first()
+            ], 400);
+        }
+
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found'
+            ], 404);
+        }
+
+        $user->role = $request->role;
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User role updated successfully.',
+            'user' => $user
+        ]);
+    }
+
+    // Admin: delete user
+    public function destroy(Request $request, $id)
+    {
+        if ($request->user()->role !== 'admin') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized. Admin access required.'
+            ], 403);
+        }
+
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found'
+            ], 404);
+        }
+
+        $user->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User deleted successfully.'
         ]);
     }
 } 

@@ -15,9 +15,7 @@ import actions from '../../actions';
 import Input from '../../components/Common/Input';
 import Button from '../../components/Common/Button';
 import Checkbox from '../../components/Common/Checkbox';
-import LoadingIndicator from '../../components/Common/LoadingIndicator';
-import SignupProvider from '../../components/Common/SignupProvider';
-import { VI } from '../../constants';
+
 
 class Signup extends React.PureComponent {
   render() {
@@ -42,23 +40,19 @@ class Signup extends React.PureComponent {
 
     return (
       <div className='signup-form'>
-        {isLoading && <LoadingIndicator />}
-        <h2>{VI['Sign Up']}</h2>
+
+        <h2>Đăng ký</h2>
         <hr />
         <form onSubmit={handleSubmit} noValidate>
           <Row>
-            <Col
-              xs={{ size: 12, order: 2 }}
-              md={{ size: '6', order: 1 }}
-              className='p-0'
-            >
+            <Col xs='12' md='6' className='mx-auto'>
               <Col xs='12' md='12'>
                 <Input
                   type={'text'}
                   error={formErrors['email']}
-                  label={VI['Email Address']}
+                  label={'Địa chỉ email'}
                   name={'email'}
-                  placeholder={VI['Please Enter Your Email']}
+                  placeholder={'Vui lòng nhập email của bạn'}
                   value={signupFormData.email}
                   onInputChange={(name, value) => {
                     signupChange(name, value);
@@ -69,9 +63,9 @@ class Signup extends React.PureComponent {
                 <Input
                   type={'text'}
                   error={formErrors['first_name']}
-                  label={VI['First Name']}
+                  label={'Tên'}
                   name={'first_name'}
-                  placeholder={VI['Please Enter Your First Name']}
+                  placeholder={'Vui lòng nhập tên của bạn'}
                   value={signupFormData.first_name}
                   onInputChange={(name, value) => {
                     signupChange(name, value);
@@ -82,9 +76,9 @@ class Signup extends React.PureComponent {
                 <Input
                   type={'text'}
                   error={formErrors['last_name']}
-                  label={VI['Last Name']}
+                  label={'Họ'}
                   name={'last_name'}
-                  placeholder={VI['Please Enter Your Last Name']}
+                  placeholder={'Vui lòng nhập họ của bạn'}
                   value={signupFormData.last_name}
                   onInputChange={(name, value) => {
                     signupChange(name, value);
@@ -94,10 +88,10 @@ class Signup extends React.PureComponent {
               <Col xs='12' md='12'>
                 <Input
                   type={'password'}
-                  label={VI['Password']}
+                  label={'Mật khẩu'}
                   error={formErrors['password']}
                   name={'password'}
-                  placeholder={VI['Please Enter Your Password']}
+                  placeholder={'Vui lòng nhập mật khẩu của bạn'}
                   value={signupFormData.password}
                   onInputChange={(name, value) => {
                     signupChange(name, value);
@@ -105,18 +99,11 @@ class Signup extends React.PureComponent {
                 />
               </Col>
             </Col>
-            <Col
-              xs={{ size: 12, order: 1 }}
-              md={{ size: '6', order: 2 }}
-              className='mb-2 mb-md-0'
-            >
-              <SignupProvider />
-            </Col>
           </Row>
           <hr />
           <Checkbox
             id={'subscribe'}
-            label={VI['Subscribe to newsletter']}
+            label={'Đăng ký nhận bản tin'}
             checked={isSubscribed}
             onChange={subscribeChange}
           />
@@ -124,11 +111,11 @@ class Signup extends React.PureComponent {
             <Button
               type='submit'
               variant='primary'
-              text={VI['Sign Up']}
+              text={'Đăng ký'}
               disabled={isSubmitting}
             />
             <Link className='mt-3 mt-md-0 redirect-link' to={'/login'}>
-              {VI['Back To Login']}
+              Quay lại trang đăng nhập
             </Link>
           </div>
         </form>

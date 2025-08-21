@@ -6,8 +6,7 @@
 
 import React from 'react';
 
-import Tooltip from '../Tooltip';
-import Popover from '../Popover';
+
 
 const variants = {
   primary: 'custom-btn-primary',
@@ -38,11 +37,7 @@ const Button = props => {
     borderless,
     round,
     onClick,
-    tooltip,
-    tooltipContent,
-    popover,
-    popoverContent,
-    popoverTitle
+
   } = props;
 
   const v = variant ? variants[variant] : '';
@@ -60,9 +55,7 @@ const Button = props => {
 
   const iconClassNames = `btn-icon${`${iconClassName && ` ${iconClassName}`}`}`;
 
-  const tooltipId = tooltip ? `tooltip-${id}` : id;
-  const popoverId = popover ? `popover-${id}` : id;
-  const btnId = tooltip ? tooltipId : popoverId;
+  const btnId = id;
 
   return (
     <button
@@ -79,12 +72,6 @@ const Button = props => {
         borderRadius: round
       }}
     >
-      {tooltip && <Tooltip target={tooltipId}>{tooltipContent}</Tooltip>}
-      {popover && (
-        <Popover target={popoverId} popoverTitle={popoverTitle}>
-          {popoverContent}
-        </Popover>
-      )}
       {iconDirection === 'left' ? (
         <>
           {icon && <div className={iconClassNames}>{icon}</div>}
@@ -108,9 +95,7 @@ Button.defaultProps = {
   iconDirection: 'left',
   iconClassName: '',
   borderless: false,
-  round: 3,
-  tooltip: false,
-  popover: false
+  round: 3
 };
 
 export default Button;

@@ -14,9 +14,7 @@ import actions from '../../actions';
 
 import Input from '../../components/Common/Input';
 import Button from '../../components/Common/Button';
-import LoadingIndicator from '../../components/Common/LoadingIndicator';
-import SignupProvider from '../../components/Common/SignupProvider';
-import { VI } from '../../constants';
+
 
 class Login extends React.PureComponent {
   render() {
@@ -43,23 +41,19 @@ class Login extends React.PureComponent {
 
     return (
       <div className='login-form'>
-        {isLoading && <LoadingIndicator />}
-        <h2>{VI.Login}</h2>
+
+        <h2>Đăng nhập</h2>
         <hr />
         <form onSubmit={handleSubmit} noValidate>
           <Row>
-            <Col
-              xs={{ size: 12, order: 2 }}
-              md={{ size: '6', order: 1 }}
-              className='p-0'
-            >
+            <Col xs='12' md='6' className='mx-auto'>
               <Col xs='12' md='12'>
                 <Input
                   type={'text'}
                   error={formErrors['email']}
-                  label={VI['Email Address']}
+                  label={'Địa chỉ email'}
                   name={'email'}
-                  placeholder={VI['Please Enter Your Email']}
+                  placeholder={'Vui lòng nhập email của bạn'}
                   value={loginFormData.email}
                   onInputChange={(name, value) => {
                     loginChange(name, value);
@@ -70,22 +64,15 @@ class Login extends React.PureComponent {
                 <Input
                   type={'password'}
                   error={formErrors['password']}
-                  label={VI.Password}
+                  label={'Mật khẩu'}
                   name={'password'}
-                  placeholder={VI['Please Enter Your Password']}
+                  placeholder={'Vui lòng nhập mật khẩu của bạn'}
                   value={loginFormData.password}
                   onInputChange={(name, value) => {
                     loginChange(name, value);
                   }}
                 />
               </Col>
-            </Col>
-            <Col
-              xs={{ size: 12, order: 1 }}
-              md={{ size: '6', order: 2 }}
-              className='mb-2 mb-md-0'
-            >
-              <SignupProvider />
             </Col>
           </Row>
           <hr />
@@ -94,11 +81,11 @@ class Login extends React.PureComponent {
               <Button
                 type='submit'
                 variant='primary'
-                text={VI.Login}
+                text={'Đăng nhập'}
                 disabled={isSubmitting}
               />
               <Button
-                text={VI['Create an account']}
+                text={'Tạo một tài khoản'}
                 variant='link'
                 className='ml-md-3'
                 onClick={registerLink}
@@ -108,7 +95,7 @@ class Login extends React.PureComponent {
               className='redirect-link forgot-password-link'
               to={'/forgot-password'}
             >
-              {VI['Forgot Password?']}
+              Quên mật khẩu?
             </Link>
           </div>
         </form>

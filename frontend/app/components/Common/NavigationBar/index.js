@@ -6,7 +6,7 @@
 
 import React from 'react';
 import { Container, Row, Col } from 'reactstrap';
-import { FaSearch, FaUser, FaShoppingCart } from 'react-icons/fa';
+
 
 const NavigationBar = ({ history, authenticated, cartItems = [] }) => {
   const [searchQuery, setSearchQuery] = React.useState('');
@@ -71,14 +71,7 @@ const NavigationBar = ({ history, authenticated, cartItems = [] }) => {
                   onFocus={(e) => e.target.style.borderColor = '#eab308'}
                   onBlur={(e) => e.target.style.borderColor = '#e9ecef'}
                 />
-                <FaSearch 
-                  style={{
-                    position: 'absolute',
-                    left: 12,
-                    color: '#6c757d',
-                    fontSize: 14
-                  }}
-                />
+
               </div>
               <button
                 type='submit'
@@ -91,11 +84,10 @@ const NavigationBar = ({ history, authenticated, cartItems = [] }) => {
                   borderRadius: 20,
                   fontWeight: 600,
                   cursor: 'pointer',
-                  transition: 'background-color 0.2s',
+
                   fontSize: 14
                 }}
-                onMouseEnter={(e) => e.target.style.background = '#f59e0b'}
-                onMouseLeave={(e) => e.target.style.background = '#eab308'}
+
               >
                 Tìm
               </button>
@@ -118,14 +110,10 @@ const NavigationBar = ({ history, authenticated, cartItems = [] }) => {
                   gap: 6,
                   color: '#eab308',
                   fontWeight: 600,
-                  transition: 'all 0.2s',
                   fontSize: 13,
                   position: 'relative'
                 }}
-                onMouseEnter={(e) => e.target.style.background = '#f8f9fa'}
-                onMouseLeave={(e) => e.target.style.background = 'none'}
               >
-                <FaShoppingCart size={16} />
                 <span>Giỏ hàng</span>
                 {cartItems && cartItems.length > 0 && (
                   <span style={{
@@ -160,13 +148,10 @@ const NavigationBar = ({ history, authenticated, cartItems = [] }) => {
                   gap: 6,
                   color: authenticated ? '#28a745' : '#6c757d',
                   fontWeight: 600,
-                  transition: 'all 0.2s',
                   fontSize: 13
                 }}
-                onMouseEnter={(e) => e.target.style.background = '#f8f9fa'}
-                onMouseLeave={(e) => e.target.style.background = 'none'}
               >
-                <FaUser size={16} />
+
                 <span>
                   {authenticated ? 'Tài khoản' : 'Đăng nhập'}
                 </span>

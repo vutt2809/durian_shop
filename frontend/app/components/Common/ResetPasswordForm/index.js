@@ -10,7 +10,6 @@ import { Row, Col } from 'reactstrap';
 
 import Input from '../Input';
 import Button from '../Button';
-import { VI } from '../../../constants';
 
 const ResetPasswordForm = props => {
   const {
@@ -34,9 +33,9 @@ const ResetPasswordForm = props => {
             <Input
               type={'password'}
               error={formErrors['password']}
-              label={VI['Password']}
+              label={'Mật khẩu'}
               name={'password'}
-              placeholder={isToken ? VI['Password'] : VI['Current Password']}
+              placeholder={isToken ? 'Mật khẩu' : 'Mật khẩu hiện tại'}
               value={resetFormData.password}
               onInputChange={(name, value) => {
                 resetPasswordChange(name, value);
@@ -47,9 +46,9 @@ const ResetPasswordForm = props => {
             <Input
               type={'password'}
               error={formErrors['confirmPassword']}
-              label={VI['Confirm Password']}
+              label={'Xác nhận mật khẩu'}
               name={'confirmPassword'}
-              placeholder={VI['Confirm New Password']}
+              placeholder={'Xác nhận mật khẩu mới'}
               value={resetFormData.confirmPassword}
               onInputChange={(name, value) => {
                 resetPasswordChange(name, value);
@@ -59,7 +58,7 @@ const ResetPasswordForm = props => {
         </Row>
         <hr />
         <div className='reset-actions'>
-          <Button type='submit' text={VI['Change Password']} />
+          <Button type='submit' text={'Đổi mật khẩu'} />
         </div>
       </form>
     </div>

@@ -17,7 +17,7 @@ class OrderController extends Controller
         $limit = $request->get('limit', 20);
         
         $orders = $request->user()->orders()
-            ->with(['orderDetails.product', 'shippingAddress'])
+            ->with(['orderDetails.product'])
             ->orderBy('created_at', 'desc')
             ->paginate($limit, ['*'], 'page', $page);
 
@@ -43,7 +43,7 @@ class OrderController extends Controller
         $page = $request->get('page', 1);
         $limit = $request->get('limit', 20);
         
-        $orders = Order::with(['orderDetails.product', 'shippingAddress', 'user'])
+        $orders = Order::with(['orderDetails.product', 'user'])
             ->orderBy('created_at', 'desc')
             ->paginate($limit, ['*'], 'page', $page);
 
@@ -108,21 +108,12 @@ class OrderController extends Controller
             $total += $item['price'] * $item['quantity'];
         }
 
-        // Tạo địa chỉ giao hàng
-        $shippingAddress = \App\Models\UserAddress::create([
+        // Tạo đơn hàng với thông tin địa chỉ trực tiếp
+        $order = Order::create([
             'user_id' => $request->user()->id,
             'full_name' => $request->full_name,
             'phone' => $request->phone,
-            'address1' => $request->address,
-            'city' => 'Hồ Chí Minh', // Có thể lấy từ form nếu cần
-            'district' => 'Quận 1', // Có thể lấy từ form nếu cần
-            'ward' => 'Phường 1', // Có thể lấy từ form nếu cần
-            'is_default' => false,
-        ]);
-
-        $order = Order::create([
-            'user_id' => $request->user()->id,
-            'shipping_address_id' => $shippingAddress->id,
+            'address' => $request->address,
             'order_number' => 'ORD-' . strtoupper(Str::random(8)),
             'subtotal' => $total,
             'total' => $total,
@@ -150,7 +141,7 @@ class OrderController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Order created successfully.',
-            'order' => $order->load('orderDetails', 'shippingAddress')
+            'order' => $order->load('orderDetails')
         ], 201);
     }
 
@@ -158,12 +149,12 @@ class OrderController extends Controller
     {
         // Nếu là admin, có thể xem tất cả đơn hàng
         if ($request->user()->role === 'admin') {
-            $order = Order::with(['orderDetails.product', 'shippingAddress', 'user'])
+            $order = Order::with(['orderDetails.product', 'user'])
                 ->find($id);
         } else {
             // User thường chỉ xem đơn hàng của mình
             $order = $request->user()->orders()
-                ->with(['orderDetails.product', 'shippingAddress'])
+                ->with(['orderDetails.product'])
                 ->find($id);
         }
 
@@ -258,7 +249,7 @@ class OrderController extends Controller
         return response()->json([
             'success' => true,
             'message' => "Order status updated from '{$oldStatus}' to '{$newStatus}' successfully.",
-            'order' => $order->load(['orderDetails.product', 'shippingAddress', 'user'])
+            'order' => $order->load(['orderDetails.product', 'user'])
         ]);
     }
 } 

@@ -50,11 +50,6 @@ class User extends Authenticatable
         'reset_password_expires' => 'datetime',
     ];
 
-    public function userAddresses()
-    {
-        return $this->hasMany(UserAddress::class);
-    }
-
     public function orders()
     {
         return $this->hasMany(Order::class);
@@ -64,8 +59,6 @@ class User extends Authenticatable
     {
         return $this->hasMany(\App\Models\ShoppingCart::class, 'user_id');
     }
-
-
 
     public function isAdmin()
     {

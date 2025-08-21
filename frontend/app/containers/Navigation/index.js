@@ -29,7 +29,7 @@ import {
 import actions from '../../actions';
 
 import Button from '../../components/Common/Button';
-import { BarsIcon } from '../../components/Common/Icon';
+
 import MiniBrand from '../../components/Store//MiniBrand';
 import Menu from '../NavigationMenu';
 import Cart from '../Cart';
@@ -132,19 +132,15 @@ class Navigation extends React.PureComponent {
           <Container>
             <Row>
               <Col md='4' className='text-center d-none d-md-block'>
-                <i className='fa fa-truck' />
                 <span>Miễn phí vận chuyển</span>
               </Col>
               <Col md='4' className='text-center d-none d-md-block'>
-                <i className='fa fa-credit-card' />
                 <span>Phương thức thanh toán</span>
               </Col>
               <Col md='4' className='text-center d-none d-md-block'>
-                <i className='fa fa-phone' />
                 <span>Gọi cho chúng tôi 0123456789</span>
               </Col>
               <Col xs='12' className='text-center d-block d-md-none'>
-                <i className='fa fa-phone' />
                 <span> Cần tư vấn? Gọi cho chúng tôi 0123456789</span>
               </Col>
             </Row>
@@ -166,7 +162,7 @@ class Navigation extends React.PureComponent {
                     variant='empty'
                     className='d-none d-md-block'
                     ariaLabel='open the menu'
-                    icon={<BarsIcon />}
+                    text='Menu'
                     onClick={() => this.toggleMenu()}
                   />
                 )}

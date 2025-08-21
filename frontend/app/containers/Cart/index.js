@@ -14,7 +14,7 @@ import { toggleCart } from '../Navigation/actions';
 import CartList from '../../components/Store/CartList';
 import CartSummary from '../../components/Store/CartSummary';
 import Checkout from '../../components/Store/Checkout';
-import { BagIcon, CloseIcon } from '../../components/Common/Icon';
+
 import Button from '../../components/Common/Button';
 
 class Cart extends React.PureComponent {
@@ -47,7 +47,7 @@ class Cart extends React.PureComponent {
               borderless
               variant='empty'
               ariaLabel='close the cart'
-              icon={<CloseIcon />}
+              text='X'
               onClick={toggleCart}
             />
           )}
@@ -62,7 +62,6 @@ class Cart extends React.PureComponent {
           </div>
         ) : (
           <div className='empty-cart'>
-            <BagIcon />
             <p>Giỏ hàng của bạn trống</p>
           </div>
         )}

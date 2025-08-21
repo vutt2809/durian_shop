@@ -57,44 +57,7 @@ class Shop extends React.PureComponent {
             md={{ size: 12, order: 2 }}
             lg={{ size: 9, order: 2 }}
           >
-            <Row className='align-items-center mx-0 mb-4 mt-4 mt-lg-0 py-3 py-lg-0 bg-white shop-toolbar'>
-              <Col
-                xs={{ size: 12, order: 1 }}
-                sm={{ size: 12, order: 1 }}
-                md={{ size: 5, order: 1 }}
-                lg={{ size: 6, order: 1 }}
-                className='text-center text-md-left mt-3 mt-md-0 mb-1 mb-md-0'
-              >
-                <span>Đang hiển thị: </span>
-                {totalProducts > 0
-                  ? `${left}-${right} sản phẩm của ${count} sản phẩm`
-                  : `${count} sản phẩm`}
-              </Col>
-              <Col
-                xs={{ size: 12, order: 2 }}
-                sm={{ size: 12, order: 2 }}
-                md={{ size: 2, order: 2 }}
-                lg={{ size: 2, order: 2 }}
-                className='text-right pr-0 d-none d-md-block'
-              >
-                <span>Sắp xếp theo</span>
-              </Col>
-              <Col
-                xs={{ size: 12, order: 2 }}
-                sm={{ size: 12, order: 2 }}
-                md={{ size: 5, order: 2 }}
-                lg={{ size: 4, order: 2 }}
-              >
-                <SelectOption
-                  name={'sorting'}
-                  value={sortOptions.find(option => option.value === order)}
-                  options={sortOptions}
-                  handleSelectChange={(n, v) => {
-                    filterProducts('sorting', n.value);
-                  }}
-                />
-              </Col>
-            </Row>
+
             <Switch>
               <Route exact path='/shop' component={ProductsShop} />
               <Route path='/shop/category/:id' component={CategoryShop} />

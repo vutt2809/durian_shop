@@ -29,8 +29,6 @@ export const MERCHANT_STATUS = {
   Waiting_Approval: 'Waiting Approval'
 };
 
-
-
 export const EMAIL_PROVIDER = {
   Email: 'Email',
   Google: 'Google',
@@ -38,5 +36,3 @@ export const EMAIL_PROVIDER = {
 };
 
 export const JWT_COOKIE = 'x-jwt-cookie';
-
-export * from './vi';

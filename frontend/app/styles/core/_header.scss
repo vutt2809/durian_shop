@@ -233,12 +233,7 @@
           background-color: $primary-bg;
           content: '';
           opacity: 0;
-          -webkit-transition: opacity $layout-transition-speed,
-            -webkit-transform $layout-transition-speed;
-          -moz-transition: opacity $layout-transition-speed,
-            -moz-transform $layout-transition-speed;
-          transition: opacity $layout-transition-speed,
-            transform $layout-transition-speed;
+          
           -webkit-transform: translateY(10px);
           -moz-transform: translateY(10px);
           transform: translateY(10px);

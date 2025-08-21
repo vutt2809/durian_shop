@@ -5,8 +5,7 @@
     border: $border-default;
     border-radius: $border-radius-default;
     background-color: $btn-bg;
-    -webkit-transition: $layout-transition-speed;
-    transition: $layout-transition-speed;
+
 
     &.sm {
       padding: 6px 10px;
@@ -23,8 +22,6 @@
     }
 
     .btn-text {
-      -webkit-transition: $layout-transition-speed;
-      transition: $layout-transition-speed;
     }
 
     &:hover {
@@ -32,8 +29,6 @@
       color: $font-custom-color !important;
 
       .btn-text {
-        -webkit-transition: $layout-transition-speed;
-        transition: $layout-transition-speed;
       }
     }
   }

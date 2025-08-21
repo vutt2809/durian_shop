@@ -6,21 +6,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
-import { 
-  FaUser, 
-  FaShoppingBag, 
-  FaMapMarkerAlt, 
-  FaHeart, 
-  FaCog, 
-  FaSignOutAlt,
-  FaHome,
-  FaBox,
-  FaStar,
-  FaHeadset,
-  FaBell,
-  FaSearch
-} from 'react-icons/fa';
+import { withRouter, Link } from 'react-router-dom';
+
 import actions from '../../actions';
 import { fetchProfile } from '../Account/actions';
 import { fetchAccountOrders } from '../Order/actions';
@@ -28,24 +15,22 @@ import { fetchAccountOrders } from '../Order/actions';
 // Dashboard Sidebar Component
 const DashboardSidebar = ({ activeTab, onTabChange, user }) => {
   const menuItems = [
-    { id: 'overview', label: 'Tổng quan', icon: FaHome, color: '#3B82F6' },
-    { id: 'account', label: 'Tài khoản', icon: FaUser, color: '#10B981' },
-    { id: 'orders', label: 'Đơn hàng', icon: FaShoppingBag, color: '#F59E0B' },
-    { id: 'address', label: 'Địa chỉ', icon: FaMapMarkerAlt, color: '#EF4444' },
-    { id: 'products', label: 'Sản phẩm', icon: FaBox, color: '#8B5CF6' },
-    { id: 'categories', label: 'Danh mục', icon: FaCog, color: '#06B6D4' },
-    { id: 'users', label: 'Người dùng', icon: FaUser, color: '#84CC16' },
-
-    { id: 'support', label: 'Hỗ trợ', icon: FaHeadset, color: '#8B5CF6' },
+    { id: 'overview', label: 'Tổng quan', path: '/dashboard' },
+    { id: 'account', label: 'Tài khoản', path: '/dashboard' },
+    { id: 'orders', label: 'Đơn hàng', path: '/dashboard/orders' },
+    { id: 'products', label: 'Sản phẩm', path: '/dashboard/products' },
+    { id: 'categories', label: 'Danh mục', path: '/dashboard/categories' },
+    { id: 'users', label: 'Người dùng', path: '/dashboard/users' },
+    { id: 'support', label: 'Hỗ trợ', path: '/dashboard/support' },
   ];
 
   return (
     <div style={{
       width: 280,
-      background: 'linear-gradient(180deg, #1F2937 0%, #111827 100%)',
+      background: '#f8f9fa',
       minHeight: '100vh',
       padding: '24px 0',
-      boxShadow: '4px 0 20px rgba(0,0,0,0.1)',
+      borderRight: '1px solid #e9ecef',
       position: 'fixed',
       left: 0,
       top: 0,
@@ -57,14 +42,13 @@ const DashboardSidebar = ({ activeTab, onTabChange, user }) => {
           display: 'flex',
           alignItems: 'center',
           gap: 12,
-          color: '#F9FAFB',
+          color: '#333',
           fontSize: 20,
           fontWeight: 700
         }}>
-          <span style={{ fontSize: 24 }}>🍈</span>
           <span>Sầu Riêng 5 Tốt</span>
         </div>
-        <div style={{ color: '#9CA3AF', fontSize: 14, marginTop: 4 }}>
+        <div style={{ color: '#6c757d', fontSize: 14, marginTop: 4 }}>
           Dashboard
         </div>
       </div>
@@ -81,7 +65,7 @@ const DashboardSidebar = ({ activeTab, onTabChange, user }) => {
             width: 48,
             height: 48,
             borderRadius: '50%',
-            background: 'linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)',
+            background: '#6c757d',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -92,10 +76,10 @@ const DashboardSidebar = ({ activeTab, onTabChange, user }) => {
             {user?.name?.charAt(0)?.toUpperCase() || 'U'}
           </div>
           <div>
-            <div style={{ color: '#F9FAFB', fontSize: 16, fontWeight: 600 }}>
+            <div style={{ color: '#333', fontSize: 16, fontWeight: 600 }}>
               {user?.name || 'Người dùng'}
             </div>
-            <div style={{ color: '#9CA3AF', fontSize: 14 }}>
+            <div style={{ color: '#6c757d', fontSize: 14 }}>
               {user?.email || 'user@example.com'}
             </div>
           </div>
@@ -109,43 +93,30 @@ const DashboardSidebar = ({ activeTab, onTabChange, user }) => {
           const isActive = activeTab === item.id;
           
           return (
-            <div
+            <Link
               key={item.id}
+              to={item.path}
               onClick={() => onTabChange(item.id)}
               style={{
                 padding: '12px 24px',
                 margin: '4px 0',
                 cursor: 'pointer',
-                background: isActive ? 'rgba(59, 130, 246, 0.1)' : 'transparent',
-                borderLeft: isActive ? '4px solid #3B82F6' : '4px solid transparent',
-                transition: 'all 0.2s ease',
+                background: isActive ? '#e9ecef' : 'transparent',
+                borderLeft: isActive ? '4px solid #6c757d' : '4px solid transparent',
                 display: 'flex',
                 alignItems: 'center',
-                gap: 12
-              }}
-              onMouseEnter={(e) => {
-                if (!isActive) {
-                  e.target.style.background = 'rgba(156, 163, 175, 0.1)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!isActive) {
-                  e.target.style.background = 'transparent';
-                }
+                gap: 12,
+                textDecoration: 'none'
               }}
             >
-              <IconComponent 
-                size={20} 
-                color={isActive ? '#3B82F6' : '#9CA3AF'} 
-              />
               <span style={{
-                color: isActive ? '#F9FAFB' : '#9CA3AF',
+                color: isActive ? '#333' : '#6c757d',
                 fontSize: 16,
                 fontWeight: isActive ? 600 : 400
               }}>
                 {item.label}
               </span>
-            </div>
+            </Link>
           );
         })}
       </nav>
@@ -165,27 +136,15 @@ const DashboardSidebar = ({ activeTab, onTabChange, user }) => {
           style={{
             width: '100%',
             padding: '12px 16px',
-            background: 'rgba(239, 68, 68, 0.1)',
-            border: '1px solid rgba(239, 68, 68, 0.2)',
-            borderRadius: 8,
-            color: '#EF4444',
+            background: '#f8f9fa',
+            border: '1px solid #dc3545',
+            borderRadius: 4,
+            color: '#dc3545',
             cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 8,
             fontSize: 14,
-            fontWeight: 500,
-            transition: 'all 0.2s ease'
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.background = 'rgba(239, 68, 68, 0.2)';
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.background = 'rgba(239, 68, 68, 0.1)';
+            fontWeight: 500
           }}
         >
-          <FaSignOutAlt size={16} />
           Đăng xuất
         </button>
       </div>
@@ -201,11 +160,10 @@ const DashboardHeader = ({ title, subtitle, onSearch }) => {
     <div style={{
       background: '#fff',
       padding: '24px 32px',
-      borderBottom: '1px solid #E5E7EB',
+      borderBottom: '1px solid #e9ecef',
       display: 'flex',
       alignItems: 'center',
-      justifyContent: 'space-between',
-      boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+      justifyContent: 'space-between'
     }}>
       <div>
         <h1 style={{
@@ -434,7 +392,6 @@ const OverviewTab = ({ user, orders }) => {
 const OrdersTab = ({ orders, isLoading, fetchAccountOrders, user, history }) => {
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [statusFilter, setStatusFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [itemsPerPage] = useState(10);
 
@@ -445,13 +402,12 @@ const OrdersTab = ({ orders, isLoading, fetchAccountOrders, user, history }) => 
     fetchAccountOrders(isAdmin);
   }, [user]);
 
-  // Filter orders based on status and search
+  // Filter orders based on search
   const filteredOrders = orders?.filter(order => {
-    const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
     const matchesSearch = searchQuery === '' || 
       order.order_number?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       order.id?.toString().includes(searchQuery);
-    return matchesStatus && matchesSearch;
+    return matchesSearch;
   }) || [];
 
   // Pagination
@@ -544,52 +500,7 @@ const OrdersTab = ({ orders, isLoading, fetchAccountOrders, user, history }) => 
           />
         </div>
 
-        {/* Status Filter */}
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-          style={{
-            padding: '10px 16px',
-            border: '1px solid #D1D5DB',
-            borderRadius: 8,
-            fontSize: 14,
-            background: '#fff',
-            cursor: 'pointer',
-            outline: 'none',
-            minWidth: 150
-          }}
-        >
-          <option value="all">Tất cả trạng thái</option>
-          <option value="pending">Chờ xử lý</option>
-          <option value="processing">Đang xử lý</option>
-          <option value="shipped">Đã gửi hàng</option>
-          <option value="delivered">Đã giao hàng</option>
-          <option value="cancelled">Đã hủy</option>
-        </select>
 
-        {/* Refresh Button */}
-        <button
-          onClick={() => fetchAccountOrders(user?.role === 'admin')}
-          style={{
-            padding: '10px 16px',
-            background: '#F59E0B',
-            color: '#fff',
-            border: 'none',
-            borderRadius: 8,
-            fontSize: 14,
-            fontWeight: 500,
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
-            transition: 'background-color 0.2s'
-          }}
-          onMouseEnter={(e) => e.target.style.background = '#D97706'}
-          onMouseLeave={(e) => e.target.style.background = '#F59E0B'}
-        >
-          <span>🔄</span>
-          Làm mới
-        </button>
       </div>
 
       {/* Orders Table */}
@@ -858,170 +769,7 @@ const AccountTab = ({ user }) => {
   );
 };
 
-// Address Tab Component
-const AddressTab = ({ user }) => {
-  const [addresses, setAddresses] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    fetchAddresses();
-  }, []);
-
-  const fetchAddresses = async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch('http://localhost:3000/api/address', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-      const data = await response.json();
-      if (data.success) {
-        setAddresses(data.addresses || []);
-      }
-    } catch (error) {
-      console.error('Error fetching addresses:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  return (
-    <div style={{ padding: '32px' }}>
-      {isLoading ? (
-        <div style={{ padding: '40px', textAlign: 'center', color: '#6B7280' }}>
-          <div style={{ fontSize: 18, marginBottom: 8 }}>⏳</div>
-          Đang tải dữ liệu...
-        </div>
-      ) : addresses.length > 0 ? (
-        <div style={{
-          background: '#fff',
-          borderRadius: 12,
-          border: '1px solid #E5E7EB',
-          overflow: 'hidden',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-        }}>
-          <div style={{
-            padding: '20px 24px',
-            borderBottom: '1px solid #E5E7EB',
-            background: '#F9FAFB'
-          }}>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 2fr 1fr 1fr 1fr',
-              gap: 16,
-              fontSize: 14,
-              fontWeight: 600,
-              color: '#374151'
-            }}>
-              <div>ID</div>
-              <div>Thông tin</div>
-              <div>Địa chỉ</div>
-              <div>Mặc định</div>
-              <div>Thao tác</div>
-            </div>
-          </div>
-          
-          <div>
-            {addresses.map((address, index) => (
-              <div key={address.id} style={{
-                padding: '20px 24px',
-                borderBottom: index < addresses.length - 1 ? '1px solid #F3F4F6' : 'none',
-                display: 'grid',
-                gridTemplateColumns: '1fr 2fr 1fr 1fr 1fr',
-                gap: 16,
-                alignItems: 'center'
-              }}>
-                <div style={{ fontSize: 14, fontWeight: 500, color: '#111827' }}>
-                  #{address.id}
-                </div>
-                
-                <div>
-                  <div style={{ fontSize: 16, fontWeight: 600, color: '#111827' }}>
-                    {address.full_name}
-                  </div>
-                  <div style={{ fontSize: 12, color: '#6B7280', marginTop: 2 }}>
-                    {address.phone}
-                  </div>
-                </div>
-                
-                <div style={{ fontSize: 14, color: '#374151' }}>
-                  <div>{address.address1}</div>
-                  {address.address2 && (
-                    <div style={{ fontSize: 12, color: '#6B7280', marginTop: 2 }}>
-                      {address.address2}
-                    </div>
-                  )}
-                  <div style={{ fontSize: 12, color: '#6B7280', marginTop: 2 }}>
-                    {address.ward}, {address.district}, {address.city}
-                  </div>
-                </div>
-                
-                <div>
-                  <span style={{
-                    padding: '4px 8px',
-                    borderRadius: 12,
-                    fontSize: 12,
-                    fontWeight: 500,
-                    background: address.is_default ? '#D1FAE5' : '#F3F4F6',
-                    color: address.is_default ? '#065F46' : '#6B7280'
-                  }}>
-                    {address.is_default ? 'Mặc định' : 'Không'}
-                  </span>
-                </div>
-                
-                <div style={{ display: 'flex', gap: 8 }}>
-                  <button style={{
-                    padding: '6px 12px',
-                    background: '#3B82F6',
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: 6,
-                    fontSize: 12,
-                    fontWeight: 500,
-                    cursor: 'pointer',
-                    transition: 'background-color 0.2s'
-                  }}
-                  onMouseEnter={(e) => e.target.style.background = '#2563EB'}
-                  onMouseLeave={(e) => e.target.style.background = '#3B82F6'}
-                  >
-                    Sửa
-                  </button>
-                  <button style={{
-                    padding: '6px 12px',
-                    background: '#EF4444',
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: 6,
-                    fontSize: 12,
-                    fontWeight: 500,
-                    cursor: 'pointer',
-                    transition: 'background-color 0.2s'
-                  }}
-                  onMouseEnter={(e) => e.target.style.background = '#DC2626'}
-                  onMouseLeave={(e) => e.target.style.background = '#EF4444'}
-                  >
-                    Xóa
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      ) : (
-        <div style={{ padding: '40px', textAlign: 'center', color: '#6B7280' }}>
-          <div style={{ fontSize: 48, marginBottom: 16 }}>📍</div>
-          <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 8 }}>
-            Chưa có địa chỉ nào
-          </div>
-          <div style={{ fontSize: 14 }}>
-            Thêm địa chỉ đầu tiên để thuận tiện cho việc giao hàng
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
 
 
 
@@ -2683,20 +2431,39 @@ const UsersTab = ({ user }) => {
 
 // Main Dashboard Component
 const Dashboard = (props) => {
-  const [activeTab, setActiveTab] = useState('overview');
   const [userLoaded, setUserLoaded] = useState(false);
-  const { user, orders, fetchAccountOrders } = props;
+  const { user, orders, fetchAccountOrders, history, location } = props;
+  
+  // Get activeTab from URL path
+  const getActiveTabFromPath = () => {
+    const path = location.pathname;
+    if (path === '/dashboard') return 'overview';
+    if (path === '/dashboard/orders') return 'orders';
+    if (path === '/dashboard/users') return 'users';
+    if (path === '/dashboard/products') return 'products';
+    if (path === '/dashboard/categories') return 'categories';
+    if (path === '/dashboard/sellers') return 'sellers';
+    if (path === '/dashboard/support') return 'support';
+    return 'overview';
+  };
+  
+  const [activeTab, setActiveTab] = useState(getActiveTabFromPath());
 
   useEffect(() => {
-
     // Gọi API khi component mount
     fetchAccountOrders();
     
-        // Fetch user profile nếu có token (để đảm bảo user data được load sau reload)
+    // Fetch user profile nếu có token (để đảm bảo user data được load sau reload)
     if (localStorage.getItem('token')) {
       fetchUserProfile();
     }
   }, []); // Bỏ user khỏi dependency để tránh infinite loop
+
+  // Update activeTab when URL changes
+  useEffect(() => {
+    const newActiveTab = getActiveTabFromPath();
+    setActiveTab(newActiveTab);
+  }, [location.pathname]);
 
   // Thêm useEffect để log user data khi thay đổi
   useEffect(() => {
@@ -2725,6 +2492,33 @@ const Dashboard = (props) => {
   const handleTabChange = (tabId) => {
     setActiveTab(tabId);
     
+    // Update URL based on tab
+    switch (tabId) {
+      case 'overview':
+        history.push('/dashboard');
+        break;
+      case 'orders':
+        history.push('/dashboard/orders');
+        break;
+      case 'users':
+        history.push('/dashboard/users');
+        break;
+      case 'products':
+        history.push('/dashboard/products');
+        break;
+      case 'categories':
+        history.push('/dashboard/categories');
+        break;
+      case 'sellers':
+        history.push('/dashboard/sellers');
+        break;
+      case 'support':
+        history.push('/dashboard/support');
+        break;
+      default:
+        history.push('/dashboard');
+    }
+    
     // Gọi API tương ứng với từng tab
     switch (tabId) {
       case 'overview':
@@ -2741,14 +2535,6 @@ const Dashboard = (props) => {
       case 'orders':
         // Gọi API để lấy danh sách đơn hàng
         fetchAccountOrders();
-        break;
-      case 'address':
-        // Gọi API để lấy danh sách địa chỉ
-        fetch('http://localhost:3000/api/address', {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        }).catch(error => console.error('Error fetching addresses:', error));
         break;
       case 'products':
         // Gọi API để lấy danh sách sản phẩm (public route)
@@ -2782,7 +2568,6 @@ const Dashboard = (props) => {
           }
         }).catch(error => console.error('Error fetching merchants:', error));
         break;
-
       case 'support':
         // Không cần gọi API cho support
         break;
@@ -2803,8 +2588,7 @@ const Dashboard = (props) => {
       case 'orders':
 
         return <OrdersTab key="orders" orders={orders} isLoading={false} fetchAccountOrders={fetchAccountOrders} user={user} history={props.history} />;
-      case 'address':
-        return <AddressTab key="address" user={user} />;
+
       case 'products':
         return <ProductsTab key={`products-${userKey}`} user={user} />;
       case 'categories':
@@ -2826,11 +2610,9 @@ const Dashboard = (props) => {
       overview: 'Tổng quan',
       account: 'Tài khoản',
       orders: 'Đơn hàng',
-      address: 'Địa chỉ',
       products: 'Sản phẩm',
       categories: 'Danh mục',
       users: 'Người dùng',
-      
       support: 'Hỗ trợ'
     };
     return titles[activeTab] || 'Dashboard';

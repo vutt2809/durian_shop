@@ -9,9 +9,9 @@ import { connect } from 'react-redux';
 import { Row, Col, Container } from 'reactstrap';
 import actions from '../../actions';
 import { withRouter, Link } from 'react-router-dom';
-import { FaShoppingCart } from 'react-icons/fa';
+
 import { handleAddToCart } from '../Cart/actions';
-import { fetchProducts } from '../Product/actions';
+import { fetchProducts, filterProducts } from '../Product/actions';
 import { fetchStoreCategories } from '../Category/actions';
 
 import { addToCartServer } from '../Cart/actions';
@@ -122,22 +122,11 @@ const Sidebar = ({ categories, selectedCategory, onCategoryFilter, onClearFilter
           style={{ 
             cursor: 'pointer',
             padding: '8px 12px',
-            borderRadius: 6,
+            borderRadius: 4,
             background: selectedCategory && selectedCategory.id === cat.id ? '#e8f5e8' : 'transparent',
-            border: selectedCategory && selectedCategory.id === cat.id ? '1px solid #28a745' : '1px solid transparent',
-            transition: 'all 0.2s ease'
+            border: selectedCategory && selectedCategory.id === cat.id ? '1px solid #28a745' : '1px solid transparent'
           }}
           onClick={() => onCategoryFilter(cat)}
-          onMouseEnter={(e) => {
-            if (!selectedCategory || selectedCategory.id !== cat.id) {
-              e.target.style.background = '#f8f9fa';
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (!selectedCategory || selectedCategory.id !== cat.id) {
-              e.target.style.background = 'transparent';
-            }
-          }}
         >
           <span className='sidebar-icon mr-2'>🍈</span>
           <span style={{ 
@@ -176,43 +165,7 @@ const ProductToolbar = ({ products, onSortChange, currentSort, currentPage, item
       position: 'relative',
       zIndex: 10
     }}>
-      <Col
-        xs={{ size: 12, order: 1 }}
-        sm={{ size: 12, order: 1 }}
-        md={{ size: 5, order: 1 }}
-        lg={{ size: 6, order: 1 }}
-        className='text-center text-md-left mb-2 mb-md-0'
-      >
-        <span style={{color: '#6c757d', fontSize: 14}}>Hiển thị: </span>
-        <span style={{fontWeight: 700, color: '#28a745', fontSize: 16}}>
-          {startItem}-{endItem} của {totalProducts} sản phẩm
-        </span>
-      </Col>
-      <Col
-        xs={{ size: 12, order: 2 }}
-        sm={{ size: 12, order: 2 }}
-        md={{ size: 2, order: 2 }}
-        lg={{ size: 2, order: 2 }}
-        className='text-right pr-0 d-none d-md-block'
-      >
-        <span style={{color: '#6c757d', fontSize: 14}}>Sắp xếp theo</span>
-      </Col>
-      <Col
-        xs={{ size: 12, order: 2 }}
-        sm={{ size: 12, order: 2 }}
-        md={{ size: 5, order: 2 }}
-        lg={{ size: 4, order: 2 }}
-        style={{ position: 'relative', zIndex: 15 }}
-      >
-        <SelectOption
-          name={'sorting'}
-          value={sortOptions.find(option => option.value === currentSort) || sortOptions[0]}
-          options={sortOptions}
-          handleSelectChange={(option) => {
-            onSortChange(option.value);
-          }}
-        />
-      </Col>
+
     </Row>
   );
 };
@@ -254,8 +207,8 @@ const ProductGrid = ({ products, onAddToCart }) => (
             <div className='small text-muted text-center w-100'>{product.weight} kg | {product.origin} | {product.ripeness === 'ripe' ? 'Chín' : 'Chưa chín'}</div>
           </Link>
           <div className='d-flex align-items-center justify-content-center mt-auto w-100'>
-            <button className='btn btn-warning font-weight-bold flex-grow-1 d-flex align-items-center justify-content-center mt-3' style={{borderRadius: 20, minHeight: 44, minWidth: 0, fontSize: 16}} onClick={() => onAddToCart(product)}>
-              <FaShoppingCart className='mr-2' /> Thêm Vào Giỏ Hàng
+            <button className='btn btn-warning font-weight-bold flex-grow-1 d-flex align-items-center justify-content-center mt-3' style={{borderRadius: 4, minHeight: 44, minWidth: 0, fontSize: 16}} onClick={() => onAddToCart(product)}>
+              Thêm Vào Giỏ Hàng
             </button>
           </div>
         </div>
@@ -271,14 +224,14 @@ class Homepage extends React.PureComponent {
       currentSort: 'created_at_desc',
       currentPage: 1,
       itemsPerPage: 12,
-      selectedCategory: null, // Thêm state cho category filter
-      searchQuery: '' // Thêm state cho search
+      selectedCategory: null,
+      searchQuery: ''
     };
   }
 
   componentDidMount() {
-    this.props.fetchProducts();
     this.props.fetchStoreCategories();
+    this.loadProducts();
     
     // Kiểm tra URL params để lấy search query
     const urlParams = new URLSearchParams(window.location.search);
@@ -287,6 +240,26 @@ class Homepage extends React.PureComponent {
       this.setState({ searchQuery });
     }
   }
+
+  componentDidUpdate(prevProps, prevState) {
+    // Không cần gọi API ở đây nữa vì đã gọi trong các handlers
+    // Chỉ cần update state khi cần thiết
+  }
+
+  loadProducts = () => {
+    const { selectedCategory, currentSort, currentPage, searchQuery } = this.state;
+    
+    // Nếu có category được chọn, sử dụng filterProducts
+    if (selectedCategory) {
+      this.props.filterProducts('category', selectedCategory.id);
+    } else if (searchQuery) {
+      // Nếu có search query, sử dụng filterProducts với name
+      this.props.filterProducts('name', searchQuery);
+    } else {
+      // Nếu không có filter, load tất cả sản phẩm
+      this.props.fetchProducts();
+    }
+  };
 
   handleAddToCart = (product) => {
     console.log('Adding to cart:', product);
@@ -301,15 +274,33 @@ class Homepage extends React.PureComponent {
     }
   };
 
-
-
   handleSortChange = (sortValue) => {
     this.setState({ currentSort: sortValue, currentPage: 1 });
-    // Chỉ sắp xếp local, không gọi API
+    // Gọi API với sort mới
+    const { selectedCategory, searchQuery } = this.state;
+    
+    if (selectedCategory) {
+      this.props.filterProducts('sorting', sortValue);
+    } else if (searchQuery) {
+      this.props.filterProducts('sorting', sortValue);
+    } else {
+      this.props.filterProducts('sorting', sortValue);
+    }
   };
 
   handlePageChange = (page) => {
     this.setState({ currentPage: page });
+    // Gọi API với page mới
+    const { selectedCategory, searchQuery, currentSort } = this.state;
+    
+    if (selectedCategory) {
+      this.props.filterProducts('pagination', page);
+    } else if (searchQuery) {
+      this.props.filterProducts('pagination', page);
+    } else {
+      this.props.filterProducts('pagination', page);
+    }
+    
     // Scroll to top when page changes
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -320,6 +311,8 @@ class Homepage extends React.PureComponent {
       selectedCategory: category,
       currentPage: 1 
     });
+    // Gọi API với category mới
+    this.props.filterProducts('category', category.id);
   };
 
   // Thêm function để clear filter
@@ -328,6 +321,8 @@ class Homepage extends React.PureComponent {
       selectedCategory: null,
       currentPage: 1 
     });
+    // Gọi API để load tất cả sản phẩm
+    this.props.fetchProducts();
   };
 
   // Thêm function để clear tất cả bộ lọc
@@ -337,76 +332,25 @@ class Homepage extends React.PureComponent {
       searchQuery: '',
       currentPage: 1 
     });
+    // Gọi API để load tất cả sản phẩm
+    this.props.fetchProducts();
     // Clear URL params
     window.history.replaceState({}, document.title, window.location.pathname);
-  };
-
-  getFilteredProducts = () => {
-    const { products } = this.props;
-    const { selectedCategory, searchQuery } = this.state;
-    
-    if (!products || products.length === 0) return [];
-    
-    let filteredProducts = [...products];
-
-    // Filter theo category nếu có
-    if (selectedCategory) {
-      filteredProducts = filteredProducts.filter(product => 
-        product.category_id === selectedCategory.id || 
-        (product.category && product.category.id === selectedCategory.id)
-      );
-    }
-
-    // Filter theo từ khóa tìm kiếm
-    if (searchQuery) {
-      filteredProducts = filteredProducts.filter(product => 
-        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.description.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
-    
-    return filteredProducts;
-  };
-
-  getSortedProducts = () => {
-    const filteredProducts = this.getFilteredProducts();
-    const { currentSort } = this.state;
-    
-    if (!filteredProducts || filteredProducts.length === 0) return [];
-    
-    const sortedProducts = [...filteredProducts];
-    
-    switch (currentSort) {
-      case 'price_asc':
-        return sortedProducts.sort((a, b) => a.price - b.price);
-      case 'price_desc':
-        return sortedProducts.sort((a, b) => b.price - a.price);
-      case 'name_asc':
-        return sortedProducts.sort((a, b) => a.name.localeCompare(b.name));
-      case 'name_desc':
-        return sortedProducts.sort((a, b) => b.name.localeCompare(a.name));
-      case 'created_at_desc':
-      default:
-        return sortedProducts.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
-    }
-  };
-
-  getPaginatedProducts = () => {
-    const sortedProducts = this.getSortedProducts();
-    const { currentPage, itemsPerPage } = this.state;
-    
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    
-    return sortedProducts.slice(startIndex, endIndex);
   };
 
   render() {
     const { products, categories, history } = this.props;
     const { currentPage, itemsPerPage, selectedCategory, searchQuery } = this.state;
-    const sortedProducts = this.getSortedProducts();
-    const paginatedProducts = this.getPaginatedProducts();
-    const totalPages = Math.ceil(sortedProducts.length / itemsPerPage);
+    
+    // Sử dụng products từ Redux store (đã được filter từ API)
+    const displayProducts = products || [];
+    const totalProducts = displayProducts.length;
+    const totalPages = Math.ceil(totalProducts / itemsPerPage);
+    
+    // Paginate products
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedProducts = displayProducts.slice(startIndex, endIndex);
     
     return (
       <div className='homepage-tiki bg-light' style={{minHeight:'100vh'}}>
@@ -436,7 +380,7 @@ class Homepage extends React.PureComponent {
                   <div className='d-flex align-items-center gap-2'>
                     {(selectedCategory || searchQuery) && (
                       <span style={{ fontSize: 14, color: '#6c757d' }}>
-                        {sortedProducts.length} sản phẩm
+                        {totalProducts} sản phẩm
                       </span>
                     )}
                     {(selectedCategory || searchQuery) && (
@@ -449,16 +393,7 @@ class Homepage extends React.PureComponent {
                           padding: '4px 8px',
                           borderRadius: 4,
                           fontSize: 12,
-                          cursor: 'pointer',
-                          transition: 'all 0.2s'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.target.style.background = '#dc3545';
-                          e.target.style.color = '#fff';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.target.style.background = 'none';
-                          e.target.style.color = '#dc3545';
+                          cursor: 'pointer'
                         }}
                       >
                         Xóa bộ lọc
@@ -466,24 +401,28 @@ class Homepage extends React.PureComponent {
                     )}
                   </div>
                 </div>
-                <ProductToolbar 
-                  products={paginatedProducts} 
-                  onSortChange={this.handleSortChange}
-                  currentSort={this.state.currentSort}
-                  currentPage={currentPage}
-                  itemsPerPage={itemsPerPage}
-                  totalProducts={sortedProducts.length}
-                />
-                <ProductGrid products={paginatedProducts} onAddToCart={this.handleAddToCart} />
                 
-                {/* Pagination */}
-                {totalPages > 1 && (
-                  <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={this.handlePageChange}
-                  />
-                )}
+
+                  <>
+                    <ProductToolbar 
+                      products={paginatedProducts} 
+                      onSortChange={this.handleSortChange}
+                      currentSort={this.state.currentSort}
+                      currentPage={currentPage}
+                      itemsPerPage={itemsPerPage}
+                      totalProducts={totalProducts}
+                    />
+                    <ProductGrid products={paginatedProducts} onAddToCart={this.handleAddToCart} />
+                    
+                    {/* Pagination */}
+                    {totalPages > 1 && (
+                      <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={this.handlePageChange}
+                      />
+                    )}
+                  </>
               </div>
             </Col>
           </Row>
@@ -506,5 +445,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { handleAddToCart, fetchProducts, fetchStoreCategories, addToCartServer }
+  { handleAddToCart, fetchProducts, fetchStoreCategories, addToCartServer, filterProducts }
 )(withRouter(Homepage));

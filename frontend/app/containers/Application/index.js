@@ -39,14 +39,12 @@ const Application = (props) => {
     products,
     fetchProducts,
     fetchStoreCategories,
-    fetchBrands,
     fetchCartFromServer
   } = props;
 
   useEffect(() => {
     fetchProducts();
     fetchStoreCategories();
-    fetchBrands();
   }, []);
 
   useEffect(() => {
@@ -70,7 +68,13 @@ const Application = (props) => {
               <Route path='/product/:slug' component={Product} />
               <Route path='/login' component={Login} />
               <Route path='/signup' component={Signup} />
-              <Route path='/dashboard' component={Dashboard} />
+              <Route exact path='/dashboard' component={Dashboard} />
+              <Route path='/dashboard/orders' component={Dashboard} />
+              <Route path='/dashboard/users' component={Dashboard} />
+              <Route path='/dashboard/products' component={Dashboard} />
+              <Route path='/dashboard/categories' component={Dashboard} />
+              <Route path='/dashboard/sellers' component={Dashboard} />
+              <Route path='/dashboard/support' component={Dashboard} />
               <Route path='/auth/success' component={AuthSuccess} />
               <Route path='/account' component={Account} />
               <Route path='/product-page' component={ProductPage} />

@@ -13,14 +13,12 @@ import actions from '../../actions';
 import EditProduct from '../../components/Manager/EditProduct';
 import SubPage from '../../components/Manager/SubPage';
 import NotFound from '../../components/Common/NotFound';
-import { VI } from '../../constants/vi';
 
 class Edit extends React.PureComponent {
   componentDidMount() {
     this.props.resetProduct();
     const productId = this.props.match.params.id;
     this.props.fetchProduct(productId);
-    this.props.fetchBrandsSelect();
   }
 
   componentDidUpdate(prevProps) {
@@ -37,7 +35,6 @@ class Edit extends React.PureComponent {
       user,
       product,
       formErrors,
-      brands,
       productEditChange,
       updateProduct,
       deleteProduct,
@@ -46,8 +43,8 @@ class Edit extends React.PureComponent {
 
     return (
       <SubPage
-        title={VI['Edit Product'] || 'Edit Product'}
-        actionTitle={VI['Cancel'] || 'Cancel'}
+        title={'Chỉnh sửa sản phẩm'}
+        actionTitle={'Hủy'}
         handleAction={history.goBack}
       >
         {product && product.id ? (
@@ -55,7 +52,6 @@ class Edit extends React.PureComponent {
             user={user}
             product={product}
             formErrors={formErrors}
-            brands={brands}
             productChange={productEditChange}
             updateProduct={updateProduct}
             deleteProduct={deleteProduct}
@@ -73,8 +69,7 @@ const mapStateToProps = state => {
   return {
     user: state.account.user,
     product: state.product.product,
-    formErrors: state.product.editFormErrors,
-    brands: state.brand.brandsSelect
+    formErrors: state.product.editFormErrors
   };
 };
 

@@ -11,7 +11,9 @@ class Order extends Model
 
     protected $fillable = [
         'user_id',
-        'shipping_address_id',
+        'full_name',
+        'phone',
+        'address',
         'order_number',
         'subtotal',
         'shipping_fee',
@@ -33,11 +35,6 @@ class Order extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function shippingAddress()
-    {
-        return $this->belongsTo(UserAddress::class, 'shipping_address_id');
     }
 
     public function orderDetails()

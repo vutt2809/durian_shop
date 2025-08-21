@@ -25,7 +25,7 @@ const SelectOption = props => {
     handleSelectChange(value);
   };
 
-  const animatedComponents = makeAnimated();
+
 
   const styles = `select-box${error ? ' invalid' : ''}`;
 
@@ -36,7 +36,7 @@ const SelectOption = props => {
         isDisabled={disabled}
         className='select-container'
         classNamePrefix='react-select'
-        components={animatedComponents}
+
         isMulti={multi}
         options={options}
         defaultValue={defaultValue}
@@ -58,7 +58,7 @@ const dropdownStyles = {
       color: '#323232',
       fontFamily: 'Poppins',
       backgroundColor: 'white',
-      transition: '0.3s',
+
       boxShadow: 'none',
 
       borderColor: isFocused ? '#bdcbd2' : '#e4e6eb',
@@ -108,8 +108,7 @@ const dropdownStyles = {
   }),
   dropdownIndicator: (base, { isFocused }) => ({
     ...base,
-    transform: isFocused ? 'rotate(180deg)' : undefined,
-    transition: 'transform 0.3s'
+    transform: isFocused ? 'rotate(180deg)' : undefined
   }),
   input: styles => ({
     ...styles,

@@ -97,9 +97,18 @@ export const filterProducts = (n, v) => {
 
       dispatch({ type: SET_ADVANCED_FILTERS, payload });
       const sortOrder = getSortOrder(payload.order);
-      const response = await axios.get(`${API_URL}/product`, {
-        params: { ...payload, sortOrder }
+      
+      // Build query parameters
+      const params = { ...payload, sortOrder };
+      
+      // Remove undefined or null values
+      Object.keys(params).forEach(key => {
+        if (params[key] === undefined || params[key] === null || params[key] === '') {
+          delete params[key];
+        }
       });
+      
+      const response = await axios.get(`${API_URL}/product`, { params });
       
       const { data, current_page, last_page, total } = response.data.products;
 
@@ -296,8 +305,7 @@ export const updateProduct = () => {
         description: 'required|max:200',
         quantity: 'required|numeric',
         price: 'required|numeric',
-        taxable: 'required',
-        brand: 'required'
+        taxable: 'required'
       };
 
       const product = getState().product.product;
@@ -310,7 +318,6 @@ export const updateProduct = () => {
         quantity: product.quantity,
         price: product.price,
         taxable: product.taxable,
-        brand: product.brand.value,
         is_active: product.is_active
       };
 
@@ -327,8 +334,7 @@ export const updateProduct = () => {
           'Mô tả không được lớn hơn 200 ký tự.',
         'required.quantity': 'Số lượng là bắt buộc.',
         'required.price': 'Giá là bắt buộc.',
-        'required.taxable': 'Thuế là bắt buộc.',
-        'required.brand': 'Thương hiệu là bắt buộc.'
+        'required.taxable': 'Thuế là bắt buộc.'
       });
 
       if (!isValid) {
@@ -426,72 +432,65 @@ export const deleteProduct = id => {
 
 const productsFilterOrganizer = (n, v, s) => {
   switch (n) {
+    case 'name':
+      return {
+        name: v,
+        category: s.category || 'all',
+        min: s.min,
+        max: s.max,
+        order: s.order || 'created_at_desc',
+        page: s.currentPage || 1,
+        limit: s.limit || 12
+      };
     case 'category':
       return {
-        name: s.name,
+        name: s.name || '',
         category: v,
-        brand: 'all',
         min: s.min,
         max: s.max,
-        order: s.order,
-        page: s.currentPage,
-        limit: s.limit
-      };
-    case 'brand':
-      return {
-        name: s.name,
-        category: 'all',
-        brand: v,
-        min: s.min,
-        max: s.max,
-        order: s.order,
-        page: s.currentPage,
-        limit: s.limit
+        order: s.order || 'created_at_desc',
+        page: s.currentPage || 1,
+        limit: s.limit || 12
       };
     case 'sorting':
       return {
-        name: s.name,
-        category: s.category,
-        brand: s.brand,
+        name: s.name || '',
+        category: s.category || 'all',
         min: s.min,
         max: s.max,
         order: v,
-        page: s.currentPage,
-        limit: s.limit
+        page: s.currentPage || 1,
+        limit: s.limit || 12
       };
     case 'price':
       return {
-        name: s.name,
-        category: s.category,
-        brand: s.brand,
+        name: s.name || '',
+        category: s.category || 'all',
         min: v[0],
         max: v[1],
-        order: s.order,
-        page: s.currentPage,
-        limit: s.limit
+        order: s.order || 'created_at_desc',
+        page: s.currentPage || 1,
+        limit: s.limit || 12
       };
-
     case 'pagination':
       return {
-        name: s.name,
-        category: s.category,
-        brand: s.brand,
+        name: s.name || '',
+        category: s.category || 'all',
         min: s.min,
         max: s.max,
-        order: s.order,
-        page: v ?? s.currentPage,
-        limit: s.limit
+        order: s.order || 'created_at_desc',
+        page: (v ?? s.currentPage) || 1,
+        limit: s.limit || 12
       };
     default:
       return {
-        name: s.name,
-        category: 'all',
-        brand: 'all',
+        name: s.name || '',
+        category: s.category || 'all',
         min: s.min,
         max: s.max,
-        order: s.order,
-        page: s.currentPage,
-        limit: s.limit
+        order: s.order || 'created_at_desc',
+        page: s.currentPage || 1,
+        limit: s.limit || 12
       };
   }
 };
@@ -499,17 +498,21 @@ const productsFilterOrganizer = (n, v, s) => {
 const getSortOrder = value => {
   let sortOrder = {};
   switch (value) {
-    case 0:
-      sortOrder.id = -1;
-      break;
-    case 1:
-      sortOrder.price = -1;
-      break;
-    case 2:
+    case 'price_asc':
       sortOrder.price = 1;
       break;
-
+    case 'price_desc':
+      sortOrder.price = -1;
+      break;
+    case 'name_asc':
+      sortOrder.name = 1;
+      break;
+    case 'name_desc':
+      sortOrder.name = -1;
+      break;
+    case 'created_at_desc':
     default:
+      sortOrder.created_at = -1;
       break;
   }
 

@@ -56,7 +56,7 @@ const CartList = props => {
                     borderless
                     variant='empty'
                     ariaLabel={`remove ${item.name} from cart`}
-                    icon={<i className='icon-trash' aria-hidden='true' />}
+                    text='Xóa'
                     onClick={() => handleRemoveFromCart(item)}
                   />
                 </Col>

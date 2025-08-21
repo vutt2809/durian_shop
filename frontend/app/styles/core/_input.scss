@@ -10,8 +10,7 @@ textarea {
   font-size: $font-size-medium;
   color: $font-custom-color;
   border-radius: $border-radius-default;
-  -webkit-transition: $layout-transition-speed;
-  transition: $layout-transition-speed;
+
   cursor: text;
   @include appearance();
 
@@ -20,8 +19,7 @@ textarea {
     color: $font-focus-color;
     border-color: $border-focus-color !important;
     box-shadow: none;
-    -webkit-transition: $layout-transition-speed;
-    transition: $layout-transition-speed;
+
   }
 
   &:disabled {
@@ -44,16 +42,13 @@ body.user-is-tabbing textarea {
     color: $validation-color;
     height: 0;
     @include flex();
-    -webkit-transition: $layout-transition-speed;
-    transition: $layout-transition-speed;
+
   }
 
   &.invalid {
     .input-text,
     textarea {
       border-color: $validation-color;
-      -webkit-transition: $layout-transition-speed;
-      transition: $layout-transition-speed;
 
       &:focus {
         border-color: $validation-color !important;
@@ -65,8 +60,7 @@ body.user-is-tabbing textarea {
       opacity: 1;
       height: 100%;
       margin-top: 5px;
-      -webkit-transition: $layout-transition-speed;
-      transition: $layout-transition-speed;
+
     }
   }
 }

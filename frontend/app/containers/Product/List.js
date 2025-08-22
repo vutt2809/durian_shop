@@ -31,7 +31,11 @@ class List extends React.PureComponent {
           handleAction={() => history.push('/dashboard/product/add')}
         >
           {isLoading ? (
-    
+            <div className='d-flex justify-content-center'>
+              <div className='spinner-border' role='status'>
+                <span className='sr-only'>Loading...</span>
+              </div>
+            </div>
           ) : products.length > 0 ? (
             <ProductList products={products} />
           ) : (

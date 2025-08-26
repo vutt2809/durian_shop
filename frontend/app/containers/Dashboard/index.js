@@ -7,6 +7,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withRouter, Link } from 'react-router-dom';
+import { FaSearch, FaShoppingBag, FaBox, FaBell, FaUser, FaUsers, FaBoxes, FaTags, FaHeadset, FaSignOutAlt } from 'react-icons/fa';
 
 import actions from '../../actions';
 import { fetchProfile } from '../Account/actions';
@@ -15,13 +16,13 @@ import { fetchAccountOrders } from '../Order/actions';
 // Dashboard Sidebar Component
 const DashboardSidebar = ({ activeTab, onTabChange, user }) => {
   const menuItems = [
-    { id: 'overview', label: 'Tổng quan', path: '/dashboard' },
-    { id: 'account', label: 'Tài khoản', path: '/dashboard' },
-    { id: 'orders', label: 'Đơn hàng', path: '/dashboard/orders' },
-    { id: 'products', label: 'Sản phẩm', path: '/dashboard/products' },
-    { id: 'categories', label: 'Danh mục', path: '/dashboard/categories' },
-    { id: 'users', label: 'Người dùng', path: '/dashboard/users' },
-    { id: 'support', label: 'Hỗ trợ', path: '/dashboard/support' },
+    { id: 'overview', label: 'Tổng quan', path: '/dashboard', icon: FaShoppingBag },
+    { id: 'account', label: 'Tài khoản', path: '/dashboard', icon: FaUser },
+    { id: 'orders', label: 'Đơn hàng', path: '/dashboard/orders', icon: FaBox },
+    { id: 'products', label: 'Sản phẩm', path: '/dashboard/products', icon: FaBoxes },
+    { id: 'categories', label: 'Danh mục', path: '/dashboard/categories', icon: FaTags },
+    { id: 'users', label: 'Người dùng', path: '/dashboard/users', icon: FaUsers },
+    { id: 'support', label: 'Hỗ trợ', path: '/dashboard/support', icon: FaHeadset },
   ];
 
   return (
@@ -142,9 +143,14 @@ const DashboardSidebar = ({ activeTab, onTabChange, user }) => {
             color: '#dc3545',
             cursor: 'pointer',
             fontSize: 14,
-            fontWeight: 500
+            fontWeight: 500,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 8
           }}
         >
+          <FaSignOutAlt size={16} />
           Đăng xuất
         </button>
       </div>

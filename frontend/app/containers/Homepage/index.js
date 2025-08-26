@@ -165,7 +165,22 @@ const ProductToolbar = ({ products, onSortChange, currentSort, currentPage, item
       position: 'relative',
       zIndex: 10
     }}>
-
+      <Col xs='12' md='6'>
+        <div className='d-flex align-items-center'>
+          <span className='text-muted mr-2'>Sắp xếp:</span>
+          <SelectOption
+            options={sortOptions}
+            value={currentSort}
+            onChange={onSortChange}
+            style={{ minWidth: 150 }}
+          />
+        </div>
+      </Col>
+      <Col xs='12' md='6' className='text-right'>
+        <span className='text-muted'>
+          Hiển thị {startItem}-{endItem} trong tổng số {totalProducts} sản phẩm
+        </span>
+      </Col>
     </Row>
   );
 };
@@ -231,19 +246,30 @@ class Homepage extends React.PureComponent {
 
   componentDidMount() {
     this.props.fetchStoreCategories();
-    this.loadProducts();
     
     // Kiểm tra URL params để lấy search query
     const urlParams = new URLSearchParams(window.location.search);
     const searchQuery = urlParams.get('search');
-    if (searchQuery) {
-      this.setState({ searchQuery });
+    if (searchQuery && searchQuery.trim()) {
+      this.setState({ searchQuery: searchQuery.trim() }, () => {
+        this.loadProducts();
+      });
+    } else {
+      this.loadProducts();
     }
   }
 
   componentDidUpdate(prevProps, prevState) {
-    // Không cần gọi API ở đây nữa vì đã gọi trong các handlers
-    // Chỉ cần update state khi cần thiết
+    // Đồng bộ currentPage, currentSort và itemsPerPage từ advancedFilters
+    if (this.props.advancedFilters.currentPage !== this.state.currentPage) {
+      this.setState({ currentPage: this.props.advancedFilters.currentPage });
+    }
+    if (this.props.advancedFilters.order !== this.state.currentSort) {
+      this.setState({ currentSort: this.props.advancedFilters.order });
+    }
+    if (this.props.advancedFilters.limit !== this.state.itemsPerPage) {
+      this.setState({ itemsPerPage: this.props.advancedFilters.limit });
+    }
   }
 
   loadProducts = () => {
@@ -252,12 +278,12 @@ class Homepage extends React.PureComponent {
     // Nếu có category được chọn, sử dụng filterProducts
     if (selectedCategory) {
       this.props.filterProducts('category', selectedCategory.id);
-    } else if (searchQuery) {
+    } else if (searchQuery && searchQuery.trim()) {
       // Nếu có search query, sử dụng filterProducts với name
-      this.props.filterProducts('name', searchQuery);
+      this.props.filterProducts('name', searchQuery.trim());
     } else {
       // Nếu không có filter, load tất cả sản phẩm
-      this.props.fetchProducts();
+      this.props.filterProducts('name', 'all');
     }
   };
 
@@ -275,31 +301,17 @@ class Homepage extends React.PureComponent {
   };
 
   handleSortChange = (sortValue) => {
-    this.setState({ currentSort: sortValue, currentPage: 1 });
-    // Gọi API với sort mới
-    const { selectedCategory, searchQuery } = this.state;
-    
-    if (selectedCategory) {
+    this.setState({ currentSort: sortValue, currentPage: 1 }, () => {
+      // Gọi API với sort mới
       this.props.filterProducts('sorting', sortValue);
-    } else if (searchQuery) {
-      this.props.filterProducts('sorting', sortValue);
-    } else {
-      this.props.filterProducts('sorting', sortValue);
-    }
+    });
   };
 
   handlePageChange = (page) => {
-    this.setState({ currentPage: page });
-    // Gọi API với page mới
-    const { selectedCategory, searchQuery, currentSort } = this.state;
-    
-    if (selectedCategory) {
+    this.setState({ currentPage: page }, () => {
+      // Gọi API với page mới
       this.props.filterProducts('pagination', page);
-    } else if (searchQuery) {
-      this.props.filterProducts('pagination', page);
-    } else {
-      this.props.filterProducts('pagination', page);
-    }
+    });
     
     // Scroll to top when page changes
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -309,20 +321,24 @@ class Homepage extends React.PureComponent {
   handleCategoryFilter = (category) => {
     this.setState({ 
       selectedCategory: category,
+      searchQuery: '',
       currentPage: 1 
+    }, () => {
+      // Gọi API với category mới
+      this.props.filterProducts('category', category.id);
     });
-    // Gọi API với category mới
-    this.props.filterProducts('category', category.id);
   };
 
   // Thêm function để clear filter
   handleClearFilter = () => {
     this.setState({ 
       selectedCategory: null,
+      searchQuery: '',
       currentPage: 1 
+    }, () => {
+      // Gọi API để load tất cả sản phẩm
+      this.props.filterProducts('name', 'all');
     });
-    // Gọi API để load tất cả sản phẩm
-    this.props.fetchProducts();
   };
 
   // Thêm function để clear tất cả bộ lọc
@@ -331,26 +347,26 @@ class Homepage extends React.PureComponent {
       selectedCategory: null,
       searchQuery: '',
       currentPage: 1 
+    }, () => {
+      // Gọi API để load tất cả sản phẩm
+      this.props.filterProducts('name', 'all');
     });
-    // Gọi API để load tất cả sản phẩm
-    this.props.fetchProducts();
     // Clear URL params
     window.history.replaceState({}, document.title, window.location.pathname);
   };
 
   render() {
-    const { products, categories, history } = this.props;
+    const { products, categories, history, advancedFilters } = this.props;
     const { currentPage, itemsPerPage, selectedCategory, searchQuery } = this.state;
     
     // Sử dụng products từ Redux store (đã được filter từ API)
     const displayProducts = products || [];
-    const totalProducts = displayProducts.length;
-    const totalPages = Math.ceil(totalProducts / itemsPerPage);
+    const totalProducts = advancedFilters.count || displayProducts.length;
+    const currentItemsPerPage = advancedFilters.limit || itemsPerPage;
+    const totalPages = advancedFilters.totalPages || Math.ceil(totalProducts / currentItemsPerPage);
     
-    // Paginate products
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const paginatedProducts = displayProducts.slice(startIndex, endIndex);
+    // Sử dụng products trực tiếp vì API đã trả về đúng page
+    const paginatedProducts = displayProducts;
     
     return (
       <div className='homepage-tiki bg-light' style={{minHeight:'100vh'}}>
@@ -370,20 +386,18 @@ class Homepage extends React.PureComponent {
               <div className='mb-4'>
                 <div className='d-flex justify-content-between align-items-center mb-3'>
                   <h5 className='font-weight-bold text-success mb-0'>
-                    {searchQuery 
-                      ? `Kết quả tìm kiếm: "${searchQuery}"`
+                    {searchQuery && searchQuery.trim()
+                      ? `Kết quả tìm kiếm: "${searchQuery.trim()}"`
                       : selectedCategory 
                         ? `${selectedCategory.name}` 
                         : 'Sản phẩm nổi bật'
                     }
                   </h5>
                   <div className='d-flex align-items-center gap-2'>
-                    {(selectedCategory || searchQuery) && (
-                      <span style={{ fontSize: 14, color: '#6c757d' }}>
-                        {totalProducts} sản phẩm
-                      </span>
-                    )}
-                    {(selectedCategory || searchQuery) && (
+                    <span style={{ fontSize: 14, color: '#6c757d' }}>
+                      {totalProducts} sản phẩm
+                    </span>
+                    {(selectedCategory || (searchQuery && searchQuery.trim())) && (
                       <button
                         onClick={this.handleClearAllFilters}
                         style={{
@@ -407,9 +421,9 @@ class Homepage extends React.PureComponent {
                     <ProductToolbar 
                       products={paginatedProducts} 
                       onSortChange={this.handleSortChange}
-                      currentSort={this.state.currentSort}
-                      currentPage={currentPage}
-                      itemsPerPage={itemsPerPage}
+                      currentSort={advancedFilters.order || this.state.currentSort}
+                      currentPage={advancedFilters.currentPage || currentPage}
+                      itemsPerPage={currentItemsPerPage}
                       totalProducts={totalProducts}
                     />
                     <ProductGrid products={paginatedProducts} onAddToCart={this.handleAddToCart} />
@@ -417,7 +431,7 @@ class Homepage extends React.PureComponent {
                     {/* Pagination */}
                     {totalPages > 1 && (
                       <Pagination
-                        currentPage={currentPage}
+                        currentPage={advancedFilters.currentPage || currentPage}
                         totalPages={totalPages}
                         onPageChange={this.handlePageChange}
                       />
@@ -437,10 +451,11 @@ class Homepage extends React.PureComponent {
 }
 
 const mapStateToProps = state => ({
-  products: state.product.products,
+  products: state.product.storeProducts,
   categories: state.category.storeCategories,
   cartItems: state.cart.cartItems,
-  authenticated: state.authentication.authenticated
+  authenticated: state.authentication.authenticated,
+  advancedFilters: state.product.advancedFilters
 });
 
 export default connect(

@@ -17,7 +17,7 @@ import LoadingIndicator from '../../components/Common/LoadingIndicator';
 import NotFound from '../../components/Common/NotFound';
 import { BagIcon } from '../../components/Common/Icon';
 
-import SocialShare from '../../components/Store/SocialShare';
+
 
 class ProductPage extends React.PureComponent {
   componentDidMount() {
@@ -55,7 +55,7 @@ class ProductPage extends React.PureComponent {
       <div className='product-shop'>
         {isLoading ? (
           <LoadingIndicator />
-        ) : Object.keys(product).length > 0 ? (
+        ) : product && product.id ? (
           <>
             <Row className='flex-row'>
               <Col xs='12' md='5' lg='5' className='mb-3 px-3 px-md-2'>
@@ -121,9 +121,7 @@ class ProductPage extends React.PureComponent {
                         }}
                       />
                     </div>
-                    <div className='my-4 item-share'>
-                      <SocialShare product={product} />
-                    </div>
+
                     <div className='item-actions'>
                       {itemInCart ? (
                         <Button

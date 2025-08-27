@@ -78,6 +78,12 @@ export const setProductLoading = value => {
   };
 };
 
+export const resetAdvancedFilters = () => {
+  return {
+    type: RESET_ADVANCED_FILTERS
+  };
+};
+
 export const filterProducts2 = (n, v) => {
   return async (dispatch, getState) => {
     const advancedFilters = getState().product.advancedFilters;
@@ -436,8 +442,8 @@ const productsFilterOrganizer = (n, v, s) => {
       return {
         name: v,
         category: s.category || 'all',
-        min: s.min,
-        max: s.max,
+        min: 0,
+        max: 500000,
         order: s.order || 'created_at_desc',
         page: s.currentPage || 1,
         limit: s.limit || 12
@@ -446,8 +452,8 @@ const productsFilterOrganizer = (n, v, s) => {
       return {
         name: s.name || '',
         category: v,
-        min: s.min,
-        max: s.max,
+        min: 0,
+        max: 500000,
         order: s.order || 'created_at_desc',
         page: s.currentPage || 1,
         limit: s.limit || 12
@@ -486,8 +492,8 @@ const productsFilterOrganizer = (n, v, s) => {
       return {
         name: s.name || '',
         category: s.category || 'all',
-        min: s.min,
-        max: s.max,
+        min: 0,
+        max: 500000,
         order: s.order || 'created_at_desc',
         page: s.currentPage || 1,
         limit: s.limit || 12

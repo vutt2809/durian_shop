@@ -56,8 +56,8 @@ const initialState = {
     name: 'all',
     category: 'all',
     brand: 'all',
-    min: 1,
-    max: 2500,
+    min: 0,
+    max: 500000,
 
     order: 'created_at_desc',
     totalPages: 1,
@@ -197,8 +197,8 @@ const productReducer = (state = initialState, action) => {
           name: 'all',
           category: 'all',
           brand: 'all',
-          min: 1,
-          max: 2500,
+          min: 0,
+          max: 500000,
 
           order: 'created_at_desc',
           totalPages: 1,

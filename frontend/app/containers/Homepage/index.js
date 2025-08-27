@@ -11,12 +11,12 @@ import actions from '../../actions';
 import { withRouter, Link } from 'react-router-dom';
 
 import { handleAddToCart } from '../Cart/actions';
-import { fetchProducts, filterProducts } from '../Product/actions';
+import { fetchProducts, filterProducts, resetAdvancedFilters } from '../Product/actions';
 import { fetchStoreCategories } from '../Category/actions';
 
 import { addToCartServer } from '../Cart/actions';
-import { sortOptions } from '../../utils/store';
-import SelectOption from '../../components/Common/SelectOption';
+
+
 
 // Pagination component
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
@@ -151,39 +151,7 @@ const Banner = () => (
   </div>
 );
 
-// Toolbar component với sắp xếp
-const ProductToolbar = ({ products, onSortChange, currentSort, currentPage, itemsPerPage, totalProducts }) => {
-  const startItem = (currentPage - 1) * itemsPerPage + 1;
-  const endItem = Math.min(currentPage * itemsPerPage, totalProducts);
-  
-  return (
-    <Row className='align-items-center mx-0 mb-4 py-3' style={{
-      background: 'linear-gradient(135deg, #fff 0%, #f8f9fa 100%)',
-      borderRadius: 12,
-      boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-      border: '1px solid #e9ecef',
-      position: 'relative',
-      zIndex: 10
-    }}>
-      <Col xs='12' md='6'>
-        <div className='d-flex align-items-center'>
-          <span className='text-muted mr-2'>Sắp xếp:</span>
-          <SelectOption
-            options={sortOptions}
-            value={currentSort}
-            onChange={onSortChange}
-            style={{ minWidth: 150 }}
-          />
-        </div>
-      </Col>
-      <Col xs='12' md='6' className='text-right'>
-        <span className='text-muted'>
-          Hiển thị {startItem}-{endItem} trong tổng số {totalProducts} sản phẩm
-        </span>
-      </Col>
-    </Row>
-  );
-};
+
 
 // Product grid
 const ProductGrid = ({ products, onAddToCart }) => (
@@ -236,7 +204,6 @@ class Homepage extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      currentSort: 'created_at_desc',
       currentPage: 1,
       itemsPerPage: 12,
       selectedCategory: null,
@@ -246,6 +213,9 @@ class Homepage extends React.PureComponent {
 
   componentDidMount() {
     this.props.fetchStoreCategories();
+    
+    // Reset advanced filters khi component mount
+    this.props.resetAdvancedFilters();
     
     // Kiểm tra URL params để lấy search query
     const urlParams = new URLSearchParams(window.location.search);
@@ -260,12 +230,9 @@ class Homepage extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    // Đồng bộ currentPage, currentSort và itemsPerPage từ advancedFilters
+    // Đồng bộ currentPage và itemsPerPage từ advancedFilters
     if (this.props.advancedFilters.currentPage !== this.state.currentPage) {
       this.setState({ currentPage: this.props.advancedFilters.currentPage });
-    }
-    if (this.props.advancedFilters.order !== this.state.currentSort) {
-      this.setState({ currentSort: this.props.advancedFilters.order });
     }
     if (this.props.advancedFilters.limit !== this.state.itemsPerPage) {
       this.setState({ itemsPerPage: this.props.advancedFilters.limit });
@@ -273,7 +240,7 @@ class Homepage extends React.PureComponent {
   }
 
   loadProducts = () => {
-    const { selectedCategory, currentSort, currentPage, searchQuery } = this.state;
+    const { selectedCategory, currentPage, searchQuery } = this.state;
     
     // Nếu có category được chọn, sử dụng filterProducts
     if (selectedCategory) {
@@ -300,12 +267,7 @@ class Homepage extends React.PureComponent {
     }
   };
 
-  handleSortChange = (sortValue) => {
-    this.setState({ currentSort: sortValue, currentPage: 1 }, () => {
-      // Gọi API với sort mới
-      this.props.filterProducts('sorting', sortValue);
-    });
-  };
+
 
   handlePageChange = (page) => {
     this.setState({ currentPage: page }, () => {
@@ -418,14 +380,6 @@ class Homepage extends React.PureComponent {
                 
 
                   <>
-                    <ProductToolbar 
-                      products={paginatedProducts} 
-                      onSortChange={this.handleSortChange}
-                      currentSort={advancedFilters.order || this.state.currentSort}
-                      currentPage={advancedFilters.currentPage || currentPage}
-                      itemsPerPage={currentItemsPerPage}
-                      totalProducts={totalProducts}
-                    />
                     <ProductGrid products={paginatedProducts} onAddToCart={this.handleAddToCart} />
                     
                     {/* Pagination */}
@@ -460,5 +414,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { handleAddToCart, fetchProducts, fetchStoreCategories, addToCartServer, filterProducts }
+  { handleAddToCart, fetchProducts, fetchStoreCategories, addToCartServer, filterProducts, resetAdvancedFilters }
 )(withRouter(Homepage));

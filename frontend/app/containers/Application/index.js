@@ -65,7 +65,7 @@ const Application = (props) => {
               <Route path='/cart' component={Cart} />
               <Route path='/checkout' component={CheckoutContainer} />
               <Route path='/order/success/:id' component={OrderSuccess} />
-              <Route path='/product/:slug' component={Product} />
+              <Route path='/product/:slug' component={ProductPage} />
               <Route path='/login' component={Login} />
               <Route path='/signup' component={Signup} />
               <Route exact path='/dashboard' component={Dashboard} />

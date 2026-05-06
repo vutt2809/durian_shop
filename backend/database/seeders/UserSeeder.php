@@ -15,7 +15,7 @@ class UserSeeder extends Seeder
             'phone' => '0900000000',
             'first_name' => 'Admin',
             'last_name' => 'Durian Shop',
-            'password' => Hash::make('password'),
+            'password' => Hash::make('123456'),
             'provider' => 'email',
             'role' => 'admin',
         ]);
@@ -39,7 +39,7 @@ class UserSeeder extends Seeder
                 'phone' => $c['phone'],
                 'first_name' => $c['first_name'],
                 'last_name' => $c['last_name'],
-                'password' => Hash::make('password'),
+                'password' => Hash::make('123456'),
                 'provider' => 'email',
                 'role' => 'customer',
             ]);

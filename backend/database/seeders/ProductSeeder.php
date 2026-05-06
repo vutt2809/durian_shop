@@ -28,6 +28,7 @@ class ProductSeeder extends Seeder
                 'quantity' => 120,
                 'category_id' => $categories->where('slug', 'sau-rieng-tuoi')->first()->id,
             ],
+<<<<<<< Updated upstream
             
             // 2. Sầu Riêng Đông Lạnh (Category ID: 2)
             [
@@ -135,6 +136,67 @@ class ProductSeeder extends Seeder
                 'origin' => 'malaysia',
                 'quantity' => 15,
                 'category_id' => $categories->where('slug', 'sau-rieng-musang-king')->first()->id,
+=======
+            [
+                'name' => 'Sầu Riêng Dona (Việt Nam) 2.5kg',
+                'description' => 'Sầu riêng Dona tuyển chọn, cơm vàng thơm, vị béo vừa, phù hợp ăn tươi.',
+                'price' => 99000,
+                'weight' => 2.5,
+                'ripeness' => 'ripe',
+                'origin' => 'vietnam',
+                'quantity' => 70,
+                'category_id' => $categories->where('slug', 'sau-rieng-dona')->first()->id,
+            ],
+            [
+                'name' => 'Sầu Riêng Black Thorn Malaysia',
+                'description' => 'Black Thorn hương thơm mạnh, cơm vàng sậm, hậu vị béo đặc trưng.',
+                'price' => 250000,
+                'weight' => 2.2,
+                'ripeness' => 'ripe',
+                'origin' => 'malaysia',
+                'quantity' => 15,
+                'category_id' => $categories->where('slug', 'sau-rieng-black-thorn')->first()->id,
+            ],
+            [
+                'name' => 'Cơm Sầu Riêng Tách Múi (500g)',
+                'description' => 'Cơm sầu riêng tách múi, đóng hộp 500g, tiện lợi làm bánh hoặc ăn liền.',
+                'price' => 135000,
+                'weight' => 0.5,
+                'ripeness' => 'ripe',
+                'origin' => 'vietnam',
+                'quantity' => 120,
+                'category_id' => $categories->where('slug', 'com-sau-tach-mui')->first()->id,
+            ],
+            [
+                'name' => 'Sầu Riêng Sấy Giòn (200g)',
+                'description' => 'Sầu riêng sấy giòn thơm béo, phù hợp ăn vặt hoặc làm quà.',
+                'price' => 89000,
+                'weight' => 0.2,
+                'ripeness' => 'ripe',
+                'origin' => 'vietnam',
+                'quantity' => 180,
+                'category_id' => $categories->where('slug', 'sau-rieng-say')->first()->id,
+            ],
+            [
+                'name' => 'Kẹo Sầu Riêng (250g)',
+                'description' => 'Kẹo sầu riêng thơm nhẹ, ngọt vừa, đóng gói 250g.',
+                'price' => 65000,
+                'weight' => 0.25,
+                'ripeness' => 'ripe',
+                'origin' => 'vietnam',
+                'quantity' => 160,
+                'category_id' => $categories->where('slug', 'banh-keo-sau-rieng')->first()->id,
+            ],
+            [
+                'name' => 'Combo Quà Tặng Sầu Riêng (Mix)',
+                'description' => 'Combo quà tặng gồm 1 sầu riêng tươi + 1 sấy + 1 kem (tùy tồn kho).',
+                'price' => 299000,
+                'weight' => 3.2,
+                'ripeness' => 'ripe',
+                'origin' => 'vietnam',
+                'quantity' => 25,
+                'category_id' => $categories->where('slug', 'combo-qua-tang')->first()->id,
+>>>>>>> Stashed changes
             ],
         ];
 

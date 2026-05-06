@@ -399,6 +399,7 @@ const OrdersTab = ({ orders, isLoading, fetchAccountOrders, user, history }) => 
 
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
   const [itemsPerPage] = useState(10);
 
   useEffect(() => {
@@ -413,8 +414,13 @@ const OrdersTab = ({ orders, isLoading, fetchAccountOrders, user, history }) => 
     const matchesSearch = searchQuery === '' || 
       order.order_number?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       order.id?.toString().includes(searchQuery);
-    return matchesSearch;
+    const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
+    return matchesSearch && matchesStatus;
   }) || [];
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, statusFilter]);
 
   // Pagination
   const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
@@ -423,9 +429,10 @@ const OrdersTab = ({ orders, isLoading, fetchAccountOrders, user, history }) => 
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'pending': return { bg: '#FEF3C7', color: '#92400E', text: 'Chờ xử lý' };
-      case 'processing': return { bg: '#DBEAFE', color: '#1E40AF', text: 'Đang xử lý' };
-      case 'shipped': return { bg: '#FEF3C7', color: '#92400E', text: 'Đã gửi hàng' };
+      case 'pending': return { bg: '#FEF3C7', color: '#92400E', text: 'Chờ xác nhận' };
+      case 'confirmed': return { bg: '#DBEAFE', color: '#1E40AF', text: 'Đã xác nhận' };
+      case 'preparing': return { bg: '#E0E7FF', color: '#3730A3', text: 'Đang chuẩn bị' };
+      case 'shipping': return { bg: '#FEF3C7', color: '#92400E', text: 'Đang giao hàng' };
       case 'delivered': return { bg: '#D1FAE5', color: '#065F46', text: 'Đã giao hàng' };
       case 'cancelled': return { bg: '#FEE2E2', color: '#991B1B', text: 'Đã hủy' };
       default: return { bg: '#F3F4F6', color: '#374151', text: status };
@@ -504,6 +511,33 @@ const OrdersTab = ({ orders, isLoading, fetchAccountOrders, user, history }) => 
             onFocus={(e) => e.target.style.borderColor = '#F59E0B'}
             onBlur={(e) => e.target.style.borderColor = '#D1D5DB'}
           />
+        </div>
+
+        {/* Status filter */}
+        <div style={{ minWidth: 220 }}>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '10px 12px',
+              border: '1px solid #D1D5DB',
+              borderRadius: 8,
+              fontSize: 14,
+              outline: 'none',
+              background: '#fff'
+            }}
+            onFocus={(e) => e.target.style.borderColor = '#F59E0B'}
+            onBlur={(e) => e.target.style.borderColor = '#D1D5DB'}
+          >
+            <option value="all">Tất cả trạng thái</option>
+            <option value="pending">Chờ xác nhận</option>
+            <option value="confirmed">Đã xác nhận</option>
+            <option value="preparing">Đang chuẩn bị</option>
+            <option value="shipping">Đang giao hàng</option>
+            <option value="delivered">Đã giao hàng</option>
+            <option value="cancelled">Đã hủy</option>
+          </select>
         </div>
 
 

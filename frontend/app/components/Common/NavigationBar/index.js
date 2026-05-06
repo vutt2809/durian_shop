@@ -6,17 +6,24 @@
 
 import React from 'react';
 import { Container, Row, Col } from 'reactstrap';
+import { connect } from 'react-redux';
+import { filterProducts } from '../../../containers/Product/actions';
 
 
-const NavigationBar = ({ history, authenticated, cartItems = [] }) => {
+const NavigationBar = ({ history, authenticated, cartItems = [], filterProducts }) => {
   const [searchQuery, setSearchQuery] = React.useState('');
 
   const handleSearch = (e) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
+    const q = searchQuery.trim();
+    if (q) {
       // Thay vì chuyển sang trang shop, sẽ search trên trang chủ
       // Có thể thêm state để lưu search query và filter sản phẩm
-      history.push(`/?search=${encodeURIComponent(searchQuery.trim())}`);
+      filterProducts('name', q);
+      history.push(`/?search=${encodeURIComponent(q)}`);
+    } else {
+      filterProducts('name', 'all');
+      history.push(`/`);
     }
   };
 
@@ -164,4 +171,4 @@ const NavigationBar = ({ history, authenticated, cartItems = [] }) => {
   );
 };
 
-export default NavigationBar; 
+export default connect(null, { filterProducts })(NavigationBar); 

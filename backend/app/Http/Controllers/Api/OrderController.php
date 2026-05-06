@@ -206,7 +206,7 @@ class OrderController extends Controller
         }
 
         $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
-            'status' => 'required|string|in:pending,processing,shipped,delivered,cancelled'
+            'status' => 'required|string|in:pending,processing,waiting_carrier,shipped,delivered,cancelled'
         ]);
 
         if ($validator->fails()) {
@@ -231,7 +231,8 @@ class OrderController extends Controller
         // Kiểm tra logic chuyển đổi trạng thái
         $allowedTransitions = [
             'pending' => ['processing', 'cancelled'],
-            'processing' => ['shipped', 'cancelled'],
+            'processing' => ['waiting_carrier', 'cancelled'],
+            'waiting_carrier' => ['shipped', 'cancelled'],
             'shipped' => ['delivered', 'cancelled'],
             'delivered' => [], // Không thể chuyển từ delivered
             'cancelled' => [] // Không thể chuyển từ cancelled

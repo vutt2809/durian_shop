@@ -429,10 +429,10 @@ const OrdersTab = ({ orders, isLoading, fetchAccountOrders, user, history }) => 
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'pending': return { bg: '#FEF3C7', color: '#92400E', text: 'Chờ xác nhận' };
-      case 'confirmed': return { bg: '#DBEAFE', color: '#1E40AF', text: 'Đã xác nhận' };
-      case 'preparing': return { bg: '#E0E7FF', color: '#3730A3', text: 'Đang chuẩn bị' };
-      case 'shipping': return { bg: '#FEF3C7', color: '#92400E', text: 'Đang giao hàng' };
+      case 'pending': return { bg: '#FEF3C7', color: '#92400E', text: 'Chờ xử lý' };
+      case 'processing': return { bg: '#DBEAFE', color: '#1E40AF', text: 'Đang chuẩn bị' };
+      case 'waiting_carrier': return { bg: '#FFE4E6', color: '#9F1239', text: 'Chờ đơn vị vận chuyển' };
+      case 'shipped': return { bg: '#FEF3C7', color: '#92400E', text: 'Đang giao hàng' };
       case 'delivered': return { bg: '#D1FAE5', color: '#065F46', text: 'Đã giao hàng' };
       case 'cancelled': return { bg: '#FEE2E2', color: '#991B1B', text: 'Đã hủy' };
       default: return { bg: '#F3F4F6', color: '#374151', text: status };
@@ -531,10 +531,10 @@ const OrdersTab = ({ orders, isLoading, fetchAccountOrders, user, history }) => 
             onBlur={(e) => e.target.style.borderColor = '#D1D5DB'}
           >
             <option value="all">Tất cả trạng thái</option>
-            <option value="pending">Chờ xác nhận</option>
-            <option value="confirmed">Đã xác nhận</option>
-            <option value="preparing">Đang chuẩn bị</option>
-            <option value="shipping">Đang giao hàng</option>
+            <option value="pending">Chờ xử lý</option>
+            <option value="processing">Đang chuẩn bị</option>
+            <option value="waiting_carrier">Chờ đơn vị vận chuyển</option>
+            <option value="shipped">Đang giao hàng</option>
             <option value="delivered">Đã giao hàng</option>
             <option value="cancelled">Đã hủy</option>
           </select>

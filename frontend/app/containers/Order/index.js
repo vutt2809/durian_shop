@@ -35,8 +35,9 @@ const OrderDetail = ({ match, history, order, isLoading, fetchOrderById, updateO
   const getStatusColor = (status) => {
     switch (status) {
       case 'pending': return { bg: '#FEF3C7', color: '#92400E', text: 'Chờ xử lý' };
-      case 'processing': return { bg: '#DBEAFE', color: '#1E40AF', text: 'Đang xử lý' };
-      case 'shipped': return { bg: '#FEF3C7', color: '#92400E', text: 'Đã gửi hàng' };
+      case 'processing': return { bg: '#DBEAFE', color: '#1E40AF', text: 'Đang chuẩn bị' };
+      case 'waiting_carrier': return { bg: '#FFE4E6', color: '#9F1239', text: 'Chờ đơn vị vận chuyển' };
+      case 'shipped': return { bg: '#FEF3C7', color: '#92400E', text: 'Đang giao hàng' };
       case 'delivered': return { bg: '#D1FAE5', color: '#065F46', text: 'Đã giao hàng' };
       case 'cancelled': return { bg: '#FEE2E2', color: '#991B1B', text: 'Đã hủy' };
       default: return { bg: '#F3F4F6', color: '#374151', text: status };
@@ -46,7 +47,8 @@ const OrderDetail = ({ match, history, order, isLoading, fetchOrderById, updateO
   const getAvailableStatuses = (currentStatus) => {
     const statusTransitions = {
       'pending': ['processing', 'cancelled'],
-      'processing': ['shipped', 'cancelled'],
+      'processing': ['waiting_carrier', 'cancelled'],
+      'waiting_carrier': ['shipped', 'cancelled'],
       'shipped': ['delivered', 'cancelled'],
       'delivered': [],
       'cancelled': []

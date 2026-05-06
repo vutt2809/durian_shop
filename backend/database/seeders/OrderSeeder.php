@@ -19,7 +19,7 @@ class OrderSeeder extends Seeder
         $customers = User::where('role', 'customer')->orderBy('id')->get();
         $products = Product::active()->inRandomOrder()->get();
 
-        $statuses = ['pending', 'confirmed', 'preparing', 'shipping', 'delivered', 'cancelled'];
+        $statuses = ['pending', 'processing', 'waiting_carrier', 'shipped', 'delivered', 'cancelled'];
         $methods = ['cod', 'bank_transfer', 'momo', 'vnpay'];
 
         $created = 0;

@@ -106,6 +106,10 @@ export const filterProducts = (n, v) => {
       
       // Build query parameters
       const params = { ...payload, sortOrder };
+      if (params.name && params.name !== 'all') {
+        params.search = params.name;
+      }
+      delete params.name;
       
       // Remove undefined or null values
       Object.keys(params).forEach(key => {

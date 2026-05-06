@@ -237,6 +237,19 @@ class Homepage extends React.PureComponent {
     if (this.props.advancedFilters.limit !== this.state.itemsPerPage) {
       this.setState({ itemsPerPage: this.props.advancedFilters.limit });
     }
+
+    // Khi bấm nút "Tìm" trên header, URL sẽ đổi ?search=...
+    if (this.props.location && prevProps.location && this.props.location.search !== prevProps.location.search) {
+      const urlParams = new URLSearchParams(this.props.location.search);
+      const q = (urlParams.get('search') || '').trim();
+      this.setState({ selectedCategory: null, searchQuery: q, currentPage: 1 }, () => {
+        if (q) {
+          this.props.filterProducts('name', q);
+        } else {
+          this.props.filterProducts('name', 'all');
+        }
+      });
+    }
   }
 
   loadProducts = () => {
@@ -355,7 +368,7 @@ class Homepage extends React.PureComponent {
                         : 'Sản phẩm nổi bật'
                     }
                   </h5>
-                  <div className='d-flex align-items-center gap-2'>
+                  <div className='d-flex align-items-center gap-2' style={{ gap: 12 }}>
                     <span style={{ fontSize: 14, color: '#6c757d' }}>
                       {totalProducts} sản phẩm
                     </span>

@@ -29,6 +29,7 @@ import Contact from '../Contact';
 import ResetPassword from '../ResetPassword';
 import ForgotPassword from '../ForgotPassword';
 import OrderDetail from '../Order';
+import Shop from '../Shop';
 
 const Application = (props) => {
   const {
@@ -62,6 +63,7 @@ const Application = (props) => {
           <div className='wrapper'>
             <Switch>
               <Route exact path='/' component={Homepage} />
+              <Route path='/shop' component={Shop} />
               <Route path='/cart' component={Cart} />
               <Route path='/checkout' component={CheckoutContainer} />
               <Route path='/order/success/:id' component={OrderSuccess} />

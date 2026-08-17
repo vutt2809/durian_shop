@@ -15,13 +15,17 @@ import { fetchAccountOrders } from '../Order/actions';
 
 // Dashboard Sidebar Component
 const DashboardSidebar = ({ activeTab, onTabChange, user }) => {
+  const isAdmin = user?.role === 'admin';
+
   const menuItems = [
     { id: 'overview', label: 'Tổng quan', path: '/dashboard', icon: FaShoppingBag },
     { id: 'account', label: 'Tài khoản', path: '/dashboard', icon: FaUser },
-    { id: 'orders', label: 'Đơn hàng', path: '/dashboard/orders', icon: FaBox },
-    { id: 'products', label: 'Sản phẩm', path: '/dashboard/products', icon: FaBoxes },
-    { id: 'categories', label: 'Danh mục', path: '/dashboard/categories', icon: FaTags },
-    { id: 'users', label: 'Người dùng', path: '/dashboard/users', icon: FaUsers },
+    { id: 'orders', label: isAdmin ? 'Tất cả đơn hàng' : 'Đơn hàng của tôi', path: '/dashboard/orders', icon: FaBox },
+    ...(isAdmin ? [
+      { id: 'products', label: 'Quản lý Sản phẩm', path: '/dashboard/products', icon: FaBoxes },
+      { id: 'categories', label: 'Quản lý Danh mục', path: '/dashboard/categories', icon: FaTags },
+      { id: 'users', label: 'Quản lý Người dùng', path: '/dashboard/users', icon: FaUsers },
+    ] : []),
     { id: 'support', label: 'Hỗ trợ', path: '/dashboard/support', icon: FaHeadset },
   ];
 
@@ -2621,8 +2625,20 @@ const Dashboard = (props) => {
 
   const renderTabContent = () => {
     const userKey = user?.role || 'guest';
+    const isAdmin = user?.role === 'admin';
 
-    
+    const renderAccessDenied = (featureName) => (
+      <div style={{ padding: '60px 32px', textAlign: 'center', color: '#6B7280' }}>
+        <div style={{ fontSize: 48, marginBottom: 16 }}>🔒</div>
+        <h3 style={{ fontSize: 20, fontWeight: 600, color: '#111827', marginBottom: 8 }}>
+          Không có quyền truy cập
+        </h3>
+        <p style={{ fontSize: 14 }}>
+          Trang {featureName} chỉ dành riêng cho Quản trị viên (Admin).
+        </p>
+      </div>
+    );
+
     switch (activeTab) {
       case 'overview':
         return <OverviewTab key="overview" user={user} orders={orders} onTabChange={handleTabChange} />;
@@ -2631,10 +2647,13 @@ const Dashboard = (props) => {
       case 'orders':
         return <OrdersTab key="orders" orders={orders} isLoading={false} fetchAccountOrders={fetchAccountOrders} user={user} history={props.history} />;
       case 'products':
+        if (!isAdmin) return renderAccessDenied('Quản lý Sản phẩm');
         return <ProductsTab key={`products-${userKey}`} user={user} />;
       case 'categories':
+        if (!isAdmin) return renderAccessDenied('Quản lý Danh mục');
         return <CategoriesTab key={`categories-${userKey}`} user={user} />;
       case 'users':
+        if (!isAdmin) return renderAccessDenied('Quản lý Người dùng');
         return <UsersTab key={`users-${userKey}`} user={user} />;
       case 'support':
         return <SupportTab key="support" />;

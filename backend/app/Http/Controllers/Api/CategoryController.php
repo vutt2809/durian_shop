@@ -6,14 +6,35 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        // If request specifies pagination (e.g. from Admin Dashboard)
+        if ($request->has('page') || $request->has('limit')) {
+            $limit = $request->get('limit', 10);
+            $query = Category::with('parent')->orderBy('created_at', 'desc');
+            
+            if ($request->has('is_active')) {
+                $query->where('is_active', $request->boolean('is_active'));
+            }
+
+            $categories = $query->paginate($limit);
+
+            return response()->json([
+                'success' => true,
+                'categories' => $categories
+            ]);
+        }
+
+        // Storefront category tree (active root categories with active children)
         $categories = Category::where('is_active', true)
-                             ->with('children')
                              ->whereNull('parent_id')
+                             ->with(['children' => function ($q) {
+                                 $q->where('is_active', true);
+                             }])
                              ->get();
 
         return response()->json([
@@ -58,8 +79,17 @@ class CategoryController extends Controller
             ], 400);
         }
 
+        $baseSlug = Str::slug($request->name);
+        $slug = $baseSlug;
+        $count = 1;
+        while (Category::where('slug', $slug)->exists()) {
+            $slug = $baseSlug . '-' . $count;
+            $count++;
+        }
+
         $category = Category::create([
             'name' => $request->name,
+            'slug' => $slug,
             'description' => $request->description,
             'parent_id' => $request->parent_id,
             'is_active' => $request->is_active ?? true
@@ -95,7 +125,19 @@ class CategoryController extends Controller
             ], 400);
         }
 
-        $category->update($request->all());
+        $data = $request->only(['name', 'description', 'parent_id', 'is_active']);
+        if ($request->has('name') && $request->name !== $category->name) {
+            $baseSlug = Str::slug($request->name);
+            $slug = $baseSlug;
+            $count = 1;
+            while (Category::where('slug', $slug)->where('id', '!=', $id)->exists()) {
+                $slug = $baseSlug . '-' . $count;
+                $count++;
+            }
+            $data['slug'] = $slug;
+        }
+
+        $category->update($data);
 
         return response()->json([
             'success' => true,
@@ -113,6 +155,9 @@ class CategoryController extends Controller
                 'error' => 'Category not found.'
             ], 404);
         }
+
+        // Cascade delete child categories
+        Category::where('parent_id', $id)->delete();
 
         $category->delete();
 
@@ -132,7 +177,12 @@ class CategoryController extends Controller
             ], 404);
         }
 
-        $category->update(['is_active' => !$category->is_active]);
+        $newStatus = !$category->is_active;
+        $category->update(['is_active' => $newStatus]);
+
+        if (!$newStatus) {
+            Category::where('parent_id', $id)->update(['is_active' => false]);
+        }
 
         return response()->json([
             'success' => true,

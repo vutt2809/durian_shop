@@ -76,7 +76,10 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('shipping_address_id');
+            $table->unsignedBigInteger('shipping_address_id')->nullable();
+            $table->string('full_name')->nullable();
+            $table->string('phone')->nullable();
+            $table->text('address')->nullable();
             $table->string('order_number')->unique();
             $table->decimal('subtotal', 10, 2);
             $table->decimal('shipping_fee', 10, 2)->default(0);
@@ -89,7 +92,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('shipping_address_id')->references('id')->on('user_addresses')->onDelete('cascade');
+            $table->foreign('shipping_address_id')->references('id')->on('user_addresses')->onDelete('set null');
         });
 
         Schema::create('order_details', function (Blueprint $table) {
@@ -159,10 +162,21 @@ return new class extends Migration
             $table->longText('exception');
             $table->timestamp('failed_at')->useCurrent();
         });
+
+        Schema::create('contacts', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('email');
+            $table->string('phone')->nullable();
+            $table->text('message');
+            $table->boolean('is_read')->default(false);
+            $table->timestamps();
+        });
     }
 
     public function down(): void
     {
+        Schema::dropIfExists('contacts');
         Schema::dropIfExists('failed_jobs');
         Schema::dropIfExists('password_resets');
         Schema::dropIfExists('reviews');

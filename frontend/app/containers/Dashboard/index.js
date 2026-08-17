@@ -258,7 +258,7 @@ const DashboardHeader = ({ title, subtitle, onSearch }) => {
 };
 
 // Overview Tab Component
-const OverviewTab = ({ user, orders }) => {
+const OverviewTab = ({ user, orders, onTabChange }) => {
   const stats = [
     {
       title: 'Tổng đơn hàng',
@@ -339,16 +339,19 @@ const OverviewTab = ({ user, orders }) => {
           <h3 style={{ fontSize: 18, fontWeight: 600, margin: 0, color: '#111827' }}>
             Đơn hàng gần đây
           </h3>
-          <button style={{
-            padding: '8px 16px',
-            background: '#3B82F6',
-            color: '#fff',
-            border: 'none',
-            borderRadius: 6,
-            fontSize: 14,
-            fontWeight: 500,
-            cursor: 'pointer'
-          }}>
+          <button 
+            onClick={() => onTabChange && onTabChange('orders')}
+            style={{
+              padding: '8px 16px',
+              background: '#3B82F6',
+              color: '#fff',
+              border: 'none',
+              borderRadius: 6,
+              fontSize: 14,
+              fontWeight: 500,
+              cursor: 'pointer'
+            }}
+          >
             Xem tất cả
           </button>
         </div>
@@ -2622,26 +2625,21 @@ const Dashboard = (props) => {
     
     switch (activeTab) {
       case 'overview':
-        return <OverviewTab key="overview" user={user} orders={orders} />;
+        return <OverviewTab key="overview" user={user} orders={orders} onTabChange={handleTabChange} />;
       case 'account':
         return <AccountTab key="account" user={user} />;
       case 'orders':
-
         return <OrdersTab key="orders" orders={orders} isLoading={false} fetchAccountOrders={fetchAccountOrders} user={user} history={props.history} />;
-
       case 'products':
         return <ProductsTab key={`products-${userKey}`} user={user} />;
       case 'categories':
         return <CategoriesTab key={`categories-${userKey}`} user={user} />;
       case 'users':
         return <UsersTab key={`users-${userKey}`} user={user} />;
-      case 'sellers':
-        return <SellersTab key="sellers" />;
-
       case 'support':
         return <SupportTab key="support" />;
       default:
-        return <OverviewTab key="overview-default" user={user} orders={orders} />;
+        return <OverviewTab key="overview-default" user={user} orders={orders} onTabChange={handleTabChange} />;
     }
   };
 

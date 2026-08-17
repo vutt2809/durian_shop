@@ -50,6 +50,16 @@ class User extends Authenticatable
         'reset_password_expires' => 'datetime',
     ];
 
+    protected $appends = [
+        'name',
+        'full_name',
+    ];
+
+    public function getNameAttribute()
+    {
+        return trim($this->first_name . ' ' . $this->last_name);
+    }
+
     public function userAddresses()
     {
         return $this->hasMany(UserAddress::class);

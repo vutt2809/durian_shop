@@ -164,8 +164,12 @@ const ProductGrid = ({ products, onAddToCart }) => (
             <div style={{width: 120, height: 120, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12, background: '#f8f9fa', borderRadius: 8, position: 'relative'}}>
               {product.image_url ? (
                 <img 
-                  src={`http://localhost:3000${product.image_url}`} 
+                  src={product.image_url.startsWith('http') ? product.image_url : `http://localhost:3000${product.image_url.startsWith('/') ? '' : '/'}${product.image_url}`} 
                   alt={product.name} 
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = '/images/placeholder-image.png';
+                  }}
                   style={{maxWidth: '100%', maxHeight: '100%', objectFit: 'cover', borderRadius: 8}} 
                 />
               ) : (

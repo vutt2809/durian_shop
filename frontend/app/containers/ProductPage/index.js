@@ -164,7 +164,7 @@ class ProductPage extends React.PureComponent {
 
 const mapStateToProps = state => {
   const itemInCart = state.cart.cartItems.find(
-    item => item._id === state.product.storeProduct.id
+    item => (item.id === state.product.storeProduct.id || item._id === state.product.storeProduct.id)
   )
     ? true
     : false;

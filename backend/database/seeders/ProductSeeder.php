@@ -22,6 +22,8 @@ class ProductSeeder extends Seeder
                 'ripeness' => 'ripe',
                 'origin' => 'vietnam',
                 'quantity' => 100,
+                'image_url' => '/uploads/products/1778073244_sau-rieng-ri-6-tuoi.jpg',
+                'image_key' => '1778073244_sau-rieng-ri-6-tuoi.jpg',
                 'category_id' => $categories->where('slug', 'sau-rieng-ri-6')->first()->id,
             ],
             [
@@ -32,6 +34,8 @@ class ProductSeeder extends Seeder
                 'ripeness' => 'ripe',
                 'origin' => 'thailand',
                 'quantity' => 50,
+                'image_url' => '/uploads/products/1778073255_sau-rieng-monthong-thai-lan.png',
+                'image_key' => '1778073255_sau-rieng-monthong-thai-lan.png',
                 'category_id' => $categories->where('slug', 'sau-rieng-monthong')->first()->id,
             ],
             [
@@ -42,6 +46,8 @@ class ProductSeeder extends Seeder
                 'ripeness' => 'ripe',
                 'origin' => 'malaysia',
                 'quantity' => 30,
+                'image_url' => '/uploads/products/1778073263_sau-rieng-musang-king-malaysia.jpg',
+                'image_key' => '1778073263_sau-rieng-musang-king-malaysia.jpg',
                 'category_id' => $categories->where('slug', 'sau-rieng-musang-king')->first()->id,
             ],
             [
@@ -52,6 +58,8 @@ class ProductSeeder extends Seeder
                 'ripeness' => 'ripe',
                 'origin' => 'vietnam',
                 'quantity' => 80,
+                'image_url' => '/uploads/products/1778073275_sau-rieng-ri-6-dong-lanh.png',
+                'image_key' => '1778073275_sau-rieng-ri-6-dong-lanh.png',
                 'category_id' => $categories->where('slug', 'sau-rieng-dong-lanh')->first()->id,
             ],
             [
@@ -62,6 +70,8 @@ class ProductSeeder extends Seeder
                 'ripeness' => 'unripe',
                 'origin' => 'vietnam',
                 'quantity' => 60,
+                'image_url' => '/uploads/products/1778073287_sau-rieng-chua-chin.jfif',
+                'image_key' => '1778073287_sau-rieng-chua-chin.jfif',
                 'category_id' => $categories->where('slug', 'sau-rieng-tuoi')->first()->id,
             ],
             [
@@ -72,6 +82,8 @@ class ProductSeeder extends Seeder
                 'ripeness' => 'ripe',
                 'origin' => 'vietnam',
                 'quantity' => 200,
+                'image_url' => '/uploads/products/1778073298_kem-sau-rieng.jfif',
+                'image_key' => '1778073298_kem-sau-rieng.jfif',
                 'category_id' => $categories->where('slug', 'sau-rieng-che-bien')->first()->id,
             ],
             [
@@ -82,6 +94,8 @@ class ProductSeeder extends Seeder
                 'ripeness' => 'ripe',
                 'origin' => 'vietnam',
                 'quantity' => 150,
+                'image_url' => '/uploads/products/1778073310_banh-sau-rieng.png',
+                'image_key' => '1778073310_banh-sau-rieng.png',
                 'category_id' => $categories->where('slug', 'sau-rieng-che-bien')->first()->id,
             ],
             [
@@ -92,6 +106,8 @@ class ProductSeeder extends Seeder
                 'ripeness' => 'ripe',
                 'origin' => 'indonesia',
                 'quantity' => 40,
+                'image_url' => '/uploads/products/1778073328_sau-rieng-indonesia.png',
+                'image_key' => '1778073328_sau-rieng-indonesia.png',
                 'category_id' => $categories->where('slug', 'sau-rieng-tuoi')->first()->id,
             ],
             [
@@ -102,6 +118,8 @@ class ProductSeeder extends Seeder
                 'ripeness' => 'ripe',
                 'origin' => 'vietnam',
                 'quantity' => 70,
+                'image_url' => '/uploads/products/1778073441_sau-rieng-dona-viet-nam-25kg.jfif',
+                'image_key' => '1778073441_sau-rieng-dona-viet-nam-25kg.jfif',
                 'category_id' => $categories->where('slug', 'sau-rieng-dona')->first()->id,
             ],
             [
@@ -112,6 +130,8 @@ class ProductSeeder extends Seeder
                 'ripeness' => 'ripe',
                 'origin' => 'malaysia',
                 'quantity' => 15,
+                'image_url' => '/uploads/products/1778073454_sau-rieng-black-thorn-malaysia.jfif',
+                'image_key' => '1778073454_sau-rieng-black-thorn-malaysia.jfif',
                 'category_id' => $categories->where('slug', 'sau-rieng-black-thorn')->first()->id,
             ],
             [
@@ -122,6 +142,8 @@ class ProductSeeder extends Seeder
                 'ripeness' => 'ripe',
                 'origin' => 'vietnam',
                 'quantity' => 120,
+                'image_url' => '/uploads/products/1778073465_com-sau-rieng-tach-mui-500g.jpg',
+                'image_key' => '1778073465_com-sau-rieng-tach-mui-500g.jpg',
                 'category_id' => $categories->where('slug', 'com-sau-tach-mui')->first()->id,
             ],
             [
@@ -132,6 +154,8 @@ class ProductSeeder extends Seeder
                 'ripeness' => 'ripe',
                 'origin' => 'vietnam',
                 'quantity' => 180,
+                'image_url' => '/uploads/products/1778073476_sau-rieng-say-gion-200g.jfif',
+                'image_key' => '1778073476_sau-rieng-say-gion-200g.jfif',
                 'category_id' => $categories->where('slug', 'sau-rieng-say')->first()->id,
             ],
             [
@@ -142,6 +166,8 @@ class ProductSeeder extends Seeder
                 'ripeness' => 'ripe',
                 'origin' => 'vietnam',
                 'quantity' => 160,
+                'image_url' => '/uploads/products/1778073490_keo-sau-rieng-250g.png',
+                'image_key' => '1778073490_keo-sau-rieng-250g.png',
                 'category_id' => $categories->where('slug', 'banh-keo-sau-rieng')->first()->id,
             ],
             [
@@ -152,6 +178,8 @@ class ProductSeeder extends Seeder
                 'ripeness' => 'ripe',
                 'origin' => 'vietnam',
                 'quantity' => 25,
+                'image_url' => '/uploads/products/1778073499_combo-qua-tang-sau-rieng-mix.png',
+                'image_key' => '1778073499_combo-qua-tang-sau-rieng-mix.png',
                 'category_id' => $categories->where('slug', 'combo-qua-tang')->first()->id,
             ],
         ];

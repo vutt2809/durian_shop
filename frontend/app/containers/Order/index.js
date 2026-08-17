@@ -8,6 +8,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Container, Row, Col, Card, Badge } from 'reactstrap';
+import { FaArrowLeft } from 'react-icons/fa';
 
 import { fetchOrderById, updateOrderStatusByAdmin } from './actions';
 
@@ -230,8 +231,12 @@ const OrderDetail = ({ match, history, order, isLoading, fetchOrderById, updateO
                     }}>
                       {item.product?.image_url ? (
                         <img
-                          src={`http://localhost:3000${item.product.image_url}`}
+                          src={item.product.image_url.startsWith('http') ? item.product.image_url : `http://localhost:3000${item.product.image_url.startsWith('/') ? '' : '/'}${item.product.image_url}`}
                           alt={item.product?.name}
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = '/images/placeholder-image.png';
+                          }}
                           style={{
                             width: '100%',
                             height: '100%',

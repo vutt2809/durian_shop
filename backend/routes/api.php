@@ -42,6 +42,7 @@ Route::prefix('product')->group(function () {
         Route::put('/{id}', [ProductController::class, 'update']);
         Route::delete('/{id}', [ProductController::class, 'destroy']);
         Route::put('/{id}/toggle', [ProductController::class, 'toggleActive']);
+        Route::put('/{id}/active', [ProductController::class, 'toggleActive']);
     });
 });
 
@@ -99,6 +100,8 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('/', [CategoryController::class, 'store']);
             Route::put('/{id}', [CategoryController::class, 'update']);
             Route::delete('/{id}', [CategoryController::class, 'destroy']);
+            Route::put('/{id}/toggle', [CategoryController::class, 'toggleActive']);
+            Route::put('/{id}/active', [CategoryController::class, 'toggleActive']);
         });
 
         // User management

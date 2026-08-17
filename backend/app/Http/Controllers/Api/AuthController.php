@@ -63,7 +63,10 @@ class AuthController extends Controller
                 'id' => $user->id,
                 'first_name' => $user->first_name,
                 'last_name' => $user->last_name,
+                'name' => $user->name,
+                'full_name' => $user->full_name,
                 'email' => $user->email,
+                'phone' => $user->phone,
                 'role' => $user->role
             ]
         ]);
@@ -90,7 +93,7 @@ class AuthController extends Controller
             'last_name' => $request->last_name,
             'password' => Hash::make($request->password),
             'provider' => 'email',
-            'role' => 'member'
+            'role' => 'customer'
         ]);
 
         $token = $user->createToken('auth-token')->plainTextToken;
@@ -102,7 +105,10 @@ class AuthController extends Controller
                 'id' => $user->id,
                 'first_name' => $user->first_name,
                 'last_name' => $user->last_name,
+                'name' => $user->name,
+                'full_name' => $user->full_name,
                 'email' => $user->email,
+                'phone' => $user->phone,
                 'role' => $user->role
             ]
         ]);

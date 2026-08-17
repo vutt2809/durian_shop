@@ -121,7 +121,7 @@ class OrderController extends Controller
             'notes' => $request->notes
         ]);
 
-        // Tạo order details từ items được gửi từ frontend
+        // Tạo order details từ items được gửi từ frontend và trừ tồn kho
         foreach ($items as $item) {
             $product = \App\Models\Product::find($item['product_id']);
             
@@ -133,6 +133,9 @@ class OrderController extends Controller
                 'price' => $item['price'],
                 'subtotal' => $item['price'] * $item['quantity'],
             ]);
+
+            // Trừ số lượng tồn kho của sản phẩm
+            $product->decrement('quantity', $item['quantity']);
         }
 
         // Clear cart after order creation
@@ -172,7 +175,7 @@ class OrderController extends Controller
 
     public function cancel(Request $request, $id)
     {
-        $order = $request->user()->orders()->find($id);
+        $order = $request->user()->orders()->with('orderDetails')->find($id);
 
         if (!$order) {
             return response()->json([
@@ -187,6 +190,13 @@ class OrderController extends Controller
         }
 
         $order->update(['status' => 'cancelled']);
+
+        // Khôi phục tồn kho sản phẩm khi hủy đơn
+        foreach ($order->orderDetails as $detail) {
+            if ($detail->product_id) {
+                \App\Models\Product::where('id', $detail->product_id)->increment('quantity', $detail->quantity);
+            }
+        }
 
         return response()->json([
             'success' => true,
@@ -216,7 +226,7 @@ class OrderController extends Controller
             ], 400);
         }
 
-        $order = Order::find($id);
+        $order = Order::with('orderDetails')->find($id);
 
         if (!$order) {
             return response()->json([
@@ -246,6 +256,15 @@ class OrderController extends Controller
         }
 
         $order->update(['status' => $newStatus]);
+
+        // Khôi phục tồn kho sản phẩm nếu chuyển sang trạng thái cancelled
+        if ($newStatus === 'cancelled' && $oldStatus !== 'cancelled') {
+            foreach ($order->orderDetails as $detail) {
+                if ($detail->product_id) {
+                    \App\Models\Product::where('id', $detail->product_id)->increment('quantity', $detail->quantity);
+                }
+            }
+        }
 
         return response()->json([
             'success' => true,

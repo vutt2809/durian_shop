@@ -68,6 +68,7 @@ class UserController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'phone_number' => 'nullable|string|max:20',
+            'phone' => 'nullable|string|max:20',
             'avatar' => 'nullable|string',
         ]);
 
@@ -78,7 +79,14 @@ class UserController extends Controller
         }
 
         $user = $request->user();
-        $user->update($request->only(['first_name', 'last_name', 'phone_number', 'avatar']));
+        $data = $request->only(['first_name', 'last_name', 'avatar']);
+        if ($request->has('phone_number')) {
+            $data['phone'] = $request->phone_number;
+        } elseif ($request->has('phone')) {
+            $data['phone'] = $request->phone;
+        }
+
+        $user->update($data);
 
         return response()->json([
             'success' => true,
@@ -129,7 +137,7 @@ class UserController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'role' => 'required|in:admin,customer'
+            'role' => 'required|in:admin,customer,member'
         ]);
 
         if ($validator->fails()) {
